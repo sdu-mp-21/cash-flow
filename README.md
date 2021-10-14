@@ -1,6 +1,6 @@
 # final_project
 
-It's our project for CSS 216
+It's our project for CSS 216  
 Members: 
 - 190103205 - Sanzhar Baratov
 - 190103497 - Alisher Zhubanyshev
