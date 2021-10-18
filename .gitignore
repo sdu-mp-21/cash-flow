@@ -50,3 +50,6 @@ app.*.map.json
 gradle/
 gradlew
 gradlew.bat
+
+#pubspec
+pubspec.lock
