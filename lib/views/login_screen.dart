@@ -50,7 +50,10 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: _surnameController,
           ),
           TextField(
+            maxLength: 11,
+            keyboardType: TextInputType.phone,
             decoration: InputDecoration(
+              prefix: Text("+"),
               hintText: "Phone",
             ),
             controller: _phoneController,
