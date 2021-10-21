@@ -1,3 +1,4 @@
+import 'package:final_project/views/login_screen.dart';
 import 'package:final_project/views/profile_screen.dart';
 import 'package:final_project/views/create_screen.dart';
 
@@ -26,7 +27,18 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('title')),
+      appBar: AppBar(
+        title: Text('title'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()));
+            },
+            child: Text("Login"),
+          )
+        ],
+      ),
       body: _routes[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: _navBarItems,
