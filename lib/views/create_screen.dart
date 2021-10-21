@@ -57,6 +57,10 @@ class _CreateScreenState extends State<CreateScreen> {
 
 
   void addTransaction() {
+    if (moneyController.text == '' || categoryController.text == '') {
+      return;
+    }
+
     int money = int.parse(moneyController.text);
     String category = categoryController.text;
 

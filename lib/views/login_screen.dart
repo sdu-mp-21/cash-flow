@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:final_project/models/user.dart';
+import 'package:final_project/provider.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -8,22 +11,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController _nameController;
-  late TextEditingController _surnameController;
+  late TextEditingController _usernameController;
   late TextEditingController _phoneController;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
-    _surnameController = TextEditingController();
+    _usernameController = TextEditingController();
     _phoneController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _surnameController.dispose();
+    _usernameController.dispose();
     _phoneController.dispose();
     super.dispose();
   }
@@ -39,20 +39,17 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           TextField(
             decoration: InputDecoration(
-              hintText: "Name",
+              border: OutlineInputBorder(),
+              hintText: "Username",
             ),
-            controller: _nameController,
-          ),
-          TextField(
-            decoration: InputDecoration(
-              hintText: "Surname",
-            ),
-            controller: _surnameController,
+            controller: _usernameController,
           ),
           TextField(
             maxLength: 11,
             keyboardType: TextInputType.phone,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
+              border: OutlineInputBorder(),
               prefix: Text("+"),
               hintText: "Phone",
             ),
@@ -60,10 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              print("Submitted");
-              print(_nameController.text);
-              print(_surnameController.text);
-              print(_phoneController.text);
+              authUser();
+              setState(() {});
               Navigator.pop(context);
             },
             child: Text("Confirm"),
@@ -71,5 +66,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  void authUser() {
+    final username = _usernameController.text;
+    final phoneNumber = _phoneController.text;
+    final controller = Provider.of(context);
+    controller.setUser = User(username, phoneNumber);
   }
 }

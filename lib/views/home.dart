@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:final_project/views/login_screen.dart';
 import 'package:final_project/views/profile_screen.dart';
 import 'package:final_project/views/create_screen.dart';
-
-import 'package:flutter/material.dart';
+import 'package:final_project/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -26,9 +27,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('title'),
+        title: Text(controller.authorized() ? controller.user!.username : ''),
         actions: [
           ElevatedButton(
             onPressed: () {
