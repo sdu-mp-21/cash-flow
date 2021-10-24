@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:final_project/provider.dart';
-import 'package:http/http.dart' as http;
-
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({Key? key}) : super(key: key);
@@ -39,7 +37,7 @@ class _CreateScreenState extends State<CreateScreen> {
               )),
           ElevatedButton(onPressed: addTransaction, child: Icon(Icons.add)),
           ..._showCategories(),
-          _getHttp(),
+          // _getHttp(),
         ],
       ),
     );
