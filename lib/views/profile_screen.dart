@@ -1,4 +1,8 @@
+import 'package:final_project/views/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:final_project/provider.dart';
+import 'package:final_project/controllers/controller.dart';
+import 'package:final_project/models/user.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -10,110 +14,46 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      // width: 250,
+      margin: EdgeInsets.all(100),
+      alignment: Alignment.center,
+      child: _buildProfile(),
+    );
+  }
+
+  Widget _buildProfile() {
+    // if (!controller.authorized()) {
+    //   return ElevatedButton(
+    //       onPressed: () {
+    //         Navigator.push(context,
+    //                 MaterialPageRoute(builder: (context) => LoginScreen()))
+    //             // added then callback to rebuild profile after logging in, otherwise it would not work
+    //             .then((value) => setState(() {}));
+    //       },
+    //       child: Icon(Icons.login));
+    // }
+
+    return Container(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-            Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-            	shape: BoxShape.circle,
-              
-            	image: DecorationImage(
-            	  image: AssetImage('assets/images/avatar.png'),
-            	  fit: BoxFit.fill
-            	),
-              ),
-            ),            
-            Container(
-              width: 200,
-              height: 50,
-              decoration: BoxDecoration(      
-                border: Border.all(),
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),       
-              child:Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.person),
-                  Text("My Account"),
-                  Icon(Icons.arrow_forward_ios)
-                ],
-              ),
-            ),
-            Container(
-              width: 200,
-              height: 50,
-              decoration: BoxDecoration(      
-                border: Border.all(),
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),       
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.notifications),
-                  Text("Notifications"),
-                  Icon(Icons.arrow_forward_ios)
-                ],
-              ),
-            ),
-            Container(  
-              width: 200,
-              height: 50,
-              decoration: BoxDecoration(      
-                border: Border.all(),
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),       
-              child: Row(  
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.settings),
-                  Text("Settings"),
-                  Icon(Icons.arrow_forward_ios)
-                ],
-              ),
-            ),  
-            Container(
-              width: 200,
-              height: 50,
-              decoration: BoxDecoration(      
-                border: Border.all(),
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),       
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.question_answer),
-                  Text("Help Center"),
-                  Icon(Icons.arrow_forward_ios)
-                ],
-              ),
-            ),  
-            Container( 
-              width: 200,
-              height: 50,
-              decoration: BoxDecoration(      
-                border: Border.all(),
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),        
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.logout),
-                  Text("Log Out"),
-                  Icon(Icons.arrow_forward_ios)
-                ],
-              ),
-            ),  
-        ],  
+          Image(image: AssetImage('assets/images/avatar.png')),
+          SizedBox(height: 20),
+          Text(
+            Provider.of(context).user.username,
+            style: TextStyle(),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()))
+                    // added then callback to rebuild profile after logging in, otherwise it would not work
+                    .then((value) => setState(() {}));
+              },
+              child: Icon(Icons.login)),
+        ],
       ),
     );
-
   }
 }

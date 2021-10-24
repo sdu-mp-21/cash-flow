@@ -1,13 +1,16 @@
 import 'package:final_project/models/user.dart';
 
 class Controller {
-  User? _user;
+  User user = User('guest');
+  bool _authorized = false;
 
-  User? get user => _user;
+  Controller();
+
   set setUser(User user) {
-    this._user = user;
+    this.user = user;
+    _authorized = true;
   }
   bool authorized() {
-    return _user != null;
+    return _authorized;
   }
 }

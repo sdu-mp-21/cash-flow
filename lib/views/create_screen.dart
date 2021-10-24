@@ -1,5 +1,10 @@
+import 'package:final_project/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:final_project/provider.dart';
+import 'package:http/http.dart' as http;
+
 
 class CreateScreen extends StatefulWidget {
   const CreateScreen({Key? key}) : super(key: key);
@@ -9,42 +14,41 @@ class CreateScreen extends StatefulWidget {
 }
 
 class _CreateScreenState extends State<CreateScreen> {
-  final balance = 0;
-  Map<String, int> categories = <String, int>{
-    "health": 0,
-    "shop": 0,
-  };
+  Map<String, int> categories = <String, int>{};
+
   final moneyController = TextEditingController();
   final categoryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      padding: EdgeInsets.all(30),
       child: Column(
         children: [
           TextField(
-            controller: moneyController,
+              controller: moneyController,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Money',
               )),
           TextField(
-            controller: categoryController,
+              controller: categoryController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Category',
               )),
           ElevatedButton(onPressed: addTransaction, child: Icon(Icons.add)),
-          ...showCategories(),
+          ..._showCategories(),
+          _getHttp(),
         ],
       ),
     );
   }
 
-  List<Widget> showCategories() {
+  List<Widget> _showCategories() {
     var result = <Widget>[];
+    categories = Provider.of(context).user.categories;
+
     categories.forEach((key, value) {
       result.add(ListTile(
         title: Text(key),
@@ -55,22 +59,25 @@ class _CreateScreenState extends State<CreateScreen> {
     return result;
   }
 
-
   void addTransaction() {
     if (moneyController.text == '' || categoryController.text == '') {
       return;
     }
 
-    int money = int.parse(moneyController.text);
-    String category = categoryController.text;
+    int moneyAmount = int.parse(moneyController.text);
+    String categoryName = categoryController.text;
 
-    if(!categories.containsKey(category)) {
-      categories[category] = 0;
-    }
+    Provider.of(context).user.addCategory(categoryName, moneyAmount: moneyAmount);
 
-    categories[category] = (categories[category])! + money;
     setState(() {});
     moneyController.clear();
     categoryController.clear();
   }
+
+  // Widget _getHttp() {
+  //   var uri = Uri.parse('')
+  //
+  //
+  //   return Text('default text from http request');
+  // }
 }

@@ -34,36 +34,35 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: Text("Login"),
       ),
-      body: ListView(
-        padding: EdgeInsets.all(8.0),
-        children: [
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Username",
+      body: Container(
+        padding: EdgeInsets.all(30),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Username",
+              ),
+              controller: _usernameController,
             ),
-            controller: _usernameController,
-          ),
-          TextField(
-            maxLength: 11,
-            keyboardType: TextInputType.phone,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              prefix: Text("+"),
-              hintText: "Phone",
+            TextField(
+              maxLength: 11,
+              keyboardType: TextInputType.phone,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                // prefix: Text("+"),
+                hintText: "Phone",
+              ),
+              controller: _phoneController,
             ),
-            controller: _phoneController,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              authUser();
-              setState(() {});
-              Navigator.pop(context);
-            },
-            child: Text("Confirm"),
-          )
-        ],
+            ElevatedButton(
+              onPressed: () {
+                authUser();
+                Navigator.pop(context);
+              },
+              child: Text("Confirm"),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -72,6 +71,11 @@ class _LoginScreenState extends State<LoginScreen> {
     final username = _usernameController.text;
     final phoneNumber = _phoneController.text;
     final controller = Provider.of(context);
-    controller.setUser = User(username, phoneNumber);
+
+    if (username == '') {
+      return;
+    }
+
+    controller.setUser = User(username, phoneNumber: phoneNumber);
   }
 }
