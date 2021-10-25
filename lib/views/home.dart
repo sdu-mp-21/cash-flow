@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:final_project/views/profile_screen.dart';
-import 'package:final_project/views/create_screen.dart';
+import 'package:final_project/views/menu_screen.dart';
+import 'package:final_project/views/transaction_screen.dart';
+import 'package:final_project/views/account_screen.dart';
+
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -14,20 +16,22 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
 
   final _navBarItems = <BottomNavigationBarItem>[
-    BottomNavigationBarItem(icon: Icon(Icons.add), label: 'add'),
-    BottomNavigationBarItem(icon: Icon(Icons.person), label: 'profile'),
+    BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: 'accounts'),
+    BottomNavigationBarItem(icon: Icon(Icons.compare_arrows), label: 'transactions'),
+    BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'menu'),
   ];
 
   final _routes = <Widget>[
-    CreateScreen(),
-    ProfileScreen(),
+    AccountScreen(),
+    TransactionScreen(),
+    MenuScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ZenMoney'),
+        title: Text('CashFlow'),
       ),
       body: _routes[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

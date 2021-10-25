@@ -16,9 +16,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    super.initState();
     _usernameController = TextEditingController();
     _phoneController = TextEditingController();
+    super.initState();
   }
 
   @override
@@ -44,19 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               controller: _usernameController,
             ),
-            TextField(
-              maxLength: 11,
-              keyboardType: TextInputType.phone,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
-                // prefix: Text("+"),
-                hintText: "Phone",
-              ),
-              controller: _phoneController,
-            ),
             ElevatedButton(
               onPressed: () {
-                authUser();
+                _authUser();
                 Navigator.pop(context);
               },
               child: Text("Confirm"),
@@ -67,15 +57,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void authUser() {
+  void _authUser() {
     final username = _usernameController.text;
-    final phoneNumber = _phoneController.text;
     final controller = Provider.of(context);
 
     if (username == '') {
       return;
     }
 
-    controller.setUser = User(username, phoneNumber: phoneNumber);
+    controller.registerUser(User(username));
   }
 }

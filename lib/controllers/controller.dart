@@ -1,16 +1,13 @@
-import 'package:final_project/models/user.dart';
+import 'package:final_project/models/models.dart';
+import 'package:final_project/services/service.dart';
+
 
 class Controller {
-  User user = User('guest');
-  bool _authorized = false;
+  final services = Service();
 
-  Controller();
+  void registerUser(User user) {
+    services.registerUser(user);
+  }
 
-  set setUser(User user) {
-    this.user = user;
-    _authorized = true;
-  }
-  bool authorized() {
-    return _authorized;
-  }
+  User get user => services.user;
 }

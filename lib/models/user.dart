@@ -1,21 +1,22 @@
 import 'package:final_project/models/category.dart';
 
 class User {
-  String _username;
-  String phoneNumber;
-  Map<String, int> categories = <String, int>{
-    'chill': 0,
-    'tech': 0,
-  };
+  late String _username;
 
-  User(this._username, {this.phoneNumber = '7776665544'});
+  // ---keys--- //
+  static const keyUsername = 'username';
+
+  User(this._username);
+  User.fromJSON(Map<String, dynamic> data) {
+    this._username = data[keyUsername];
+  }
 
   String get username => _username;
 
-  void addCategory(String categoryName, {int moneyAmount = 0}) {
-    if (!categories.containsKey(categoryName)) {
-      categories[categoryName] = moneyAmount;
-    }
-    categories[categoryName] = (categories[categoryName])! + moneyAmount;
+  Map<String, dynamic> toJSON() {
+    return {
+      'username': username,
+    };
   }
+
 }

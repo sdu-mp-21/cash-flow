@@ -1,28 +1,48 @@
-import 'package:final_project/views/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/provider.dart';
-import 'package:final_project/controllers/controller.dart';
-import 'package:final_project/models/user.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+import 'package:final_project/views/login_screen.dart';
+import 'package:final_project/provider.dart';
+import 'package:final_project/models/models.dart';
+
+
+class MenuScreen extends StatefulWidget {
+  const MenuScreen({Key? key}) : super(key: key);
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _MenuScreenState createState() => _MenuScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
       // width: 250,
       margin: EdgeInsets.all(100),
       alignment: Alignment.center,
-      child: _buildProfile(),
+      child: _buildMenu(),
     );
   }
 
-  Widget _buildProfile() {
+  void initState() {
+    readFromJSON();
+    super.initState();
+  }
+
+  Future readFromJSON() async {
+    print('readdd');
+
+    try {
+      String s = await DefaultAssetBundle.of(context)
+          .loadString('assets/users.json');
+      setState(() {
+        Provider.of(context).registerUser(User(s));
+      });
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  Widget _buildMenu() {
     // if (!controller.authorized()) {
     //   return ElevatedButton(
     //       onPressed: () {
@@ -37,11 +57,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       child: Column(
         children: [
-          Image(image: AssetImage('assets/images/avatar.png')),
-          SizedBox(height: 20),
           Text(
             Provider.of(context).user.username,
-            style: TextStyle(),
+            style: TextStyle(fontSize: 30),
           ),
           SizedBox(height: 20),
           ElevatedButton(
