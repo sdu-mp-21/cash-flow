@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:final_project/views/menu_screen.dart';
 import 'package:final_project/views/transaction_screen.dart';
-import 'package:final_project/views/account_screen.dart';
-
+import 'package:final_project/views/account/list.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -16,13 +15,15 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
 
   final _navBarItems = <BottomNavigationBarItem>[
-    BottomNavigationBarItem(icon: Icon(Icons.account_balance), label: 'accounts'),
-    BottomNavigationBarItem(icon: Icon(Icons.compare_arrows), label: 'transactions'),
+    BottomNavigationBarItem(
+        icon: Icon(Icons.account_balance), label: 'accounts'),
+    BottomNavigationBarItem(
+        icon: Icon(Icons.compare_arrows), label: 'transactions'),
     BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'menu'),
   ];
 
   final _routes = <Widget>[
-    AccountScreen(),
+    AccountList(),
     TransactionScreen(),
     MenuScreen(),
   ];
