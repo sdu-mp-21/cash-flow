@@ -4,8 +4,11 @@ import 'package:final_project/models/models.dart';
 class Service {
   final repositories = FileRepository();
 
-  void registerUser(User user) {
-    repositories.registerUser(user);
+  Future registerUser(String user) async {
+    await repositories.registerUser(user);
+  }
+  void clearUsers() {
+    repositories.clearUsers();
   }
 
   User get user => repositories.user;

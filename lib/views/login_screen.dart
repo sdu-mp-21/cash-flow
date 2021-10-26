@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:final_project/models/user.dart';
 import 'package:final_project/provider.dart';
-import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -45,8 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _usernameController,
             ),
             ElevatedButton(
-              onPressed: () {
-                _authUser();
+              onPressed: () async {
+                await _authUser();
                 Navigator.pop(context);
               },
               child: Text("Confirm"),
@@ -57,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _authUser() {
+  Future _authUser() async {
     final username = _usernameController.text;
     final controller = Provider.of(context);
 
@@ -65,6 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    controller.registerUser(User(username));
+    await controller.registerUser(username);
   }
 }
