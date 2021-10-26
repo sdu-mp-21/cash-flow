@@ -6,12 +6,14 @@ class User {
   User(this._username, this._password);
 
   // ---keys--- //
-  static const keyUsername = 'username';
   static const keyUserId = 'user_id';
+  static const keyUsername = 'username';
   static const keyUserPassword = 'password';
 
   int get user_id => _user_id;
+
   String get username => _username;
+
   String get password => _password;
 
   set setID(int id) {
@@ -26,10 +28,9 @@ class User {
 
   Map<String, dynamic> toJSON() {
     return {
-      keyUserId : _user_id,
-      keyUsername : _username,
-      keyUserPassword : _password,
+      keyUserId: _user_id,
+      keyUsername: _username,
+      keyUserPassword: _password,
     };
   }
-
 }

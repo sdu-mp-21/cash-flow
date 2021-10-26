@@ -11,8 +11,17 @@ class Service {
   Future<bool> registerUser(User user) async {
     return await repositories.registerUser(user);
   }
+
   void clearUsers() {
     repositories.clearUsers();
+  }
+
+  Future createAccount(Account account) async {
+    await repositories.createAccount(account);
+  }
+
+  Future<List<Account>> getAccounts() async {
+    return await repositories.getAccounts();
   }
 
   User get user => repositories.user;

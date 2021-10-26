@@ -86,9 +86,9 @@ class _LoginScreenState extends State<LoginScreen> {
       showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            title: Text('Failed login'),
-            content: Text('Empty fields'),
-          ));
+                title: Text('Failed login'),
+                content: Text('Empty fields'),
+              ));
       return false;
     }
 
@@ -116,9 +116,9 @@ class _LoginScreenState extends State<LoginScreen> {
       showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            title: Text('Failed registration'),
-            content: Text('Empty fields'),
-          ));
+                title: Text('Failed registration'),
+                content: Text('Empty fields'),
+              ));
       return false;
     }
 
