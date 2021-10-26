@@ -27,14 +27,14 @@ class Account {
     _user_id = id;
   }
 
-  Account.fromJSON(Map<String, dynamic> data) {
-    this._account_id = data[keyAccountId];
-    this._user_id = data[keyUserId];
-    this._account_name = data[keyAccountName];
-    this._balance = data[keyBalance];
+  Account.fromJson(Map<String, dynamic> data) {
+    _account_id = data[keyAccountId];
+    _user_id = data[keyUserId];
+    _account_name = data[keyAccountName];
+    _balance = data[keyBalance];
   }
 
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toJson() {
     return {
       keyAccountId: _account_id,
       keyUserId: _user_id,

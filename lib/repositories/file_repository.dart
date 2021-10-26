@@ -13,14 +13,12 @@ class FileRepository extends Repository {
   // ---constants---
   static const defaultUsername = 'guest';
   static const defaultPassword = 'password';
-  static const usersFile = 'users.json';
-  static const accountsFile = 'accounts.json';
+  static const usersFilename = 'users.json';
+  static const accountsFilename = 'accounts.json';
 
   Future<List<Account>> getAccounts() async {
-    File file = await File(
-        '${(await getApplicationDocumentsDirectory()).path}/$accountsFile');
-    await _createJSONFileIfNotExist(file);
-
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
     final accounts = await _readAccountsJSON(file);
     return accounts
         .where((account) => account.user_id == _user.user_id)
@@ -28,79 +26,48 @@ class FileRepository extends Repository {
   }
 
   Future createAccount(Account account) async {
-    File file = await File(
-        '${(await getApplicationDocumentsDirectory()).path}/$accountsFile');
-    await _createJSONFileIfNotExist(file);
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
 
     final accounts = await _readAccountsJSON(file);
     account.setAccountId = _generateAccountId(accounts);
     account.setUserId = _user.user_id;
     accounts.add(account);
-    final json = _writeAccountsJSON(accounts);
+    final json = jsonEncode(accounts);
     await file.writeAsString(json);
   }
 
-  String _writeAccountsJSON(List<Account> accounts) {
-    String json = '[';
-    for (int i = 0; i < accounts.length; i++) {
-      json += jsonEncode(accounts[i].toJSON());
-      if (i < accounts.length - 1) {
-        json += ',';
-      }
-    }
-    json += ']';
-    return json;
-  }
-
-  Future<List<Account>> _readAccountsJSON(File file) async {
-    List<Account> accounts = <Account>[];
-    List accountMaps = jsonDecode(await file.readAsString());
-    accountMaps.forEach((account) {
-      accounts.add(Account.fromJSON(account));
-    });
-
-    return accounts;
-  }
-
-  Future _createJSONFileIfNotExist(File file) async {
-    if (!(await file.existsSync())) {
-      await file.writeAsString('[]');
-    }
+  Future<List<Account>> _readAccountsJSON(file) async {
+    if (!file.existsSync()) return [];
+    List<dynamic> accounts = jsonDecode(await file.readAsString());
+    return accounts.map((item) => Account.fromJson(item)).toList();
   }
 
   int _generateAccountId(List<Account> accounts) {
-    if (accounts.isEmpty) {
-      return 1;
-    }
-
-    accounts.sort((a1, a2) => a1.account_id.compareTo(a2.account_id));
-    return accounts.last.account_id + 1;
+    int maxId = accounts.fold(0, (a, b) => a > b.account_id ? a : b.account_id);
+    return maxId + 1;
   }
 
   // ---authentication---
 
+  @override
   Future<bool> loginUser(User user) async {
     final users = await _readUsersJSON();
-    bool loggedIn = false;
-    users.forEach((u) {
-      if (u.username == user.username && u.password == user.password) {
-        _user = u;
-        loggedIn = true;
-      }
-    });
-    return loggedIn;
+    try {
+      _user = users.singleWhere(
+          (u) => u.username == user.username && u.password == user.password);
+    } on StateError {
+      return false;
+    }
+    return true;
   }
 
+  @override
   Future<bool> registerUser(User user) async {
     final users = await _readUsersJSON();
 
     // check if we already have such username in database
-    bool validUsername = true;
-    users.forEach((u) {
-      if (u.username == user.username) {
-        validUsername = false;
-      }
-    });
+    bool validUsername = !users.any((u) => u.username == user.username);
     if (!validUsername) {
       return false;
     }
@@ -111,47 +78,30 @@ class FileRepository extends Repository {
     return true;
   }
 
-  int _generateUserID(List<User> list) {
-    if (list.length == 0) {
-      return 1;
-    }
-
-    list.sort((u1, u2) => u1.user_id.compareTo(u2.user_id));
-    return list.last.user_id + 1;
+  int _generateUserID(List<User> users) {
+    int maxId = users.fold(0, (a, b) => a > b.user_id ? a : b.user_id);
+    return maxId + 1;
   }
 
   Future<List<User>> _readUsersJSON() async {
-    final file = await File(
-        '${(await getApplicationDocumentsDirectory()).path}/$usersFile');
-
-    await _createJSONFileIfNotExist(file);
-
-    List<User> users = <User>[];
-    List userMaps = jsonDecode(await file.readAsString());
-    userMaps.forEach((user) {
-      users.add(User.fromJSON(user));
-    });
-
-    return users;
+    final file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$usersFilename');
+    if (!file.existsSync()) return [];
+    List<dynamic> users = jsonDecode(await file.readAsString());
+    return users.map((item) => User.fromJson(item)).toList();
   }
 
   Future _writeUsersJSON(List<User> list) async {
-    final file = await File(
-        '${(await getApplicationDocumentsDirectory()).path}/users.json');
-
-    var json = '[';
-    for (int i = 0; i < list.length; i++) {
-      json += jsonEncode(list[i].toJSON()) + (i < list.length - 1 ? ',' : '');
-    }
-    json += ']';
-
+    final file =
+        File('${(await getApplicationDocumentsDirectory()).path}/users.json');
+    var json = jsonEncode(list);
     file.writeAsString(json);
   }
 
   // only for testing purposes
   clearUsers() async {
-    final file = await File(
-        '${(await getApplicationDocumentsDirectory()).path}/$usersFile');
+    final file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$usersFilename');
     await file.writeAsString('[]');
   }
 }

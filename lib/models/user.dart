@@ -20,13 +20,13 @@ class User {
     _user_id = id;
   }
 
-  User.fromJSON(Map<String, dynamic> data) {
+  User.fromJson(Map<String, dynamic> data) {
     this._user_id = data[keyUserId];
     this._username = data[keyUsername];
     this._password = data[keyUserPassword];
   }
 
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toJson() {
     return {
       keyUserId: _user_id,
       keyUsername: _username,
