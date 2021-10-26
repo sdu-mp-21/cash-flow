@@ -27,11 +27,24 @@ class FileRepository extends Repository {
     return loggedIn;
   }
 
-  Future registerUser(User user) async {
+  Future<bool> registerUser(User user) async {
     final list = await _readUsersJSON();
+
+    // check if we already have such username in database
+    bool validUsername = true;
+    list.forEach((u) {
+      if (u.username == user.username) {
+        validUsername = false;
+      }
+    });
+    if (!validUsername) {
+      return false;
+    }
+
     user.setID = _generateUserID(list);
     list.add(user);
     await _writeUsersJSON(list);
+    return true;
   }
 
   int _generateUserID(List<User> list) {

@@ -48,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 hintText: "Password",
               ),
               controller: _passwordController,
+              obscureText: true,
             ),
             SizedBox(height: 30),
             Row(
@@ -64,8 +65,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     bool loggedIn = await _loginUser();
                     if (loggedIn) {
                       Navigator.pop(context);
-                    } else {
-                      print('invalid login or password');
                     }
                   },
                   child: Text("login"),
@@ -84,12 +83,28 @@ class _LoginScreenState extends State<LoginScreen> {
     final controller = Provider.of(context);
 
     if (username == '' || password == '') {
-      print('input is empty');
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Failed login'),
+            content: Text('Empty fields'),
+          ));
       return false;
     }
 
     final loggedIn = await controller.loginUser(User(username, password));
-    return loggedIn;
+    if (loggedIn) {
+      return true;
+    }
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text('Failed login'),
+              content: Text('Incorrect username or password'),
+            ));
+
+    return false;
   }
 
   Future _registerUser() async {
@@ -98,11 +113,35 @@ class _LoginScreenState extends State<LoginScreen> {
     final controller = Provider.of(context);
 
     if (username == '' || password == '') {
-      print('input is empty');
-      return;
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Failed registration'),
+            content: Text('Empty fields'),
+          ));
+      return false;
     }
 
-    await controller.registerUser(User(username, password));
+    final validUsername =
+        await controller.registerUser(User(username, password));
+    if (validUsername) {
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text('Successful registration'),
+                content: Text('Username : $username'),
+              ));
+      _clearTextFields();
+    } else {
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+              title: Text('Failed registration'),
+              content: Text('Such username already exists')));
+    }
+  }
+
+  void _clearTextFields() {
     _usernameController.clear();
     _passwordController.clear();
   }

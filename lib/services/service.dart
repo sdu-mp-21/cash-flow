@@ -8,8 +8,8 @@ class Service {
     return await repositories.loginUser(user);
   }
 
-  Future registerUser(User user) async {
-    await repositories.registerUser(user);
+  Future<bool> registerUser(User user) async {
+    return await repositories.registerUser(user);
   }
   void clearUsers() {
     repositories.clearUsers();

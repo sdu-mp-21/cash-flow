@@ -9,8 +9,8 @@ class Controller {
     return await services.loginUser(user);
   }
 
-  Future registerUser(User user) async {
-    await services.registerUser(user);
+  Future<bool> registerUser(User user) async {
+    return await services.registerUser(user);
   }
   void clearUsers() {
     services.clearUsers();
