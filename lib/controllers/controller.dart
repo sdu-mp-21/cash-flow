@@ -5,7 +5,11 @@ import 'package:final_project/services/service.dart';
 class Controller {
   final services = Service();
 
-  Future registerUser(String user) async {
+  Future<bool> loginUser(User user) async {
+    return await services.loginUser(user);
+  }
+
+  Future registerUser(User user) async {
     await services.registerUser(user);
   }
   void clearUsers() {

@@ -6,20 +6,32 @@ import 'package:final_project/repositories/repository.dart';
 import 'package:final_project/models/models.dart';
 
 class FileRepository extends Repository {
+  User _user = User(defaultUsername, defaultPassword);
 
-  User _user = User('guest', 0);
   User get user => _user;
 
+  // ---constants---
+  static const defaultUsername = 'guest';
+  static const defaultPassword = 'password';
   static const usersFile = 'users.json';
 
-  Future registerUser(String username) async {
+  Future<bool> loginUser(User user) async {
     final list = await _readUsersJSON();
-    _user = User(username, _generateUserID(list));
-    list.add(_user);
-    _writeUsersJSON(list);
-    // list.forEach((u) {
-    //   print('${u.user_id} : ${u.username}');
-    // });
+    bool loggedIn = false;
+    list.forEach((u) {
+      if (u.username == user.username && u.password == user.password) {
+        _user = u;
+        loggedIn = true;
+      }
+    });
+    return loggedIn;
+  }
+
+  Future registerUser(User user) async {
+    final list = await _readUsersJSON();
+    user.setID = _generateUserID(list);
+    list.add(user);
+    await _writeUsersJSON(list);
   }
 
   int _generateUserID(List<User> list) {
@@ -32,7 +44,8 @@ class FileRepository extends Repository {
   }
 
   Future<List<User>> _readUsersJSON() async {
-    final file = await File('${(await getApplicationDocumentsDirectory()).path}/$usersFile');
+    final file = await File(
+        '${(await getApplicationDocumentsDirectory()).path}/$usersFile');
 
     List<User> users = <User>[];
     List userMaps = jsonDecode(await file.readAsString());
@@ -43,12 +56,13 @@ class FileRepository extends Repository {
     return users;
   }
 
-  void _writeUsersJSON(List<User> list) async {
-    final file = await File('${(await getApplicationDocumentsDirectory()).path}/users.json');
+  Future _writeUsersJSON(List<User> list) async {
+    final file = await File(
+        '${(await getApplicationDocumentsDirectory()).path}/users.json');
 
     var json = '[';
-    for(int i=0;i<list.length;i++) {
-      json += jsonEncode(list[i].toJSON()) + (i<list.length-1 ? ',' : '');
+    for (int i = 0; i < list.length; i++) {
+      json += jsonEncode(list[i].toJSON()) + (i < list.length - 1 ? ',' : '');
     }
     json += ']';
 
@@ -57,7 +71,8 @@ class FileRepository extends Repository {
 
   // only for testing purposes
   void clearUsers() async {
-    final file = await File('${(await getApplicationDocumentsDirectory()).path}/$usersFile');
+    final file = await File(
+        '${(await getApplicationDocumentsDirectory()).path}/$usersFile');
     await file.writeAsString('[]');
   }
 }

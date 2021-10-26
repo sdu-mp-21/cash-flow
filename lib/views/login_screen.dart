@@ -1,3 +1,4 @@
+import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 
@@ -10,19 +11,19 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _usernameController;
-  late TextEditingController _phoneController;
+  late TextEditingController _passwordController;
 
   @override
   void initState() {
     _usernameController = TextEditingController();
-    _phoneController = TextEditingController();
+    _passwordController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     _usernameController.dispose();
-    _phoneController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -42,12 +43,34 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               controller: _usernameController,
             ),
-            ElevatedButton(
-              onPressed: () async {
-                await _authUser();
-                Navigator.pop(context);
-              },
-              child: Text("Confirm"),
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Password",
+              ),
+              controller: _passwordController,
+            ),
+            SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    await _registerUser();
+                  },
+                  child: Text("register"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    bool loggedIn = await _loginUser();
+                    if (loggedIn) {
+                      Navigator.pop(context);
+                    } else {
+                      print('invalid login or password');
+                    }
+                  },
+                  child: Text("login"),
+                ),
+              ],
             ),
           ],
         ),
@@ -55,14 +78,32 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future _authUser() async {
+  Future<bool> _loginUser() async {
     final username = _usernameController.text;
+    final password = _passwordController.text;
     final controller = Provider.of(context);
 
-    if (username == '') {
+    if (username == '' || password == '') {
+      print('input is empty');
+      return false;
+    }
+
+    final loggedIn = await controller.loginUser(User(username, password));
+    return loggedIn;
+  }
+
+  Future _registerUser() async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+    final controller = Provider.of(context);
+
+    if (username == '' || password == '') {
+      print('input is empty');
       return;
     }
 
-    await controller.registerUser(username);
+    await controller.registerUser(User(username, password));
+    _usernameController.clear();
+    _passwordController.clear();
   }
 }
