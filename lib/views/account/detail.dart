@@ -1,7 +1,9 @@
+import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
 
 class AccountDetail extends StatelessWidget {
-  const AccountDetail({Key? key}) : super(key: key);
+  late Account account;
+  AccountDetail(this.account, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
