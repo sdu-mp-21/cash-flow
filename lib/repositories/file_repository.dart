@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:final_project/models/transaction.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:final_project/repositories/repository.dart';
 import 'package:final_project/models/models.dart';
@@ -15,15 +16,48 @@ class FileRepository extends Repository {
   static const defaultPassword = 'password';
   static const usersFilename = 'users.json';
   static const accountsFilename = 'accounts.json';
+  static const transactionsFilename = 'transactions.json';
 
-  Future<List<Account>> getAccounts() async {
+  // ---transactions---
+
+  Future createTransaction(Account account, Transaction transaction) async {
     File file = File(
-        '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
-    final accounts = await _readAccountsJSON(file);
-    return accounts
-        .where((account) => account.user_id == _user.user_id)
-        .toList();
+        '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
+    final transactions = await _readTransactionsJSON(file);
+    transaction.setAccountId = account.account_id;
+    transaction.setTransactionId = _generateTransactionId(transactions);
+    transactions.add(transaction);
+    final json = jsonEncode(transactions);
+    await file.writeAsString(json);
   }
+
+  int _generateTransactionId(List<Transaction> transactions) {
+    int maxId = transactions.fold(
+        0, (a, b) => a > b.transaction_id ? a : b.transaction_id);
+    return maxId + 1;
+  }
+
+  Future<List<Transaction>> getTransactions() async {
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
+    final transactions = await _readTransactionsJSON(file);
+
+    final usersTransactions = <Transaction>[];
+    final accounts = await getAccounts();
+    accounts.forEach((acc) {
+      usersTransactions.addAll(
+          transactions.where((t) => t.account_id == acc.account_id).toList());
+    });
+    return usersTransactions;
+  }
+
+  Future<List<Transaction>> _readTransactionsJSON(File file) async {
+    if (!file.existsSync()) return [];
+    List transactions = jsonDecode(await file.readAsString());
+    return transactions.map((t) => Transaction.fromJson(t)).toList();
+  }
+
+  // ---accounts---
 
   Future createAccount(Account account) async {
     File file = File(
@@ -37,20 +71,28 @@ class FileRepository extends Repository {
     await file.writeAsString(json);
   }
 
+  int _generateAccountId(List<Account> accounts) {
+    int maxId = accounts.fold(0, (a, b) => a > b.account_id ? a : b.account_id);
+    return maxId + 1;
+  }
+
+  Future<List<Account>> getAccounts() async {
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
+    final accounts = await _readAccountsJSON(file);
+    return accounts
+        .where((account) => account.user_id == _user.user_id)
+        .toList();
+  }
+
   Future<List<Account>> _readAccountsJSON(file) async {
     if (!file.existsSync()) return [];
     List<dynamic> accounts = jsonDecode(await file.readAsString());
     return accounts.map((item) => Account.fromJson(item)).toList();
   }
 
-  int _generateAccountId(List<Account> accounts) {
-    int maxId = accounts.fold(0, (a, b) => a > b.account_id ? a : b.account_id);
-    return maxId + 1;
-  }
-
   // ---authentication---
 
-  @override
   Future<bool> loginUser(User user) async {
     final users = await _readUsersJSON();
     try {
@@ -62,7 +104,6 @@ class FileRepository extends Repository {
     return true;
   }
 
-  @override
   Future<bool> registerUser(User user) async {
     final users = await _readUsersJSON();
 
@@ -72,13 +113,13 @@ class FileRepository extends Repository {
       return false;
     }
 
-    user.setID = _generateUserID(users);
+    user.setID = _generateUserId(users);
     users.add(user);
     await _writeUsersJSON(users);
     return true;
   }
 
-  int _generateUserID(List<User> users) {
+  int _generateUserId(List<User> users) {
     int maxId = users.fold(0, (a, b) => a > b.user_id ? a : b.user_id);
     return maxId + 1;
   }

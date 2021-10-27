@@ -24,5 +24,13 @@ class Controller {
     return await services.getAccounts();
   }
 
+  Future createTransaction(Account account, Transaction transaction) async {
+    await services.createTransaction(account, transaction);
+  }
+
+  Future<List<Transaction>> getTransactions() async {
+    return await services.getTransactions();
+  }
+
   User get user => services.user;
 }

@@ -1,5 +1,5 @@
 class Account {
-  late int _account_id = -1;
+  late int _account_id;
   late int _user_id;
   late String _account_name;
   late int _balance;

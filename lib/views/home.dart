@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:final_project/views/menu_screen.dart';
-import 'package:final_project/views/transaction_screen.dart';
+import 'package:final_project/views/transaction/list.dart';
 import 'package:final_project/views/account/list.dart';
 
 class Home extends StatefulWidget {
@@ -24,7 +24,7 @@ class _HomeState extends State<Home> {
 
   final _routes = <Widget>[
     AccountList(),
-    TransactionScreen(),
+    TransactionList(),
     MenuScreen(),
   ];
 
