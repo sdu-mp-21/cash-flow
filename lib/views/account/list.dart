@@ -70,7 +70,7 @@ class _AccountListState extends State<AccountList> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AccountDetail(),
+            builder: (context) => AccountDetail(account),
           ),
         );
       },
