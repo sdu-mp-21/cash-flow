@@ -5,6 +5,10 @@ class AccountDetail extends StatelessWidget {
   late Account account;
   AccountDetail(this.account, {Key? key}) : super(key: key);
 
+  Account getAccount(){
+    return this.account;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +17,7 @@ class AccountDetail extends StatelessWidget {
       ),
       body: Column(
         children: [
-          AccountInfo(),
+          AccountInfo(account),
           ListView(
             shrinkWrap: true,
             children: [
@@ -53,7 +57,10 @@ class AccountDetail extends StatelessWidget {
 }
 
 class AccountInfo extends StatelessWidget {
-  const AccountInfo({
+   late Account account;
+
+  AccountInfo(
+    this.account,{
     Key? key,
   }) : super(key: key);
 
@@ -67,14 +74,14 @@ class AccountInfo extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                "AccountName",
+                "${account.account_name}",
                 style: TextStyle(fontSize: 26.0),
               ),
             ),
           ),
           Center(
             child: Text(
-              "AccountBalance",
+              "${account.balance}",
               style: TextStyle(fontSize: 20.0),
             ),
           ),
