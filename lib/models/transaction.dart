@@ -3,7 +3,7 @@ class Transaction {
   late int _account_id;
   late int _amount;
   late bool _income;
-  DateTime _created_at = DateTime.now();
+  String _created_at = DateTime.now().toString();
   late String _description;
 
   static const keyTransactionId = 'transaction_id';
@@ -15,12 +15,12 @@ class Transaction {
 
   Transaction(this._amount, this._income, this._description);
 
-  get transaction_id => _transaction_id;
-  get account_id => _account_id;
-  get amount => _amount;
-  get income => _income;
-  get created_at => _created_at;
-  get description => _description;
+  int get transaction_id => _transaction_id;
+  int get account_id => _account_id;
+  int get amount => _amount;
+  bool get income => _income;
+  String get created_at => _created_at;
+  String get description => _description;
 
   set setTransactionId(int id) {
     _transaction_id = id;

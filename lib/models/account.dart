@@ -11,13 +11,13 @@ class Account {
   static const keyAccountName = 'account_name';
   static const keyBalance = 'balance';
 
-  get account_id => _account_id;
+  int get account_id => _account_id;
 
-  get user_id => _user_id;
+  int get user_id => _user_id;
 
-  get account_name => _account_name;
+  String get account_name => _account_name;
 
-  get balance => _balance;
+  int get balance => _balance;
 
   set setAccountId(int id) {
     _account_id = id;
