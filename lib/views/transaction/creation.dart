@@ -38,6 +38,17 @@ class _TransactionCreationState extends State<TransactionCreation> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              keyboardType: TextInputType.text,
+              controller: _descriptionController,
+              decoration: InputDecoration(
+                hintText: "Category",
+
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
 
             child: FutureBuilder<List<Account>>(
                 future: controller.getAccounts(),
@@ -117,9 +128,10 @@ class _TransactionCreationState extends State<TransactionCreation> {
     final controller = Provider.of(context);
 
     final int amount = int.parse(_amountController.text != '' ? _amountController.text : '0');
+    final String description = _descriptionController.text;
 
     await controller.createTransaction(
-        selectedAccount, Transaction(amount, isIncome, ""));
+        selectedAccount, Transaction(amount, isIncome, description));
     List<Transaction> trs = await controller.getTransactions();
     // print(trs.map((e) => e.amount).toList());
   }

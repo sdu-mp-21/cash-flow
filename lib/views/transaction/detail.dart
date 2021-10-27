@@ -74,7 +74,7 @@ class TransactionInfo extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                "${transaction.transaction_id}",
+                "${transaction.description}",
                 style: TextStyle(fontSize: 26.0),
               ),
             ),

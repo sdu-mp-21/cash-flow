@@ -74,7 +74,7 @@ class _TransactionListState extends State<TransactionList> {
   Widget _buildTransactionTile(Transaction transaction) {
     return ListTile(
       title: Text("${transaction.amount}"),
-      leading: Text("${transaction.created_at}"),
+      leading: Text("${transaction.description}"),
         onTap: () {
           Navigator.push(
             context,
