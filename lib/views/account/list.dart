@@ -27,7 +27,7 @@ class _AccountListState extends State<AccountList> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return Container(
                   // set the height to container, cause nester columns trigger overflow error
-                  height: 500,
+                  height: 300,
                   child: ListView(children: snapshot.data!),
                 );
               } else {
