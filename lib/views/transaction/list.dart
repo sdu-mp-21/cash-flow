@@ -22,6 +22,7 @@ class _TransactionListState extends State<TransactionList> {
     return Container(
       padding: EdgeInsets.all(30),
       child: Column(
+
         children: [
           Container(
             child: FutureBuilder(
@@ -72,8 +73,8 @@ class _TransactionListState extends State<TransactionList> {
 
   Widget _buildTransactionTile(Transaction transaction) {
     return ListTile(
-      title: Text("${transaction.amount}"),
-      leading: Text("${transaction.created_at}"),
+      title: transaction.amount,
+      leading: transaction.created_at,
     );
   }
 }

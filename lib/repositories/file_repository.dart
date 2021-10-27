@@ -24,9 +24,7 @@ class FileRepository extends Repository {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
     final transactions = await _readTransactionsJSON(file);
-
     transaction.setAccountId = account.account_id;
-
     transaction.setTransactionId = _generateTransactionId(transactions);
     transactions.add(transaction);
     final json = jsonEncode(transactions);
