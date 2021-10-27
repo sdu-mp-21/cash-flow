@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
 import 'package:final_project/views/transaction/creation.dart';
+import 'package:final_project/views/transaction/detail.dart';
 
 class TransactionList extends StatefulWidget {
   const TransactionList({Key? key}) : super(key: key);
@@ -74,7 +75,15 @@ class _TransactionListState extends State<TransactionList> {
   Widget _buildTransactionTile(Transaction transaction) {
     return ListTile(
       title: transaction.amount,
-      leading: transaction.created_at,
+      leading: transaction.description,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TransactionDetail(transaction),
+            ),
+          );
+        }
     );
   }
 }

@@ -28,7 +28,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
               keyboardType: TextInputType.number,
               controller: _amountController,
               decoration: InputDecoration(
-                hintText: "account name",
+                hintText: "Money amount",
               ),
             ),
           ),
@@ -37,7 +37,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
             child: TextField(
               controller: _descriptionController,
               decoration: InputDecoration(
-                hintText: "balance",
+                hintText: "Category",
               ),
             ),
           ),
@@ -59,7 +59,8 @@ class _TransactionCreationState extends State<TransactionCreation> {
     final controller = Provider.of(context);
     final int amount = int.parse(
         _amountController.text != '' ? _amountController.text : '0');
+    final description = _descriptionController.text;
 
-    // await controller.createTransaction();
+    await controller.createTransaction(Account('rainbow', 200), Transaction(amount, true, description));
   }
 }
