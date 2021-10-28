@@ -1,5 +1,7 @@
 # final_project
 
+About project: The app we are creating is for controlling cash-flow. You could use it to manage your financial plan. Plan and monitor the budget.
+
 It's our project for CSS 216  
 Members: 
 - 190103205 - Sanzhar Baratov
