@@ -9,3 +9,6 @@ Members:
 - 190107012 - Aruzhan Akkoziyeva
 - 190103485 - Dias Nurmangaliyev
 - 190107047 - Zhandos Tangatar
+
+![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/plan/uml.png)
+![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/plan/draft.png)
