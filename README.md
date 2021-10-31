@@ -12,3 +12,5 @@ Members:
 
 ![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/plan/uml.png)
 ![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/plan/draft.png)
+
+
