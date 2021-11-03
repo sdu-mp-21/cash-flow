@@ -1,9 +1,11 @@
+import 'package:intl/intl.dart';
+
 class Transaction {
   late int _transaction_id;
   late int _account_id;
   late int _amount;
   late bool _income;
-  String _created_at = DateTime.now().toString();
+  String _created_at = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
   late String _description;
   late int _category_id;
 
