@@ -32,8 +32,16 @@ class Service {
     return await repositories.getTransactions();
   }
 
+  Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
+    return await repositories.getTransactionsByAccount(acc);
+  }
+
   Future createCategory(Category category) async {
     await repositories.createCategory(category);
+  }
+
+  Future<Category> getCategory(int id) async {
+    return await repositories.getCategory(id);
   }
 
   Future<List<Category>> getCategories() async {

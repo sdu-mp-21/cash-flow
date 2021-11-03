@@ -1,16 +1,18 @@
 import 'package:final_project/models/models.dart';
+import 'package:final_project/provider.dart';
 import 'package:flutter/material.dart';
 
 class AccountDetail extends StatelessWidget {
   late Account account;
   AccountDetail(this.account, {Key? key}) : super(key: key);
 
-  Account getAccount(){
+  Account getAccount() {
     return this.account;
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Cash Flow"),
@@ -18,49 +20,70 @@ class AccountDetail extends StatelessWidget {
       body: Column(
         children: [
           AccountInfo(account),
-          ListView(
-            shrinkWrap: true,
-            children: [
-              Divider(
-                thickness: 1.5,
-              ),
-              ListTile(
-                title: Text("CategoryName 1"),
-                trailing: Text("999 тг\n25.10.2021"),
-                // tileColor: Colors.black12,
-              ),
-              Divider(
-                thickness: 1.5,
-              ),
-              ListTile(
-                title: Text("CategoryName 2"),
-                trailing: Text("999 тг\n25.10.2021"),
-                // tileColor: Colors.black12,
-              ),
-              Divider(
-                thickness: 1.5,
-              ),
-              ListTile(
-                title: Text("CategoryName 3"),
-                trailing: Text("999 тг\n25.10.2021"),
-                // tileColor: Colors.black12,
-              ),
-              Divider(
-                thickness: 1.5,
-              ),
-            ],
-          )
+          FutureBuilder(
+            future: controller.getTransactionsByAccount(account),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<Transaction>> snapshot) {
+              if (snapshot.hasData) {
+                final data = snapshot.data!;
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final elem = data[index];
+                    return TransactionTile(elem: elem);
+                  },
+                );
+              } else {
+                return const Text("");
+              }
+            },
+          ),
         ],
       ),
     );
   }
 }
 
-class AccountInfo extends StatelessWidget {
-   late Account account;
+class TransactionTile extends StatelessWidget {
+  const TransactionTile({
+    Key? key,
+    required this.elem,
+  }) : super(key: key);
 
-  AccountInfo(
-    this.account,{
+  final Transaction elem;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Provider.of(context);
+    return Column(
+      children: [
+        const Divider(
+          thickness: 1.5,
+        ),
+        ListTile(
+          title: FutureBuilder(
+            future: controller.getCategory(elem.category_id),
+            builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data!.categoryName);
+              } else {
+                return const Text("");
+              }
+            },
+          ),
+          trailing: Text("${elem.amount} тг\n${elem.created_at}"),
+        )
+      ],
+    );
+  }
+}
+
+class AccountInfo extends StatelessWidget {
+  final Account account;
+
+  const AccountInfo(
+    this.account, {
     Key? key,
   }) : super(key: key);
 
@@ -74,15 +97,15 @@ class AccountInfo extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                "${account.account_name}",
-                style: TextStyle(fontSize: 26.0),
+                account.account_name,
+                style: const TextStyle(fontSize: 26.0),
               ),
             ),
           ),
           Center(
             child: Text(
               "${account.balance}",
-              style: TextStyle(fontSize: 20.0),
+              style: const TextStyle(fontSize: 20.0),
             ),
           ),
         ],

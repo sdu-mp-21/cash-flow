@@ -31,7 +31,8 @@ class FileRepository extends Repository {
     transactions.add(transaction);
     final json = jsonEncode(transactions);
     await file.writeAsString(json);
-    updateAccountBalanceByAmount(account.account_id, transaction.amount * (transaction.income ? 1 : -1));
+    updateAccountBalanceByAmount(
+        account.account_id, transaction.amount * (transaction.income ? 1 : -1));
   }
 
   Future updateAccountBalanceByAmount(int account_id, int amount) async {
@@ -39,7 +40,9 @@ class FileRepository extends Repository {
         '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
 
     final list = await _readAccountsJSON(file);
-    list.singleWhere((element) => element.account_id == account_id).addToBalance = amount;
+    list
+        .singleWhere((element) => element.account_id == account_id)
+        .addToBalance = amount;
     await file.writeAsString(jsonEncode(list));
   }
 
@@ -63,12 +66,20 @@ class FileRepository extends Repository {
     return usersTransactions;
   }
 
+  Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
+    final transactions = await _readTransactionsJSON(file);
+    final usersTransactions = <Transaction>[];
+    return transactions.where((t) => t.account_id == acc.account_id).toList();
+  }
+
   Future<List<Transaction>> _readTransactionsJSON(File file) async {
     if (!file.existsSync()) return [];
     try {
       List transactions = jsonDecode(await file.readAsString());
       return transactions.map((t) => Transaction.fromJson(t)).toList();
-    } catch(e) {
+    } catch (e) {
       print(e);
       file.writeAsString('[]');
       return [];
@@ -123,9 +134,16 @@ class FileRepository extends Repository {
   }
 
   int _generateCategoryId(List<Category> categories) {
-    int maxId = categories.fold(
-        0, (a, b) => a > b.categoryId ? a : b.categoryId);
+    int maxId =
+        categories.fold(0, (a, b) => a > b.categoryId ? a : b.categoryId);
     return maxId + 1;
+  }
+
+  Future<Category> getCategory(int id) async {
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$categoriesFileName');
+    final categories = await _readCategoriesJSON(file);
+    return categories.singleWhere((c) => c.categoryId == id);
   }
 
   Future<List<Category>> getCategories() async {
