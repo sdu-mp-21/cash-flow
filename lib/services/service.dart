@@ -32,5 +32,13 @@ class Service {
     return await repositories.getTransactions();
   }
 
+  Future createCategory(Category category) async {
+    await repositories.createCategory(category);
+  }
+
+  Future<List<Category>> getCategories() async {
+    return await repositories.getCategories();
+  }
+
   User get user => repositories.user;
 }

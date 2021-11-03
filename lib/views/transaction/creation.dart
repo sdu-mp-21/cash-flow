@@ -14,6 +14,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
   late Account selectedAccount;
+  late Category selectedCategory;
   bool isIncome = true;
 
   @override
@@ -32,7 +33,6 @@ class _TransactionCreationState extends State<TransactionCreation> {
               controller: _amountController,
               decoration: InputDecoration(
                 hintText: "Money amount",
-
               ),
             ),
           ),
@@ -42,14 +42,15 @@ class _TransactionCreationState extends State<TransactionCreation> {
               keyboardType: TextInputType.text,
               controller: _descriptionController,
               decoration: InputDecoration(
-                hintText: "Category",
-
+                hintText: "Description",
               ),
             ),
           ),
+          SizedBox(height: 20),
+          Text('account:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           Padding(
             padding: const EdgeInsets.all(8.0),
-
             child: FutureBuilder<List<Account>>(
                 future: controller.getAccounts(),
                 builder: (BuildContext context,
@@ -59,6 +60,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                     selectedAccount = accounts[0];
                     // String dropdownValue = accounts[0].account_name;
                     return DropdownButton<Account>(
+                      isExpanded: true,
                       value: selectedAccount,
                       onChanged: (Account? newValue) {
                         setState(() {
@@ -67,7 +69,8 @@ class _TransactionCreationState extends State<TransactionCreation> {
                       },
                       items: accounts
                           .map<DropdownMenuItem<Account>>((Account value) {
-                        print(value);
+                        print(value.account_id);
+
                         return DropdownMenuItem<Account>(
                           value: value,
                           child: Text(value.account_name),
@@ -75,6 +78,38 @@ class _TransactionCreationState extends State<TransactionCreation> {
                       }).toList(),
                     );
                   }else {
+                    return Text("Loading");
+                  }
+                }),
+          ),
+          Text('category:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FutureBuilder<List<Category>>(
+                future: controller.getCategories(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Category>> snapshot) {
+                  if (snapshot.hasData) {
+                    List<Category> categories = (snapshot.data!);
+                    selectedCategory = categories[0];
+                    return DropdownButton<Category>(
+                      isExpanded: true,
+                      value: selectedCategory,
+                      onChanged: (Category? newValue) {
+                        setState(() {
+                          selectedCategory = newValue!;
+                        });
+                      },
+                      items: categories
+                          .map<DropdownMenuItem<Category>>((Category c) {
+                        return DropdownMenuItem<Category>(
+                          value: c,
+                          child: Text(c.categoryName),
+                        );
+                      }).toList(),
+                    );
+                  } else {
                     return Text("Loading");
                   }
                 }),
@@ -113,8 +148,9 @@ class _TransactionCreationState extends State<TransactionCreation> {
           Center(
             child: ElevatedButton(
               onPressed: () async {
-                await _createTransaction();
-                Navigator.pop(context);
+                if (await _createTransaction()) {
+                  Navigator.pop(context);
+                }
               },
               child: Text("Submit"),
             ),
@@ -124,15 +160,20 @@ class _TransactionCreationState extends State<TransactionCreation> {
     );
   }
 
-  Future _createTransaction() async {
+  Future<bool> _createTransaction() async {
     final controller = Provider.of(context);
 
-    final int amount = int.parse(_amountController.text != '' ? _amountController.text : '0');
+    final int amount =
+        int.parse(_amountController.text != '' ? _amountController.text : '0');
     final String description = _descriptionController.text;
+    if (amount == 0 || description == '') {
+      return false;
+    }
 
     await controller.createTransaction(
-        selectedAccount, Transaction(amount, isIncome, description));
-    List<Transaction> trs = await controller.getTransactions();
-    // print(trs.map((e) => e.amount).toList());
+        selectedAccount,
+        Transaction(
+            amount, isIncome, description, selectedCategory.categoryId));
+    return true;
   }
 }
