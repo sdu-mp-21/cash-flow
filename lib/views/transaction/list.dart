@@ -73,6 +73,11 @@ class _TransactionListState extends State<TransactionList> {
 
   Widget _buildTransactionTile(Transaction transaction) {
     return ListTile(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.grey, width: 1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+        // padding: EdgeInsets.all(20.0),
       title: Text("${transaction.amount}"),
       leading: Text("${transaction.description}"),
         onTap: () {
