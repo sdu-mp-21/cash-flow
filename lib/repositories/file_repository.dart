@@ -31,6 +31,16 @@ class FileRepository extends Repository {
     transactions.add(transaction);
     final json = jsonEncode(transactions);
     await file.writeAsString(json);
+    updateAccountBalanceByAmount(account.account_id, transaction.amount * (transaction.income ? 1 : -1));
+  }
+
+  Future updateAccountBalanceByAmount(int account_id, int amount) async {
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
+
+    final list = await _readAccountsJSON(file);
+    list.singleWhere((element) => element.account_id == account_id).addToBalance = amount;
+    await file.writeAsString(jsonEncode(list));
   }
 
   int _generateTransactionId(List<Transaction> transactions) {

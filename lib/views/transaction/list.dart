@@ -13,17 +13,16 @@ class TransactionList extends StatefulWidget {
 }
 
 class _TransactionListState extends State<TransactionList> {
-
   final moneyController = TextEditingController();
   final categoryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
-          Container(
+          Expanded(
             child: FutureBuilder(
               future: _buildTransactionList(),
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -33,9 +32,11 @@ class _TransactionListState extends State<TransactionList> {
 
                 if (snapshot.connectionState == ConnectionState.done) {
                   return Container(
-                    // set the height to container, cause nester columns trigger overflow error
-                    height: MediaQuery.of(context).size.height / 2,
-                    child: ListView(children: snapshot.data!),
+                    child: ListView(
+                      children: ListTile.divideTiles(
+                              context: context, tiles: snapshot.data!)
+                          .toList(),
+                    ),
                   );
                 } else {
                   return Text('loading...');
@@ -72,21 +73,18 @@ class _TransactionListState extends State<TransactionList> {
 
   Widget _buildTransactionTile(Transaction transaction) {
     String isIncome = '';
-    transaction.income? isIncome='+' : isIncome='-';
+    transaction.income ? isIncome = '+' : isIncome = '-';
 
     return ListTile(
-        shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.grey, width: 1),
-        borderRadius: BorderRadius.circular(10),
-      ),
-        // padding: EdgeInsets.all(20.0),
-//       title: Text("${transaction.amount}"),
-//       leading: Text("${transaction.description}"),
         title: Text("${transaction.description}"),
-        subtitle: Text("account_id: ${transaction.account_id}\ncategory_id: ${transaction.category_id}"),
-        trailing: Text("$isIncome"+"${transaction.amount}\$",
-                      style: transaction.income? TextStyle(color: Colors.green, fontSize: 15) : TextStyle(color: Colors.red, fontSize: 15),
-                  ),
+        subtitle: Text(
+            "account_id: ${transaction.account_id}\ncategory_id: ${transaction.category_id}"),
+        trailing: Text(
+          "$isIncome" + "${transaction.amount}\$",
+          style: transaction.income
+              ? TextStyle(color: Colors.green, fontSize: 15)
+              : TextStyle(color: Colors.red, fontSize: 15),
+        ),
         onTap: () {
           Navigator.push(
             context,

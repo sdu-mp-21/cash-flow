@@ -22,128 +22,122 @@ class _TransactionCreationState extends State<TransactionCreation> {
     final controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cash Flow"),
+        title: Text("Add transaction"),
       ),
       body: ListView(
+        padding: EdgeInsets.all(10),
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              keyboardType: TextInputType.number,
-              controller: _amountController,
-              decoration: InputDecoration(
-                hintText: "Money amount",
-              ),
+          TextField(
+            keyboardType: TextInputType.number,
+            controller: _amountController,
+            decoration: InputDecoration(
+              hintText: "Money amount",
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              keyboardType: TextInputType.text,
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                hintText: "Description",
-              ),
+          // SizedBox(height: 10),
+          TextField(
+            keyboardType: TextInputType.text,
+            controller: _descriptionController,
+            decoration: InputDecoration(
+              hintText: "Description",
             ),
           ),
-          SizedBox(height: 20),
-          Text('account:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FutureBuilder<List<Account>>(
-                future: controller.getAccounts(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Account>> snapshot) {
-                  if (snapshot.hasData) {
-                    List<Account> accounts = (snapshot.data!);
-                    selectedAccount = accounts[0];
-                    // String dropdownValue = accounts[0].account_name;
-                    return DropdownButton<Account>(
-                      isExpanded: true,
-                      value: selectedAccount,
-                      onChanged: (Account? newValue) {
-                        setState(() {
-                          selectedAccount = newValue!;
-                        });
-                      },
-                      items: accounts
-                          .map<DropdownMenuItem<Account>>((Account value) {
-                        print(value.account_id);
+          SizedBox(height: 15),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text('account:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder<List<Account>>(
+                  future: controller.getAccounts(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Account>> snapshot) {
+                    if (snapshot.hasData) {
+                      List<Account> accounts = (snapshot.data!);
+                      selectedAccount = accounts[0];
+                      // String dropdownValue = accounts[0].account_name;
+                      return DropdownButton<Account>(
+                        value: selectedAccount,
+                        onChanged: (Account? newValue) {
+                          setState(() {
+                            selectedAccount = newValue!;
+                          });
+                        },
+                        items: accounts
+                            .map<DropdownMenuItem<Account>>((Account value) {
+                          return DropdownMenuItem<Account>(
+                            value: value,
+                            child: Text(value.account_name),
+                          );
+                        }).toList(),
+                      );
+                    } else {
+                      return Text("Loading");
+                    }
+                  }),
+            ),
+          ]),
 
-                        return DropdownMenuItem<Account>(
-                          value: value,
-                          child: Text(value.account_name),
-                        );
-                      }).toList(),
-                    );
-                  }else {
-                    return Text("Loading");
-                  }
-                }),
-          ),
-          Text('category:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FutureBuilder<List<Category>>(
-                future: controller.getCategories(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Category>> snapshot) {
-                  if (snapshot.hasData) {
-                    List<Category> categories = (snapshot.data!);
-                    selectedCategory = categories[0];
-                    return DropdownButton<Category>(
-                      isExpanded: true,
-                      value: selectedCategory,
-                      onChanged: (Category? newValue) {
-                        setState(() {
-                          selectedCategory = newValue!;
-                        });
-                      },
-                      items: categories
-                          .map<DropdownMenuItem<Category>>((Category c) {
-                        return DropdownMenuItem<Category>(
-                          value: c,
-                          child: Text(c.categoryName),
-                        );
-                      }).toList(),
-                    );
-                  } else {
-                    return Text("Loading");
-                  }
-                }),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text("income"),
-                  leading: Radio(
-                    value: true,
-                    groupValue: isIncome,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isIncome = true;
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: Text("outcome"),
-                  leading: Radio(
-                    value: false,
-                    groupValue: isIncome,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isIncome = false;
-                      });
-                    },
-                  ),
-                ),
-              ],
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text('category:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder<List<Category>>(
+                  future: controller.getCategories(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Category>> snapshot) {
+                    if (snapshot.hasData) {
+                      List<Category> categories = (snapshot.data!);
+                      selectedCategory = categories[0];
+                      return DropdownButton<Category>(
+                        value: selectedCategory,
+                        onChanged: (Category? newValue) {
+                          setState(() {
+                            selectedCategory = newValue!;
+                          });
+                        },
+                        items: categories
+                            .map<DropdownMenuItem<Category>>((Category c) {
+                          return DropdownMenuItem<Category>(
+                            value: c,
+                            child: Text(c.categoryName),
+                          );
+                        }).toList(),
+                      );
+                    } else {
+                      return Text("Loading");
+                    }
+                  }),
             ),
+          ]),
+          Column(
+            children: [
+              ListTile(
+                title: Text("income"),
+                leading: Radio(
+                  value: true,
+                  groupValue: isIncome,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isIncome = true;
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                title: Text("outcome"),
+                leading: Radio(
+                  value: false,
+                  groupValue: isIncome,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isIncome = false;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
           Center(
             child: ElevatedButton(

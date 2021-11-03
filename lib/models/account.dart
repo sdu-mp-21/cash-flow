@@ -27,6 +27,10 @@ class Account {
     _user_id = id;
   }
 
+  set addToBalance(int amount) {
+    _balance += amount;
+  }
+
   Account.fromJson(Map<String, dynamic> data) {
     _account_id = data[keyAccountId];
     _user_id = data[keyUserId];
