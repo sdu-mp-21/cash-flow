@@ -74,11 +74,20 @@ class _TransactionListState extends State<TransactionList> {
   Widget _buildTransactionTile(Transaction transaction) {
     String isIncome = '';
     transaction.income ? isIncome = '+' : isIncome = '-';
+    final controller = Provider.of(context);
 
     return ListTile(
-        title: Text("${transaction.description}"),
-        subtitle: Text(
-            "account_id: ${transaction.account_id}\ncategory_id: ${transaction.category_id}"),
+        title: FutureBuilder(
+          future: controller.getCategory(transaction.category_id),
+          builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+            if (snapshot.hasData) {
+              return Text(snapshot.data!.categoryName);
+            } else {
+              return const Text("");
+            }
+          },
+        ),
+        subtitle: Text(transaction.description),
         trailing: Text(
           "$isIncome" + "${transaction.amount}\$",
           style: transaction.income
