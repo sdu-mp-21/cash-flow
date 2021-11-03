@@ -79,7 +79,6 @@ class _TransactionListState extends State<TransactionList> {
         // padding: EdgeInsets.all(20.0),
 //       title: Text("${transaction.amount}"),
 //       leading: Text("${transaction.description}"),
-// =======
         title: Text("${transaction.description}"),
         subtitle: Text("account_id: ${transaction.account_id}\ncategory_id: ${transaction.category_id}"),
         trailing: Text("${transaction.amount}\$"),
