@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:final_project/views/login_screen.dart';
 import 'package:final_project/provider.dart';
-import 'package:final_project/models/models.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -25,17 +24,6 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget _buildMenu() {
     final controller = Provider.of(context);
 
-    // if (!controller.authorized()) {
-    //   return ElevatedButton(
-    //       onPressed: () {
-    //         Navigator.push(context,
-    //                 MaterialPageRoute(builder: (context) => LoginScreen()))
-    //             // added then callback to rebuild profile after logging in, otherwise it would not work
-    //             .then((value) => setState(() {}));
-    //       },
-    //       child: Icon(Icons.login));
-    // }
-
     return Container(
       child: Column(
         children: [
@@ -57,12 +45,6 @@ class _MenuScreenState extends State<MenuScreen> {
                     .then((value) => setState(() {}));
               },
               child: Icon(Icons.login)),
-          SizedBox(height: 20),
-          ElevatedButton(
-              onPressed: () {
-                controller.clearUsers();
-              },
-              child: Text('admin: clear users')),
         ],
       ),
     );

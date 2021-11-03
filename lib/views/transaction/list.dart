@@ -13,7 +13,6 @@ class TransactionList extends StatefulWidget {
 }
 
 class _TransactionListState extends State<TransactionList> {
-  Map<String, int> categories = <String, int>{};
 
   final moneyController = TextEditingController();
   final categoryController = TextEditingController();
@@ -21,7 +20,7 @@ class _TransactionListState extends State<TransactionList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.all(20),
       child: Column(
         children: [
           Container(
@@ -73,8 +72,9 @@ class _TransactionListState extends State<TransactionList> {
 
   Widget _buildTransactionTile(Transaction transaction) {
     return ListTile(
-      title: Text("${transaction.amount}"),
-      leading: Text("${transaction.description}"),
+        title: Text("${transaction.description}"),
+        subtitle: Text("account_id: ${transaction.account_id}\ncategory_id: ${transaction.category_id}"),
+        trailing: Text("${transaction.amount}\$"),
         onTap: () {
           Navigator.push(
             context,
@@ -82,7 +82,6 @@ class _TransactionListState extends State<TransactionList> {
               builder: (context) => TransactionDetail(transaction),
             ),
           );
-        }
-    );
+        });
   }
 }

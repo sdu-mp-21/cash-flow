@@ -17,6 +17,7 @@ class FileRepository extends Repository {
   static const usersFilename = 'users.json';
   static const accountsFilename = 'accounts.json';
   static const transactionsFilename = 'transactions.json';
+  static const categoriesFileName = 'categories.json';
 
   // ---transactions---
 
@@ -26,7 +27,6 @@ class FileRepository extends Repository {
     final transactions = await _readTransactionsJSON(file);
 
     transaction.setAccountId = account.account_id;
-
     transaction.setTransactionId = _generateTransactionId(transactions);
     transactions.add(transaction);
     final json = jsonEncode(transactions);
@@ -42,8 +42,8 @@ class FileRepository extends Repository {
   Future<List<Transaction>> getTransactions() async {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
-    final transactions = await _readTransactionsJSON(file);
 
+    final transactions = await _readTransactionsJSON(file);
     final usersTransactions = <Transaction>[];
     final accounts = await getAccounts();
     accounts.forEach((acc) {
@@ -91,6 +91,37 @@ class FileRepository extends Repository {
     if (!file.existsSync()) return [];
     List<dynamic> accounts = jsonDecode(await file.readAsString());
     return accounts.map((item) => Account.fromJson(item)).toList();
+  }
+
+  // ---categories---
+  Future createCategory(Category category) async {
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$categoriesFileName');
+    final categories = await _readCategoriesJSON(file);
+
+    category.setCategoryId = _generateCategoryId(categories);
+    category.setUserId = _user.user_id;
+    categories.add(category);
+    final json = jsonEncode(categories);
+    await file.writeAsString(json);
+  }
+
+  int _generateCategoryId(List<Category> categories) {
+    int maxId = categories.fold(
+        0, (a, b) => a > b.categoryId ? a : b.categoryId);
+    return maxId + 1;
+  }
+
+  Future<List<Category>> getCategories() async {
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$categoriesFileName');
+    return await _readCategoriesJSON(file);
+  }
+
+  Future<List<Category>> _readCategoriesJSON(file) async {
+    if (!file.existsSync()) return [];
+    List<dynamic> categories = jsonDecode(await file.readAsString());
+    return categories.map((item) => Category.fromJson(item)).toList();
   }
 
   // ---authentication---

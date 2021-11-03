@@ -32,5 +32,13 @@ class Controller {
     return await services.getTransactions();
   }
 
+  Future createCategory(Category category) async {
+    return await services.createCategory(category);
+  }
+
+  Future<List<Category>> getCategories() async {
+    return await services.getCategories();
+  }
+
   User get user => services.user;
 }

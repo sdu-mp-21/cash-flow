@@ -3,6 +3,7 @@ import 'package:final_project/views/account/creation.dart';
 import 'package:final_project/views/account/detail.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
+import 'package:final_project/views/categories/list.dart';
 
 class AccountList extends StatefulWidget {
   const AccountList({Key? key}) : super(key: key);
@@ -14,42 +15,65 @@ class AccountList extends StatefulWidget {
 class _AccountListState extends State<AccountList> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          child: FutureBuilder(
-            future: _buildAccountList(),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Container(
-                  // set the height to container, cause nester columns trigger overflow error
-                  height: MediaQuery.of(context).size.height / 2,
-                  child: ListView(children: snapshot.data!),
-                );
-              } else {
-                return Text('loading...');
-              }
-            },
-          ),
-        ),
-        Center(
-          child: ElevatedButton(
-            onPressed: () {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+            Text('accounts',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                )),
+            ElevatedButton(onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AccountCreation(),
                 ),
               ).then((value) => setState(() {}));
-            },
-            child: const Text("Add account"),
+            }, child: Icon(Icons.add),
+            style: ButtonStyle()
+            ),
+          ],),
+          SizedBox(height: 20),
+          Container(
+            child: FutureBuilder(
+              future: _buildAccountList(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Container(
+                    // set the height to container, cause nester columns trigger overflow error
+                    height: MediaQuery.of(context).size.height / 3,
+                    child: ListView(
+                      children: snapshot.data!,
+                    ),
+                  );
+                } else {
+                  return Text('loading...');
+                }
+              },
+            ),
           ),
-        ),
-      ],
+          SizedBox(height: 20),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CategoriesList()))
+                    .then((value) => setState(() {}));
+              },
+              child: Text('Categories')),
+        ],
+      ),
     );
   }
 
@@ -64,8 +88,14 @@ class _AccountListState extends State<AccountList> {
 
   Widget _buildAccountTile(Account account) {
     return ListTile(
-      title: Text(account.account_name),
-      trailing: Text(account.balance.toString()),
+      title: Text(
+        account.account_name,
+        style: TextStyle(fontSize: 18),
+      ),
+      trailing: Text(
+        '${account.balance.toString()} \$',
+        style: TextStyle(fontSize: 18),
+      ),
       onTap: () {
         Navigator.push(
           context,
