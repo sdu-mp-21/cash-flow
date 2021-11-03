@@ -77,7 +77,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                         );
                       }).toList(),
                     );
-                  } else {
+                  }else {
                     return Text("Loading");
                   }
                 }),
