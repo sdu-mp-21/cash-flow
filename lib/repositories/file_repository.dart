@@ -55,8 +55,14 @@ class FileRepository extends Repository {
 
   Future<List<Transaction>> _readTransactionsJSON(File file) async {
     if (!file.existsSync()) return [];
-    List transactions = jsonDecode(await file.readAsString());
-    return transactions.map((t) => Transaction.fromJson(t)).toList();
+    try {
+      List transactions = jsonDecode(await file.readAsString());
+      return transactions.map((t) => Transaction.fromJson(t)).toList();
+    } catch(e) {
+      print(e);
+      file.writeAsString('[]');
+      return [];
+    }
   }
 
   // ---accounts---
