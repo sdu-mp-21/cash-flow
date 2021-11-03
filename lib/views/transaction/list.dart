@@ -71,6 +71,9 @@ class _TransactionListState extends State<TransactionList> {
   }
 
   Widget _buildTransactionTile(Transaction transaction) {
+    String isIncome = '';
+    transaction.income? isIncome='+' : isIncome='-';
+
     return ListTile(
         shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.grey, width: 1),
@@ -81,7 +84,9 @@ class _TransactionListState extends State<TransactionList> {
 //       leading: Text("${transaction.description}"),
         title: Text("${transaction.description}"),
         subtitle: Text("account_id: ${transaction.account_id}\ncategory_id: ${transaction.category_id}"),
-        trailing: Text("${transaction.amount}\$"),
+        trailing: Text("$isIncome"+"${transaction.amount}\$",
+                      style: transaction.income? TextStyle(color: Colors.green, fontSize: 15) : TextStyle(color: Colors.red, fontSize: 15),
+                  ),
         onTap: () {
           Navigator.push(
             context,
