@@ -31,6 +31,13 @@ class Account {
     _balance += amount;
   }
 
+  @override
+  bool operator ==(Object other) =>
+      other is Account && other.account_name == account_name;
+
+  @override
+  int get hashCode => account_name.hashCode;
+
   Account.fromJson(Map<String, dynamic> data) {
     _account_id = data[keyAccountId];
     _user_id = data[keyUserId];

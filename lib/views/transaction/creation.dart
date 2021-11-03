@@ -13,8 +13,8 @@ class TransactionCreation extends StatefulWidget {
 class _TransactionCreationState extends State<TransactionCreation> {
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
-  late Account selectedAccount;
-  late Category selectedCategory;
+  Account? selectedAccount;
+  Category? selectedCategory;
   bool isIncome = true;
 
   @override
@@ -54,8 +54,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                       AsyncSnapshot<List<Account>> snapshot) {
                     if (snapshot.hasData) {
                       List<Account> accounts = (snapshot.data!);
-                      selectedAccount = accounts[0];
-                      // String dropdownValue = accounts[0].account_name;
+                      selectedAccount ??= accounts[0];
                       return DropdownButton<Account>(
                         value: selectedAccount,
                         onChanged: (Account? newValue) {
@@ -89,7 +88,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                       AsyncSnapshot<List<Category>> snapshot) {
                     if (snapshot.hasData) {
                       List<Category> categories = (snapshot.data!);
-                      selectedCategory = categories[0];
+                      selectedCategory ??= categories[0];
                       return DropdownButton<Category>(
                         value: selectedCategory,
                         onChanged: (Category? newValue) {
@@ -165,9 +164,9 @@ class _TransactionCreationState extends State<TransactionCreation> {
     }
 
     await controller.createTransaction(
-        selectedAccount,
+        selectedAccount!,
         Transaction(
-            amount, isIncome, description, selectedCategory.categoryId));
+            amount, isIncome, description, selectedCategory!.categoryId));
     return true;
   }
 }

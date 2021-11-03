@@ -14,9 +14,17 @@ class Category {
   set setCategoryId(int id) {
     _category_id = id;
   }
+
   set setUserId(int id) {
     _user_id = id;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Category && other.categoryName == categoryName;
+
+  @override
+  int get hashCode => categoryName.hashCode;
 
   Category.fromJson(Map<String, dynamic> data) {
     _category_id = data[keyCategoryId];
