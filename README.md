@@ -12,11 +12,11 @@ Members:
 - 190107047 - Zhandos Tangatar
 
 ![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/uml.png)
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_list.png)
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transaction_list.png)
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transaction_detail.png)
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/category_list.png)
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_detail.png)
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/menu.png)
+![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_list.jpg)
+![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transaction_list.jpg)
+![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transaction_detail.jpg)
+![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/category_list.jpg)
+![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_detail.jpg)
+![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/menu.jpg)
 
 
