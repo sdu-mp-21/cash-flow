@@ -55,6 +55,8 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String isIncome = '';
+    elem.income ? isIncome = '+' : isIncome = '-';
     final controller = Provider.of(context);
     return Column(
       children: [
@@ -72,7 +74,10 @@ class TransactionTile extends StatelessWidget {
               }
             },
           ),
-          trailing: Text("${elem.amount} тг\n${elem.created_at}"),
+          subtitle: Text(elem.created_at),
+          trailing: Text("$isIncome" + "${elem.amount}\$",
+            style: elem.income? TextStyle(color: Colors.green, fontSize: 15)
+                              : TextStyle(color: Colors.red, fontSize: 15),),
         )
       ],
     );
