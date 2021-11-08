@@ -4,6 +4,8 @@ import 'package:final_project/services/service.dart';
 class Controller {
   final services = Service();
 
+  User get user => services.user;
+
   Future<bool> loginUser(User user) async {
     return await services.loginUser(user);
   }
@@ -12,41 +14,31 @@ class Controller {
     return await services.registerUser(user);
   }
 
-  void clearUsers() {
-    services.clearUsers();
-  }
+  void clearUsers() {}
 
-  Future createAccount(Account account) async {
-    await services.createAccount(account);
-  }
+  Future createAccount(Account account) async {}
 
   Future<List<Account>> getAccounts() async {
-    return await services.getAccounts();
+    return <Account>[];
   }
 
-  Future createTransaction(Account account, Transaction transaction) async {
-    await services.createTransaction(account, transaction);
-  }
+  Future createTransaction(Account account, Transaction transaction) async {}
 
   Future<List<Transaction>> getTransactions() async {
-    return await services.getTransactions();
+    return <Transaction>[];
   }
 
   Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
-    return await services.getTransactionsByAccount(acc);
+    return <Transaction>[];
   }
 
-  Future createCategory(Category category) async {
-    return await services.createCategory(category);
-  }
+  Future createCategory(Category category) async {}
 
   Future<Category> getCategory(int id) async {
-    return await services.getCategory(id);
+    return Category("default");
   }
 
   Future<List<Category>> getCategories() async {
-    return await services.getCategories();
+    return <Category>[];
   }
-
-  User get user => services.user;
 }

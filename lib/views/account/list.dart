@@ -53,7 +53,7 @@ class _AccountListState extends State<AccountList> {
                     // set the height to container, cause nester columns trigger overflow error
                     height: MediaQuery.of(context).size.height / 3,
                     child: ListView(
-                      children: snapshot.data!,
+                      children: ListTile.divideTiles(context: context, tiles: snapshot.data!).toList(),
                     ),
                   );
                 } else {

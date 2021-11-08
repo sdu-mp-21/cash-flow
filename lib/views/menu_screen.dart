@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:final_project/views/login_screen.dart';
 import 'package:final_project/provider.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -28,23 +26,20 @@ class _MenuScreenState extends State<MenuScreen> {
       child: Column(
         children: [
           Text(
-            controller.user.username,
-            style: TextStyle(fontSize: 30),
+            controller.user.email,
+            style: TextStyle(fontSize: 20),
           ),
           SizedBox(height: 20),
           Text(
-            'user_id: ${controller.user.user_id.toString()}',
-            style: TextStyle(fontSize: 20),
+            'user_id: ${controller.user.userId}',
+            style: TextStyle(fontSize: 18),
           ),
           SizedBox(height: 20),
           ElevatedButton(
               onPressed: () {
-                // added then callback after login page pops up from navigator (async)
-                Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()))
-                    .then((value) => setState(() {}));
+                Navigator.pop(context);
               },
-              child: Icon(Icons.login)),
+              child: Icon(Icons.logout)),
         ],
       ),
     );
