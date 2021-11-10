@@ -62,17 +62,8 @@ class TransactionTile extends StatelessWidget {
           thickness: 1.5,
         ),
         ListTile(
-          title: FutureBuilder(
-            future: controller.getCategory(elem.category_id),
-            builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.data!.categoryName);
-              } else {
-                return const Text("");
-              }
-            },
-          ),
-          trailing: Text("${elem.amount} тг\n${elem.created_at}"),
+          title: Text(elem.category),
+          trailing: Text("${elem.amount} тг\n${elem.createdTime}"),
         )
       ],
     );

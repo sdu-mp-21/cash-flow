@@ -1,56 +1,59 @@
-class Account {
-  late int _account_id;
-  late int _user_id;
-  late String _account_name;
-  late int _balance;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:final_project/models/models.dart';
+import 'package:final_project/models/transaction.dart' as Models;
 
-  Account(this._account_name, this._balance);
+class Account {
+  late String _accountId = '';
+  late String _accountName;
+  late int _balance;
+  List<Models.Transaction> _transactions = <Models.Transaction>[];
+
+  // List<String> _categories = ['Health', 'Shop', 'Education'];
+  // late int _userId;
+
+  Account(this._accountName, this._balance);
 
   static const keyAccountId = 'account_id';
-  static const keyUserId = 'user_id';
   static const keyAccountName = 'account_name';
   static const keyBalance = 'balance';
+  static const keyTransactions = 'transactions';
 
-  int get account_id => _account_id;
+  String get account_id => _accountId;
 
-  int get user_id => _user_id;
-
-  String get account_name => _account_name;
+  String get account_name => _accountName;
 
   int get balance => _balance;
 
-  set setAccountId(int id) {
-    _account_id = id;
+  set setAccountId(String id) {
+    _accountId = id;
   }
 
-  set setUserId(int id) {
-    _user_id = id;
-  }
+  List<Models.Transaction> get getTransactions => _transactions;
 
   set addToBalance(int amount) {
     _balance += amount;
   }
 
-  @override
-  bool operator ==(Object other) =>
-      other is Account && other.account_name == account_name;
+  // @override
+  // bool operator ==(Object other) =>
+  //     other is Account && other.account_name == account_name;
+  //
+  // @override
+  // int get hashCode => account_name.hashCode;
 
-  @override
-  int get hashCode => account_name.hashCode;
-
-  Account.fromJson(Map<String, dynamic> data) {
-    _account_id = data[keyAccountId];
-    _user_id = data[keyUserId];
-    _account_name = data[keyAccountName];
+  Account.fromJson(String id, Map<String, dynamic> data) {
+    _accountId = id;
+    _accountName = data[keyAccountName];
     _balance = data[keyBalance];
+    _transactions = data[keyTransactions].cast<Models.Transaction>(); // List<dynamic> -> List<Transaction>
   }
 
   Map<String, dynamic> toJson() {
     return {
-      keyAccountId: _account_id,
-      keyUserId: _user_id,
-      keyAccountName: _account_name,
+      keyAccountId: _accountId,
+      keyAccountName: _accountName,
       keyBalance: _balance,
+      keyTransactions: _transactions,
     };
   }
 }

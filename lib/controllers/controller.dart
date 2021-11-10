@@ -14,15 +14,17 @@ class Controller {
     return await services.registerUser(user);
   }
 
-  void clearUsers() {}
-
-  Future createAccount(Account account) async {}
-
-  Future<List<Account>> getAccounts() async {
-    return <Account>[];
+  Future createAccount(Account account) async {
+    await services.createAccount(account);
   }
 
-  Future createTransaction(Account account, Transaction transaction) async {}
+  Future<List<Account>> getAccounts() async {
+    return services.getAccounts();
+  }
+
+  Future createTransaction(Account account, Transaction transaction) async {
+    services.createTransaction(account, transaction);
+  }
 
   Future<List<Transaction>> getTransactions() async {
     return <Transaction>[];

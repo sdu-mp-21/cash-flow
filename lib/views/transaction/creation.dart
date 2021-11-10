@@ -77,39 +77,39 @@ class _TransactionCreationState extends State<TransactionCreation> {
             ),
           ]),
 
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text('category:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FutureBuilder<List<Category>>(
-                  future: controller.getCategories(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Category>> snapshot) {
-                    if (snapshot.hasData) {
-                      List<Category> categories = (snapshot.data!);
-                      selectedCategory ??= categories[0];
-                      return DropdownButton<Category>(
-                        value: selectedCategory,
-                        onChanged: (Category? newValue) {
-                          setState(() {
-                            selectedCategory = newValue!;
-                          });
-                        },
-                        items: categories
-                            .map<DropdownMenuItem<Category>>((Category c) {
-                          return DropdownMenuItem<Category>(
-                            value: c,
-                            child: Text(c.categoryName),
-                          );
-                        }).toList(),
-                      );
-                    } else {
-                      return Text("Loading");
-                    }
-                  }),
-            ),
-          ]),
+          // Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          //   Text('category:',
+          //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          //   Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: FutureBuilder<List<Category>>(
+          //         future: controller.getCategories(),
+          //         builder: (BuildContext context,
+          //             AsyncSnapshot<List<Category>> snapshot) {
+          //           if (snapshot.hasData) {
+          //             List<Category> categories = (snapshot.data!);
+          //             selectedCategory ??= categories[0];
+          //             return DropdownButton<Category>(
+          //               value: selectedCategory,
+          //               onChanged: (Category? newValue) {
+          //                 setState(() {
+          //                   selectedCategory = newValue!;
+          //                 });
+          //               },
+          //               items: categories
+          //                   .map<DropdownMenuItem<Category>>((Category c) {
+          //                 return DropdownMenuItem<Category>(
+          //                   value: c,
+          //                   child: Text(c.categoryName),
+          //                 );
+          //               }).toList(),
+          //             );
+          //           } else {
+          //             return Text("Loading");
+          //           }
+          //         }),
+          //   ),
+          // ]),
           Column(
             children: [
               ListTile(
@@ -166,7 +166,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
     await controller.createTransaction(
         selectedAccount!,
         Transaction(
-            amount, isIncome, description, selectedCategory!.categoryId));
+            amount, isIncome, description, 'hobby'));
     return true;
   }
 }

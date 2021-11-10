@@ -1,9 +1,8 @@
 import 'package:final_project/models/models.dart';
-import 'package:final_project/repositories/firebase.dart';
+import 'package:final_project/repositories/firebase_repository.dart';
 
 class Service {
   final repositories = FirebaseRepository();
-
   User get user => repositories.user;
 
   Future<bool> loginUser(User user) async {
@@ -14,23 +13,18 @@ class Service {
     return await repositories.registerUser(user);
   }
 
+  Future createAccount(Account account) async {
+    await repositories.createAccount(account);
+  }
 
-// void clearUsers() {
-  //   repositories.clearUsers();
-  // }
-  //
-  // Future createAccount(Account account) async {
-  //   await repositories.createAccount(account);
-  // }
-  //
-  // Future<List<Account>> getAccounts() async {
-  //   return await repositories.getAccounts();
-  // }
-  //
-  // Future createTransaction(Account account, Transaction transaction) async {
-  //   await repositories.createTransaction(account, transaction);
-  // }
-  //
+  Future<List<Account>> getAccounts() async {
+    return await repositories.getAccounts();
+  }
+
+  Future createTransaction(Account account, Transaction transaction) async {
+    await repositories.createTransaction(account, transaction);
+  }
+
   // Future<List<Transaction>> getTransactions() async {
   //   return await repositories.getTransactions();
   // }

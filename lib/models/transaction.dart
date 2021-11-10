@@ -1,58 +1,58 @@
 import 'package:intl/intl.dart';
 
 class Transaction {
-  late int _transaction_id;
-  late int _account_id;
+  String _transactionId = '';
+  late String _accountId;
   late int _amount;
   late bool _income;
-  String _created_at = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+  String _creationTime = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
   late String _description;
-  late int _category_id;
+  late String _category;
 
   static const keyTransactionId = 'transaction_id';
   static const keyAccountId = 'account_id';
   static const keyAmount = 'amount';
   static const keyIncome = 'income';
-  static const keyCreatedAt = 'created_at';
+  static const keyCreationTime = 'creation_time';
   static const keyDescription = 'description';
-  static const keyCategoryId =  'category_id';
+  static const keyCategory =  'category';
 
-  Transaction(this._amount, this._income, this._description, this._category_id);
+  Transaction(this._amount, this._income, this._description, this._category);
 
-  int get transaction_id => _transaction_id;
-  int get account_id => _account_id;
+  String get transaction_id => _transactionId;
+  String get account_id => _accountId;
   int get amount => _amount;
   bool get income => _income;
-  String get created_at => _created_at;
+  String get createdTime => _creationTime;
   String get description => _description;
-  int get category_id => _category_id;
+  String get category => _category;
 
-  set setTransactionId(int id) {
-    _transaction_id = id;
+  set setTransactionId(String id) {
+    _transactionId = id;
   }
-  set setAccountId(int id) {
-    _account_id = id;
+  set setAccountId(String id) {
+    _accountId = id;
   }
 
   Map<String, dynamic> toJson() {
     return {
-      keyTransactionId : _transaction_id,
-      keyAccountId : _account_id,
+      keyTransactionId : _transactionId,
+      keyAccountId : _accountId,
       keyAmount : _amount,
       keyIncome : _income,
-      keyCreatedAt : _created_at,
+      keyCreationTime : _creationTime,
       keyDescription : _description,
-      keyCategoryId: _category_id,
+      keyCategory: _category,
     };
   }
 
   Transaction.fromJson(Map<String, dynamic> data) {
-    _transaction_id = data[keyTransactionId];
-    _account_id = data[keyAccountId];
+    _transactionId = data[keyTransactionId];
+    _accountId = data[keyAccountId];
     _amount = data[keyAmount];
     _income = data[keyIncome];
-    _created_at = data[keyCreatedAt];
+    _creationTime = data[keyCreationTime];
     _description = data[keyDescription];
-    _category_id = data[keyCategoryId];
+    _category = data[keyCategory];
   }
 }

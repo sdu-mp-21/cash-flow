@@ -26,9 +26,9 @@ class TransactionDetail extends StatelessWidget {
           SizedBox(height: 15),
           Text('account_id: ${transaction.account_id}'),
           SizedBox(height: 15),
-          Text('category_id: ${transaction.category_id}'),
+          Text('category: ${transaction.category}'),
           SizedBox(height: 15),
-          Text('creation date: ${transaction.created_at}'),
+          Text('creation date: ${transaction.createdTime}'),
         ],
       ),
     );
