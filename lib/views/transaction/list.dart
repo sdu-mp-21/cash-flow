@@ -95,15 +95,23 @@ class _TransactionListState extends State<TransactionList> {
   Future<List<ChartValue>> getChartValue() async {
     final controller = Provider.of(context);
     final transactions = await controller.getTransactions();
-    final List<ChartValue> chartV = [];
+    final Map<String, int> chartV = {};
     for (var transaction in transactions) {
       if (!transaction.income) {
         continue;
       }
       final category = await controller.getCategory(transaction.categoryId);
-      chartV.add(ChartValue(category.categoryName, transaction.amount));
+      if (chartV[category.categoryName] == null) {
+        chartV[category.categoryName] = transaction.amount;
+      } else {
+        chartV[category.categoryName] = chartV[category.categoryName]! + transaction.amount;
+      }
     }
-    return chartV;
+    final List<ChartValue> res = [];
+    chartV.forEach((key, value) {
+      res.add(ChartValue(key, value));
+    });
+    return res;
   }
 
   Future<List<Widget>> _buildTransactionList() async {
