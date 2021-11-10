@@ -4,6 +4,8 @@ import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
 import 'package:final_project/views/transaction/creation.dart';
 import 'package:final_project/views/transaction/detail.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
 
 class TransactionList extends StatefulWidget {
   const TransactionList({Key? key}) : super(key: key);
@@ -15,13 +17,43 @@ class TransactionList extends StatefulWidget {
 class _TransactionListState extends State<TransactionList> {
   final moneyController = TextEditingController();
   final categoryController = TextEditingController();
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
+          Container(
+            child: FutureBuilder(
+              future: getChartValue(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return SfCircularChart(
+                    title: ChartTitle(text: "transaction amount chart"),
+                    legend: Legend(isVisible: true),
+                    tooltipBehavior: TooltipBehavior(enable: true),
+
+                    series: <CircularSeries>[
+                      DoughnutSeries<ChartValue, String>(
+                          dataSource: snapshot.data,
+                          xValueMapper: (ChartValue data,_) => data.category,
+                          yValueMapper: (ChartValue data,_) => data.amount, 
+                          dataLabelSettings: DataLabelSettings(isVisible: true),
+                          enableTooltip: true
+                       )
+                    ],
+                  );
+                } else {
+                  return Text('loading...');
+                }
+              }
+            )
+          ),
           Expanded(
             child: FutureBuilder(
               future: _buildTransactionList(),
@@ -61,6 +93,18 @@ class _TransactionListState extends State<TransactionList> {
       ),
     );
   }
+
+  Future<List<ChartValue>> getChartValue() async{
+    final transactions = await Provider.of(context).getTransactions();
+    final List<ChartValue> chartV = [];
+
+    transactions.forEach((element) {
+      chartV.add(ChartValue(element.description,element.amount));
+    });
+    return chartV;  
+  }
+
+ 
 
   Future<List<Widget>> _buildTransactionList() async {
     final transactions = await Provider.of(context).getTransactions();
@@ -103,4 +147,10 @@ class _TransactionListState extends State<TransactionList> {
           );
         });
   }
+}
+
+class ChartValue{
+    final String category;
+    final int amount;
+    ChartValue(this.category, this.amount);
 }
