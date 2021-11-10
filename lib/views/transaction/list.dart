@@ -100,7 +100,7 @@ class _TransactionListState extends State<TransactionList> {
       if (!transaction.income) {
         continue;
       }
-      final category = await controller.getCategory(transaction.category_id);
+      final category = await controller.getCategory(transaction.categoryId);
       chartV.add(ChartValue(category.categoryName, transaction.amount));
     }
     return chartV;
@@ -144,7 +144,8 @@ class _TransactionListState extends State<TransactionList> {
             MaterialPageRoute(
               builder: (context) => TransactionDetail(transaction),
             ),
-          );
+          ).then((value) => setState(() {}));
+          
         });
   }
 }

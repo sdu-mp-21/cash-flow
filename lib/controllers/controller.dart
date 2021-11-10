@@ -28,6 +28,11 @@ class Controller {
     await services.createTransaction(account, transaction);
   }
 
+  Future deleteTransaction(int id) async {
+    await services.deleteTransaction(id);
+  }
+
+
   Future<List<Transaction>> getTransactions() async {
     return await services.getTransactions();
   }

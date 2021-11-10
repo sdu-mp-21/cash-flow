@@ -1,6 +1,8 @@
 import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
 
+import 'package:final_project/provider.dart';
+
 class TransactionDetail extends StatelessWidget {
   late final Transaction transaction;
 
@@ -11,6 +13,13 @@ class TransactionDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Transaction Detail"),
+        actions: [
+          IconButton(onPressed: () async {
+            final controller = Provider.of(context);
+            controller.deleteTransaction(transaction.transactionId);
+            Navigator.pop(context);
+          }, icon: const Icon(Icons.delete))
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),

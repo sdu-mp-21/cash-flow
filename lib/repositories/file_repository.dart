@@ -36,6 +36,19 @@ class FileRepository extends Repository {
         account.accountId, transaction.amount * (transaction.income ? 1 : -1));
   }
 
+  Future deleteTransaction(int id) async {
+    File file = File(
+        '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
+    final transactions = await _readTransactionsJSON(file);
+    final transaction = transactions.firstWhere((element) => id == element.transactionId);
+    transactions.removeWhere((element) => id == element.transactionId);
+    final json = jsonEncode(transactions);
+    await file.writeAsString(json);
+    updateAccountBalanceByAmount(
+        transaction.accountId, transaction.amount * (transaction.income ? -1 : 1));
+  }
+
+
   Future updateAccountBalanceByAmount(int accountId, int amount) async {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');

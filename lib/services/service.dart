@@ -48,5 +48,9 @@ class Service {
     return await repositories.getCategories();
   }
 
+  Future deleteTransaction(int id) async {
+    return await repositories.deleteTransaction(id);
+  }
+
   User get user => repositories.user;
 }
