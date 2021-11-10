@@ -159,7 +159,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
     final int amount =
         int.parse(_amountController.text != '' ? _amountController.text : '0');
     final String description = _descriptionController.text;
-    if (amount == 0 || description == '') {
+    if (amount == 0) {
       return false;
     }
 
