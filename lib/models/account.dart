@@ -1,30 +1,30 @@
 class Account {
-  late int _account_id;
-  late int _user_id;
-  late String _account_name;
+  late int _accountId;
+  late int _userId;
+  late String _accountName;
   late int _balance;
 
-  Account(this._account_name, this._balance);
+  Account(this._accountName, this._balance);
 
   static const keyAccountId = 'account_id';
   static const keyUserId = 'user_id';
   static const keyAccountName = 'account_name';
   static const keyBalance = 'balance';
 
-  int get account_id => _account_id;
+  int get accountId => _accountId;
 
-  int get user_id => _user_id;
+  int get userId => _userId;
 
-  String get account_name => _account_name;
+  String get accountName => _accountName;
 
   int get balance => _balance;
 
   set setAccountId(int id) {
-    _account_id = id;
+    _accountId = id;
   }
 
   set setUserId(int id) {
-    _user_id = id;
+    _userId = id;
   }
 
   set addToBalance(int amount) {
@@ -33,23 +33,23 @@ class Account {
 
   @override
   bool operator ==(Object other) =>
-      other is Account && other.account_name == account_name;
+      other is Account && other.accountName == accountName;
 
   @override
-  int get hashCode => account_name.hashCode;
+  int get hashCode => accountName.hashCode;
 
   Account.fromJson(Map<String, dynamic> data) {
-    _account_id = data[keyAccountId];
-    _user_id = data[keyUserId];
-    _account_name = data[keyAccountName];
+    _accountId = data[keyAccountId];
+    _userId = data[keyUserId];
+    _accountName = data[keyAccountName];
     _balance = data[keyBalance];
   }
 
   Map<String, dynamic> toJson() {
     return {
-      keyAccountId: _account_id,
-      keyUserId: _user_id,
-      keyAccountName: _account_name,
+      keyAccountId: _accountId,
+      keyUserId: _userId,
+      keyAccountName: _accountName,
       keyBalance: _balance,
     };
   }

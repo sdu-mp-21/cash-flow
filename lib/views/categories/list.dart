@@ -15,16 +15,17 @@ class _CategoriesListState extends State<CategoriesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Categories'),
+        title: const Text('Categories'),
         actions: [
           Padding(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: GestureDetector(
-                child: Icon(Icons.add),
+                child: const Icon(Icons.add),
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CategoryCreation()),
+                    MaterialPageRoute(
+                        builder: (context) => const CategoryCreation()),
                   ).then((value) => setState(() {}));
                 }),
           ),
@@ -45,7 +46,7 @@ class _CategoriesListState extends State<CategoriesList> {
                 ),
               );
             } else {
-              return Text('loading...');
+              return const Text('loading...');
             }
           },
         ),
@@ -58,15 +59,15 @@ class _CategoriesListState extends State<CategoriesList> {
 
     final controller = Provider.of(context);
     final categories = await controller.getCategories();
-    categories.forEach((c) {
+    for (var c in categories) {
       tiles.add(_buildCategoryTile(c));
-    });
+    }
     return tiles;
   }
 
   Widget _buildCategoryTile(Category category) {
     return ListTile(
-      title: Text(category.categoryName, style: TextStyle(fontSize: 18)),
+      title: Text(category.categoryName, style: const TextStyle(fontSize: 18)),
       onTap: () {},
     );
   }

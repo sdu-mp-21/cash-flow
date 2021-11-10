@@ -21,37 +21,38 @@ class FileRepository extends Repository {
 
   // ---transactions---
 
+  @override
   Future createTransaction(Account account, Transaction transaction) async {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
     final transactions = await _readTransactionsJSON(file);
 
-    transaction.setAccountId = account.account_id;
+    transaction.setAccountId = account.accountId;
     transaction.setTransactionId = _generateTransactionId(transactions);
     transactions.add(transaction);
     final json = jsonEncode(transactions);
     await file.writeAsString(json);
     updateAccountBalanceByAmount(
-        account.account_id, transaction.amount * (transaction.income ? 1 : -1));
+        account.accountId, transaction.amount * (transaction.income ? 1 : -1));
   }
 
-  Future updateAccountBalanceByAmount(int account_id, int amount) async {
+  Future updateAccountBalanceByAmount(int accountId, int amount) async {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
 
     final list = await _readAccountsJSON(file);
-    list
-        .singleWhere((element) => element.account_id == account_id)
-        .addToBalance = amount;
+    list.singleWhere((element) => element.accountId == accountId).addToBalance =
+        amount;
     await file.writeAsString(jsonEncode(list));
   }
 
   int _generateTransactionId(List<Transaction> transactions) {
     int maxId = transactions.fold(
-        0, (a, b) => a > b.transaction_id ? a : b.transaction_id);
+        0, (a, b) => a > b.transactionId ? a : b.transactionId);
     return maxId + 1;
   }
 
+  @override
   Future<List<Transaction>> getTransactions() async {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
@@ -59,10 +60,10 @@ class FileRepository extends Repository {
     final transactions = await _readTransactionsJSON(file);
     final usersTransactions = <Transaction>[];
     final accounts = await getAccounts();
-    accounts.forEach((acc) {
+    for (var acc in accounts) {
       usersTransactions.addAll(
-          transactions.where((t) => t.account_id == acc.account_id).toList());
-    });
+          transactions.where((t) => t.accountId == acc.accountId).toList());
+    }
     return usersTransactions;
   }
 
@@ -70,8 +71,7 @@ class FileRepository extends Repository {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$transactionsFilename');
     final transactions = await _readTransactionsJSON(file);
-    final usersTransactions = <Transaction>[];
-    return transactions.where((t) => t.account_id == acc.account_id).toList();
+    return transactions.where((t) => t.accountId == acc.accountId).toList();
   }
 
   Future<List<Transaction>> _readTransactionsJSON(File file) async {
@@ -88,30 +88,30 @@ class FileRepository extends Repository {
 
   // ---accounts---
 
+  @override
   Future createAccount(Account account) async {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
 
     final accounts = await _readAccountsJSON(file);
     account.setAccountId = _generateAccountId(accounts);
-    account.setUserId = _user.user_id;
+    account.setUserId = _user.userId;
     accounts.add(account);
     final json = jsonEncode(accounts);
     await file.writeAsString(json);
   }
 
   int _generateAccountId(List<Account> accounts) {
-    int maxId = accounts.fold(0, (a, b) => a > b.account_id ? a : b.account_id);
+    int maxId = accounts.fold(0, (a, b) => a > b.accountId ? a : b.accountId);
     return maxId + 1;
   }
 
+  @override
   Future<List<Account>> getAccounts() async {
     File file = File(
         '${(await getApplicationDocumentsDirectory()).path}/$accountsFilename');
     final accounts = await _readAccountsJSON(file);
-    return accounts
-        .where((account) => account.user_id == _user.user_id)
-        .toList();
+    return accounts.where((account) => account.userId == _user.userId).toList();
   }
 
   Future<List<Account>> _readAccountsJSON(file) async {
@@ -127,7 +127,7 @@ class FileRepository extends Repository {
     final categories = await _readCategoriesJSON(file);
 
     category.setCategoryId = _generateCategoryId(categories);
-    category.setUserId = _user.user_id;
+    category.setUserId = _user.userId;
     categories.add(category);
     final json = jsonEncode(categories);
     await file.writeAsString(json);
@@ -160,6 +160,7 @@ class FileRepository extends Repository {
 
   // ---authentication---
 
+  @override
   Future<bool> loginUser(User user) async {
     final users = await _readUsersJSON();
     try {
@@ -171,6 +172,7 @@ class FileRepository extends Repository {
     return true;
   }
 
+  @override
   Future<bool> registerUser(User user) async {
     final users = await _readUsersJSON();
 
@@ -187,7 +189,7 @@ class FileRepository extends Repository {
   }
 
   int _generateUserId(List<User> users) {
-    int maxId = users.fold(0, (a, b) => a > b.user_id ? a : b.user_id);
+    int maxId = users.fold(0, (a, b) => a > b.userId ? a : b.userId);
     return maxId + 1;
   }
 

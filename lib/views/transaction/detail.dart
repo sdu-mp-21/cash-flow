@@ -10,25 +10,25 @@ class TransactionDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Transaction Detail"),
+        title: const Text("Transaction Detail"),
       ),
       body: ListView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         children: [
           Center(
             child: _getAmountFromIncome(),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Text(
             "${transaction.description}",
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 15),
-          Text('account_id: ${transaction.account_id}'),
-          SizedBox(height: 15),
-          Text('category_id: ${transaction.category_id}'),
-          SizedBox(height: 15),
-          Text('creation date: ${transaction.created_at}'),
+          const SizedBox(height: 15),
+          Text('account_id: ${transaction.accountId}'),
+          const SizedBox(height: 15),
+          Text('category_id: ${transaction.categoryId}'),
+          const SizedBox(height: 15),
+          Text('creation date: ${transaction.createdAt}'),
         ],
       ),
     );
@@ -37,10 +37,10 @@ class TransactionDetail extends StatelessWidget {
   Widget _getAmountFromIncome() {
     if (transaction.income) {
       return Text('+${transaction.amount}\$',
-          style: TextStyle(fontSize: 30, color: Colors.green));
+          style: const TextStyle(fontSize: 30, color: Colors.green));
     } else {
       return Text('-${transaction.amount}\$',
-          style: TextStyle(fontSize: 30, color: Colors.red));
+          style: const TextStyle(fontSize: 30, color: Colors.red));
     }
   }
 }

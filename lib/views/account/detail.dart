@@ -7,7 +7,7 @@ class AccountDetail extends StatelessWidget {
   AccountDetail(this.account, {Key? key}) : super(key: key);
 
   Account getAccount() {
-    return this.account;
+    return account;
   }
 
   @override
@@ -15,7 +15,7 @@ class AccountDetail extends StatelessWidget {
     final controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cash Flow"),
+        title: const Text("Cash Flow"),
       ),
       body: Column(
         children: [
@@ -65,7 +65,7 @@ class TransactionTile extends StatelessWidget {
         ),
         ListTile(
           title: FutureBuilder(
-            future: controller.getCategory(elem.category_id),
+            future: controller.getCategory(elem.categoryId),
             builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
               if (snapshot.hasData) {
                 return Text(snapshot.data!.categoryName);
@@ -74,10 +74,13 @@ class TransactionTile extends StatelessWidget {
               }
             },
           ),
-          subtitle: Text(elem.created_at),
-          trailing: Text("$isIncome" + "${elem.amount}\$",
-            style: elem.income? TextStyle(color: Colors.green, fontSize: 15)
-                              : TextStyle(color: Colors.red, fontSize: 15),),
+          subtitle: Text(elem.createdAt),
+          trailing: Text(
+            "$isIncome ${elem.amount}\$",
+            style: elem.income
+                ? const TextStyle(color: Colors.green, fontSize: 15)
+                : const TextStyle(color: Colors.red, fontSize: 15),
+          ),
         )
       ],
     );
@@ -102,7 +105,7 @@ class AccountInfo extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                account.account_name,
+                account.accountName,
                 style: const TextStyle(fontSize: 26.0),
               ),
             ),

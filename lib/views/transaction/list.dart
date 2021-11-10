@@ -6,7 +6,6 @@ import 'package:final_project/views/transaction/creation.dart';
 import 'package:final_project/views/transaction/detail.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-
 class TransactionList extends StatefulWidget {
   const TransactionList({Key? key}) : super(key: key);
 
@@ -17,43 +16,42 @@ class TransactionList extends StatefulWidget {
 class _TransactionListState extends State<TransactionList> {
   final moneyController = TextEditingController();
   final categoryController = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
           Container(
-            child: FutureBuilder(
-              future: getChartValue(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
+              child: FutureBuilder(
+                  future: getChartValue(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    }
 
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return SfCircularChart(
-                    title: ChartTitle(text: "transaction amount chart"),
-                    legend: Legend(isVisible: true),
-                    tooltipBehavior: TooltipBehavior(enable: true),
-
-                    series: <CircularSeries>[
-                      DoughnutSeries<ChartValue, String>(
-                          dataSource: snapshot.data,
-                          xValueMapper: (ChartValue data,_) => data.category,
-                          yValueMapper: (ChartValue data,_) => data.amount, 
-                          dataLabelSettings: DataLabelSettings(isVisible: true),
-                          enableTooltip: true
-                       )
-                    ],
-                  );
-                } else {
-                  return Text('loading...');
-                }
-              }
-            )
-          ),
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return SfCircularChart(
+                        title: ChartTitle(text: "transaction amount chart"),
+                        legend: Legend(isVisible: true),
+                        tooltipBehavior: TooltipBehavior(enable: true),
+                        series: <CircularSeries>[
+                          DoughnutSeries<ChartValue, String>(
+                              dataSource: snapshot.data,
+                              xValueMapper: (ChartValue data, _) =>
+                                  data.category,
+                              yValueMapper: (ChartValue data, _) => data.amount,
+                              dataLabelSettings:
+                                  const DataLabelSettings(isVisible: true),
+                              enableTooltip: true)
+                        ],
+                      );
+                    } else {
+                      return const Text('loading...');
+                    }
+                  })),
           Expanded(
             child: FutureBuilder(
               future: _buildTransactionList(),
@@ -71,7 +69,7 @@ class _TransactionListState extends State<TransactionList> {
                     ),
                   );
                 } else {
-                  return Text('loading...');
+                  return const Text('loading...');
                 }
               },
             ),
@@ -82,7 +80,7 @@ class _TransactionListState extends State<TransactionList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TransactionCreation(),
+                    builder: (context) => const TransactionCreation(),
                   ),
                 ).then((value) => setState(() {}));
               },
@@ -94,24 +92,22 @@ class _TransactionListState extends State<TransactionList> {
     );
   }
 
-  Future<List<ChartValue>> getChartValue() async{
+  Future<List<ChartValue>> getChartValue() async {
     final transactions = await Provider.of(context).getTransactions();
     final List<ChartValue> chartV = [];
 
-    transactions.forEach((element) {
-      chartV.add(ChartValue(element.description,element.amount));
-    });
-    return chartV;  
+    for (var element in transactions) {
+      chartV.add(ChartValue(element.description, element.amount));
+    }
+    return chartV;
   }
-
- 
 
   Future<List<Widget>> _buildTransactionList() async {
     final transactions = await Provider.of(context).getTransactions();
     final tiles = <Widget>[];
-    transactions.forEach((t) {
+    for (var t in transactions) {
       tiles.add(_buildTransactionTile(t));
-    });
+    }
     return tiles;
   }
 
@@ -122,7 +118,7 @@ class _TransactionListState extends State<TransactionList> {
 
     return ListTile(
         title: FutureBuilder(
-          future: controller.getCategory(transaction.category_id),
+          future: controller.getCategory(transaction.categoryId),
           builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
             if (snapshot.hasData) {
               return Text(snapshot.data!.categoryName);
@@ -135,8 +131,8 @@ class _TransactionListState extends State<TransactionList> {
         trailing: Text(
           "$isIncome" + "${transaction.amount}\$",
           style: transaction.income
-              ? TextStyle(color: Colors.green, fontSize: 15)
-              : TextStyle(color: Colors.red, fontSize: 15),
+              ? const TextStyle(color: Colors.green, fontSize: 15)
+              : const TextStyle(color: Colors.red, fontSize: 15),
         ),
         onTap: () {
           Navigator.push(
@@ -149,8 +145,8 @@ class _TransactionListState extends State<TransactionList> {
   }
 }
 
-class ChartValue{
-    final String category;
-    final int amount;
-    ChartValue(this.category, this.amount);
+class ChartValue {
+  final String category;
+  final int amount;
+  ChartValue(this.category, this.amount);
 }

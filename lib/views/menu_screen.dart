@@ -15,7 +15,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     return Container(
       // width: 250,
-      margin: EdgeInsets.all(100),
+      margin: const EdgeInsets.all(100),
       alignment: Alignment.center,
       child: _buildMenu(),
     );
@@ -29,22 +29,24 @@ class _MenuScreenState extends State<MenuScreen> {
         children: [
           Text(
             controller.user.username,
-            style: TextStyle(fontSize: 30),
+            style: const TextStyle(fontSize: 30),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
-            'user_id: ${controller.user.user_id.toString()}',
-            style: TextStyle(fontSize: 20),
+            'user_id: ${controller.user.userId.toString()}',
+            style: const TextStyle(fontSize: 20),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
               onPressed: () {
                 // added then callback after login page pops up from navigator (async)
-                Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()))
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()))
                     .then((value) => setState(() {}));
               },
-              child: Icon(Icons.login)),
+              child: const Icon(Icons.login)),
         ],
       ),
     );
