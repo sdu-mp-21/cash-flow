@@ -14,11 +14,20 @@ class TransactionDetail extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Transaction Detail"),
         actions: [
-          IconButton(onPressed: () async {
-            final controller = Provider.of(context);
-            controller.deleteTransaction(transaction.transactionId);
-            Navigator.pop(context);
-          }, icon: const Icon(Icons.delete))
+          IconButton(
+              onPressed: () async {
+                final controller = Provider.of(context);
+                controller.deleteTransaction(transaction);
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.delete)),
+          IconButton(
+              onPressed: () async {
+                final controller = Provider.of(context);
+                controller.deleteTransaction(transaction);
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.change_circle)),
         ],
       ),
       body: ListView(

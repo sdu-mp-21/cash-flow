@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
 
-// changed to stateful cause stateless doesn't see the context from other functions
 class TransactionCreation extends StatefulWidget {
   const TransactionCreation({Key? key}) : super(key: key);
 
