@@ -1,30 +1,24 @@
+import 'package:final_project/models/models.dart' as Models;
+
 class Account {
-  late int _accountId;
-  late int _userId;
+  String _accountId = '';
   late String _accountName;
   late int _balance;
 
   Account(this._accountName, this._balance);
 
   static const keyAccountId = 'account_id';
-  static const keyUserId = 'user_id';
   static const keyAccountName = 'account_name';
   static const keyBalance = 'balance';
 
-  int get accountId => _accountId;
-
-  int get userId => _userId;
+  String get accountId => _accountId;
 
   String get accountName => _accountName;
 
   int get balance => _balance;
 
-  set setAccountId(int id) {
+  set setAccountId(String id) {
     _accountId = id;
-  }
-
-  set setUserId(int id) {
-    _userId = id;
   }
 
   set addToBalance(int amount) {
@@ -33,14 +27,13 @@ class Account {
 
   @override
   bool operator ==(Object other) =>
-      other is Account && other.accountName == accountName;
+      other is Account && other._accountName == _accountName;
 
   @override
-  int get hashCode => accountName.hashCode;
+  int get hashCode => _accountName.hashCode;
 
   Account.fromJson(Map<String, dynamic> data) {
     _accountId = data[keyAccountId];
-    _userId = data[keyUserId];
     _accountName = data[keyAccountName];
     _balance = data[keyBalance];
   }
@@ -48,7 +41,6 @@ class Account {
   Map<String, dynamic> toJson() {
     return {
       keyAccountId: _accountId,
-      keyUserId: _userId,
       keyAccountName: _accountName,
       keyBalance: _balance,
     };

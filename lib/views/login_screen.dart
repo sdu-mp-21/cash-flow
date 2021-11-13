@@ -1,6 +1,8 @@
 import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
+import 'package:final_project/views/home.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -10,13 +12,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController _usernameController;
-  late TextEditingController _passwordController;
+  late TextEditingController _usernameController = TextEditingController();
+  late TextEditingController _passwordController = TextEditingController();
 
-  @override
   void initState() {
-    _usernameController = TextEditingController();
-    _passwordController = TextEditingController();
+    Firebase.initializeApp();
     super.initState();
   }
 
@@ -38,8 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             TextField(
-              decoration: const InputDecoration(
-                hintText: "Username",
+              decoration: InputDecoration(
+                hintText: "Email",
               ),
               controller: _usernameController,
             ),
@@ -64,7 +64,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     bool loggedIn = await _loginUser();
                     if (loggedIn) {
-                      Navigator.pop(context);
+                      Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Home()))
+                          .then((value) => setState(() {}));
                     }
                   },
                   child: const Text("login"),

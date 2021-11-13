@@ -1,35 +1,35 @@
 class User {
-  late int _userId = 0;
-  late String _username;
+  late String _userId = '';
+  late String _email;
   late String _password;
 
-  User(this._username, this._password);
+  User(this._email, this._password);
 
   // ---keys--- //
   static const keyUserId = 'user_id';
-  static const keyUsername = 'username';
+  static const keyEmail = 'email';
   static const keyUserPassword = 'password';
 
-  int get userId => _userId;
+  String get userId => _userId;
 
-  String get username => _username;
+  String get email => _email;
 
   String get password => _password;
 
-  set setID(int id) {
+  set setID(String id) {
     _userId = id;
   }
 
   User.fromJson(Map<String, dynamic> data) {
-    _userId = data[keyUserId];
-    _username = data[keyUsername];
-    _password = data[keyUserPassword];
+    this._userId = data[keyUserId];
+    this._email = data[keyEmail];
+    this._password = data[keyUserPassword];
   }
 
   Map<String, dynamic> toJson() {
     return {
       keyUserId: _userId,
-      keyUsername: _username,
+      keyEmail: _email,
       keyUserPassword: _password,
     };
   }

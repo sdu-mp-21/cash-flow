@@ -165,9 +165,9 @@ class _TransactionCreationState extends State<TransactionCreation> {
     }
 
     await controller.createTransaction(
+        Transaction(amount, isIncome, description),
         selectedAccount!,
-        Transaction(
-            amount, isIncome, description, selectedCategory!.categoryId));
+        selectedCategory!);
     return true;
   }
 }
