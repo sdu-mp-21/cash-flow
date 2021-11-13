@@ -21,27 +21,27 @@ class Service {
     return await repositories.getAccounts();
   }
 
-  Future createTransaction(Account account, Transaction transaction) async {
-    await repositories.createTransaction(account, transaction);
+  Future createTransaction(Transaction transaction, Account account, Category category) async {
+    repositories.createTransaction(transaction, account, category);
   }
 
-  // Future<List<Transaction>> getTransactions() async {
-  //   return await repositories.getTransactions();
-  // }
-  //
-  // Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
-  //   return await repositories.getTransactionsByAccount(acc);
-  // }
-  //
-  // Future createCategory(Category category) async {
-  //   await repositories.createCategory(category);
-  // }
-  //
-  // Future<Category> getCategory(int id) async {
-  //   return await repositories.getCategory(id);
-  // }
-  //
-  // Future<List<Category>> getCategories() async {
-  //   return await repositories.getCategories();
-  // }
+  Future<List<Transaction>> getTransactions() async {
+    return await repositories.getTransactions();
+  }
+
+  Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
+    return await repositories.getTransactionsByAccount(acc);
+  }
+
+  Future createCategory(Category category) async {
+    await repositories.createCategory(category);
+  }
+
+  Future<Category> getCategoryById(String id) async {
+    return await repositories.getCategoryById(id);
+  }
+
+  Future<List<Category>> getCategories() async {
+    return await repositories.getCategories();
+  }
 }

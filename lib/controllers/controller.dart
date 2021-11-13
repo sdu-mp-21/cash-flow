@@ -22,25 +22,27 @@ class Controller {
     return services.getAccounts();
   }
 
-  Future createTransaction(Account account, Transaction transaction) async {
-    services.createTransaction(account, transaction);
+  Future createTransaction(Transaction transaction, Account account, Category category) async {
+    services.createTransaction(transaction, account, category);
   }
 
   Future<List<Transaction>> getTransactions() async {
-    return <Transaction>[];
+    return await services.getTransactions();
   }
 
   Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
-    return <Transaction>[];
+    return await services.getTransactionsByAccount(acc);
   }
 
-  Future createCategory(Category category) async {}
+  Future createCategory(Category category) async {
+    await services.createCategory(category);
+  }
 
-  Future<Category> getCategory(int id) async {
-    return Category("default");
+  Future<Category> getCategoryById(String id) async {
+    return await services.getCategoryById(id);
   }
 
   Future<List<Category>> getCategories() async {
-    return <Category>[];
+    return await services.getCategories();
   }
 }

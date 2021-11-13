@@ -62,7 +62,7 @@ class TransactionTile extends StatelessWidget {
           thickness: 1.5,
         ),
         ListTile(
-          title: Text(elem.category),
+          title: Text(elem.categoryId),
           trailing: Text("${elem.amount} тг\n${elem.createdTime}"),
         )
       ],

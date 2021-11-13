@@ -77,7 +77,7 @@ class _TransactionListState extends State<TransactionList> {
     final controller = Provider.of(context);
 
     return ListTile(
-        title: Text(transaction.category),
+        title: Text(transaction.categoryId),
         subtitle: Text(transaction.description),
         trailing: Text(
           "$isIncome" + "${transaction.amount}\$",
