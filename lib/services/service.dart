@@ -3,6 +3,7 @@ import 'package:final_project/repositories/firebase_repository.dart';
 
 class Service {
   final repositories = FirebaseRepository();
+
   User get user => repositories.user;
 
   Future<bool> loginUser(User user) async {
@@ -21,8 +22,9 @@ class Service {
     return await repositories.getAccounts();
   }
 
-  Future createTransaction(Transaction transaction, Account account, Category category) async {
-    repositories.createTransaction(transaction, account, category);
+  Future createTransaction(
+      Transaction transaction, Account account, Category category) async {
+    await repositories.createTransaction(transaction, account, category);
   }
 
   Future<List<Transaction>> getTransactions() async {

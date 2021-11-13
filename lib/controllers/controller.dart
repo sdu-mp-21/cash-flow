@@ -19,11 +19,11 @@ class Controller {
   }
 
   Future<List<Account>> getAccounts() async {
-    return services.getAccounts();
+    return await services.getAccounts();
   }
 
   Future createTransaction(Transaction transaction, Account account, Category category) async {
-    services.createTransaction(transaction, account, category);
+    await services.createTransaction(transaction, account, category);
   }
 
   Future<List<Transaction>> getTransactions() async {
