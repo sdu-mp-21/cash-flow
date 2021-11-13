@@ -1,7 +1,7 @@
 import 'package:final_project/models/models.dart' as Models;
 
 class Account {
-  late String _accountId = '';
+  String _accountId = '';
   late String _accountName;
   late int _balance;
 
@@ -12,6 +12,7 @@ class Account {
   static const keyBalance = 'balance';
 
   String get account_id => _accountId;
+
   String get account_name => _accountName;
 
   int get balance => _balance;
@@ -23,6 +24,13 @@ class Account {
   set addToBalance(int amount) {
     _balance += amount;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Account && other.account_name == account_name;
+
+  @override
+  int get hashCode => account_name.hashCode;
 
   Account.fromJson(Map<String, dynamic> data) {
     _accountId = data[keyAccountId];

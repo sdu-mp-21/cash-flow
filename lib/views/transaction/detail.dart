@@ -1,5 +1,6 @@
 import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:final_project/provider.dart';
 
 class TransactionDetail extends StatelessWidget {
   late final Transaction transaction;
@@ -24,11 +25,22 @@ class TransactionDetail extends StatelessWidget {
             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 15),
-          Text('account_id: ${transaction.account_id}'),
+          Text('Account ID: ${transaction.accountId}'),
           SizedBox(height: 15),
-          Text('category: ${transaction.categoryId}'),
+          FutureBuilder<Category>(
+            future:
+                Provider.of(context).getCategoryById(transaction.categoryId),
+            builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+              if (snapshot.hasData) {
+                Category category = snapshot.data!;
+                return Text('Category: ${category.categoryName}');
+              } else {
+                return Text("Loading...");
+              }
+            },
+          ),
           SizedBox(height: 15),
-          Text('creation date: ${transaction.createdTime}'),
+          Text('Creation time: ${transaction.createdTime}'),
         ],
       ),
     );

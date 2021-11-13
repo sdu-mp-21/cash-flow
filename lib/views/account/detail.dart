@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class AccountDetail extends StatelessWidget {
   late Account account;
+
   AccountDetail(this.account, {Key? key}) : super(key: key);
 
   Account getAccount() {

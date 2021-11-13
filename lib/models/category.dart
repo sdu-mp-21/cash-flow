@@ -15,6 +15,13 @@ class Category {
     _categoryId = id;
   }
 
+  @override
+  bool operator ==(Object other) =>
+      other is Category && other.categoryName == categoryName;
+
+  @override
+  int get hashCode => categoryName.hashCode;
+
   Category.fromJson(Map<String, dynamic> data) {
     _categoryId = data[keyCategoryId];
     _categoryName = data[keyCategoryName];

@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:final_project/models/models.dart' as Models;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:final_project/repositories/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class FirebaseRepository {
+class FirebaseRepository extends Repository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseStore = FirebaseFirestore.instance;
   final CollectionReference collectionUsersReference =
@@ -129,16 +130,6 @@ class FirebaseRepository {
     docRef.set(category.toJson());
   }
 
-  Future<Models.Category> getCategoryById(String id) async {
-    final docRef = await collectionUsersReference
-        .doc(_user.userId)
-        .collection(collectionCategories)
-        .doc(id);
-
-    final data = (await docRef.get()).data();
-    return Models.Category.fromJson(data!);
-  }
-
   Future<List<Models.Category>> getCategories() async {
     final colRef = await collectionUsersReference
         .doc(_user.userId)
@@ -148,5 +139,15 @@ class FirebaseRepository {
     return documents
         .map((doc) => Models.Category.fromJson(doc.data()))
         .toList();
+  }
+
+  Future<Models.Category> getCategoryById(String id) async {
+    final docRef = await collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionCategories)
+        .doc(id);
+
+    final data = (await docRef.get()).data();
+    return Models.Category.fromJson(data!);
   }
 }

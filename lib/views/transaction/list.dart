@@ -77,7 +77,17 @@ class _TransactionListState extends State<TransactionList> {
     final controller = Provider.of(context);
 
     return ListTile(
-        title: Text(transaction.categoryId),
+        title: FutureBuilder<Category>(
+          future: controller.getCategoryById(transaction.categoryId),
+          builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+            if (snapshot.hasData) {
+              Category category = snapshot.data!;
+              return Text(category.categoryName);
+            } else {
+              return Text("Loading...");
+            }
+          },
+        ),
         subtitle: Text(transaction.description),
         trailing: Text(
           "$isIncome" + "${transaction.amount}\$",
