@@ -15,24 +15,24 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
 
   final _navBarItems = <BottomNavigationBarItem>[
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
         icon: Icon(Icons.account_balance), label: 'accounts'),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
         icon: Icon(Icons.compare_arrows), label: 'transactions'),
-    BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'menu'),
+    const BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'menu'),
   ];
 
   final _routes = <Widget>[
-    AccountList(),
-    TransactionList(),
-    MenuScreen(),
+    const AccountList(),
+    const TransactionList(),
+    const MenuScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CashFlow'),
+        title: const Text('CashFlow'),
       ),
       body: _routes[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

@@ -31,10 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login"),
+        title: const Text("Login"),
       ),
       body: Container(
-        padding: EdgeInsets.all(30),
+        padding: const EdgeInsets.all(30),
         child: Column(
           children: [
             TextField(
@@ -44,13 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _usernameController,
             ),
             TextField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Password",
               ),
               controller: _passwordController,
               obscureText: true,
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -58,18 +58,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     await _registerUser();
                   },
-                  child: Text("register"),
+                  child: const Text("register"),
                 ),
                 ElevatedButton(
                   onPressed: () async {
                     bool loggedIn = await _loginUser();
                     if (loggedIn) {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Home()))
+                              MaterialPageRoute(builder: (context) => Home()))
                           .then((value) => setState(() {}));
                     }
                   },
-                  child: Text("login"),
+                  child: const Text("login"),
                 ),
               ],
             ),
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (username == '' || password == '') {
       showDialog(
           context: context,
-          builder: (_) => AlertDialog(
+          builder: (_) => const AlertDialog(
                 title: Text('Failed login'),
                 content: Text('Empty fields'),
               ));
@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (_) => const AlertDialog(
               title: Text('Failed login'),
               content: Text('Incorrect username or password'),
             ));
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (username == '' || password == '') {
       showDialog(
           context: context,
-          builder: (_) => AlertDialog(
+          builder: (_) => const AlertDialog(
                 title: Text('Failed registration'),
                 content: Text('Empty fields'),
               ));
@@ -130,14 +130,14 @@ class _LoginScreenState extends State<LoginScreen> {
       showDialog(
           context: context,
           builder: (_) => AlertDialog(
-                title: Text('Successful registration'),
+                title: const Text('Successful registration'),
                 content: Text('Username : $username'),
               ));
       _clearTextFields();
     } else {
       showDialog(
           context: context,
-          builder: (_) => AlertDialog(
+          builder: (_) => const AlertDialog(
               title: Text('Failed registration'),
               content: Text('Such username already exists')));
     }

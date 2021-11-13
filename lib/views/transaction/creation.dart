@@ -21,15 +21,15 @@ class _TransactionCreationState extends State<TransactionCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add transaction"),
+        title: const Text("Add transaction"),
       ),
       body: ListView(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         children: [
           TextField(
             keyboardType: TextInputType.number,
             controller: _amountController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Money amount",
             ),
           ),
@@ -37,7 +37,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
           TextField(
             keyboardType: TextInputType.text,
             controller: _descriptionController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Description",
             ),
           ),
@@ -47,7 +47,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
           Column(
             children: [
               ListTile(
-                title: Text("income"),
+                title: const Text("income"),
                 leading: Radio(
                   value: true,
                   groupValue: isIncome,
@@ -59,7 +59,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                 ),
               ),
               ListTile(
-                title: Text("outcome"),
+                title: const Text("outcome"),
                 leading: Radio(
                   value: false,
                   groupValue: isIncome,
@@ -79,7 +79,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                   Navigator.pop(context);
                 }
               },
-              child: Text("Submit"),
+              child: const Text("Submit"),
             ),
           ),
         ],
@@ -115,7 +115,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                       accounts.map<DropdownMenuItem<Account>>((Account value) {
                     return DropdownMenuItem<Account>(
                       value: value,
-                      child: Text(value.account_name),
+                      child: Text(value.accountName),
                     );
                   }).toList(),
                 );

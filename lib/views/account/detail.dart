@@ -8,7 +8,7 @@ class AccountDetail extends StatelessWidget {
   AccountDetail(this.account, {Key? key}) : super(key: key);
 
   Account getAccount() {
-    return this.account;
+    return account;
   }
 
   @override
@@ -16,7 +16,7 @@ class AccountDetail extends StatelessWidget {
     final controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cash Flow"),
+        title: const Text("Cash Flow"),
       ),
       body: Column(
         children: [
@@ -56,6 +56,8 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String isIncome = '';
+    elem.income ? isIncome = '+' : isIncome = '-';
     final controller = Provider.of(context);
     return Column(
       children: [
@@ -63,8 +65,23 @@ class TransactionTile extends StatelessWidget {
           thickness: 1.5,
         ),
         ListTile(
-          title: Text(elem.categoryId),
-          trailing: Text("${elem.amount} тг\n${elem.createdTime}"),
+          title: FutureBuilder(
+            future: controller.getCategoryById(elem.categoryId),
+            builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data!.categoryName);
+              } else {
+                return const Text("");
+              }
+            },
+          ),
+          subtitle: Text(elem.createdTime),
+          trailing: Text(
+            "$isIncome ${elem.amount}\$",
+            style: elem.income
+                ? const TextStyle(color: Colors.green, fontSize: 15)
+                : const TextStyle(color: Colors.red, fontSize: 15),
+          ),
         )
       ],
     );
@@ -89,7 +106,7 @@ class AccountInfo extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Center(
               child: Text(
-                account.account_name,
+                account.accountName,
                 style: const TextStyle(fontSize: 26.0),
               ),
             ),

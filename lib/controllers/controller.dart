@@ -30,19 +30,21 @@ class Controller {
     return await services.getTransactions();
   }
 
-  Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
-    return await services.getTransactionsByAccount(acc);
+  Future<List<Transaction>> getTransactionsByAccount(Account account) async {
+    return await services.getTransactionsByAccount(account);
   }
+
+  Future deleteTransaction(Transaction transaction) async {}
 
   Future createCategory(Category category) async {
     await services.createCategory(category);
   }
 
-  Future<Category> getCategoryById(String id) async {
-    return await services.getCategoryById(id);
-  }
-
   Future<List<Category>> getCategories() async {
     return await services.getCategories();
+  }
+
+  Future<Category> getCategoryById(String id) async {
+    return await services.getCategoryById(id);
   }
 }

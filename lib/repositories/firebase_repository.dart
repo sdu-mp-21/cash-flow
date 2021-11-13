@@ -88,7 +88,7 @@ class FirebaseRepository extends Repository {
         .doc();
 
     transaction.setTransactionId = docRef.id;
-    transaction.setAccountId = account.account_id;
+    transaction.setAccountId = account.accountId;
     transaction.setCategoryId = category.categoryId;
     await docRef.set(transaction.toJson());
   }
@@ -109,7 +109,7 @@ class FirebaseRepository extends Repository {
     final snapshot = await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
-        .where('account_id', isEqualTo: acc.account_id)
+        .where('account_id', isEqualTo: acc.accountId)
         .get();
 
     final documents = snapshot.docs;
@@ -127,7 +127,7 @@ class FirebaseRepository extends Repository {
         .doc();
 
     category.setCategoryId = docRef.id;
-    docRef.set(category.toJson());
+    await docRef.set(category.toJson());
   }
 
   Future<List<Models.Category>> getCategories() async {

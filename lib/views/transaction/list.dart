@@ -4,6 +4,7 @@ import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
 import 'package:final_project/views/transaction/creation.dart';
 import 'package:final_project/views/transaction/detail.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TransactionList extends StatefulWidget {
   const TransactionList({Key? key}) : super(key: key);
@@ -19,9 +20,38 @@ class _TransactionListState extends State<TransactionList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
+          Container(
+              child: FutureBuilder(
+                  future: getChartValue(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return SfCircularChart(
+                        title: ChartTitle(text: "transaction amount chart"),
+                        legend: Legend(isVisible: true),
+                        tooltipBehavior: TooltipBehavior(enable: true),
+                        series: <CircularSeries>[
+                          DoughnutSeries<ChartValue, String>(
+                              dataSource: snapshot.data,
+                              xValueMapper: (ChartValue data, _) =>
+                                  data.category,
+                              yValueMapper: (ChartValue data, _) => data.amount,
+                              dataLabelSettings:
+                                  const DataLabelSettings(isVisible: true),
+                              enableTooltip: true)
+                        ],
+                      );
+                    } else {
+                      return const Text('loading...');
+                    }
+                  })),
           Expanded(
             child: FutureBuilder(
               future: _buildTransactionList(),
@@ -39,7 +69,7 @@ class _TransactionListState extends State<TransactionList> {
                     ),
                   );
                 } else {
-                  return Text('loading...');
+                  return const Text('loading...');
                 }
               },
             ),
@@ -50,7 +80,7 @@ class _TransactionListState extends State<TransactionList> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TransactionCreation(),
+                    builder: (context) => const TransactionCreation(),
                   ),
                 ).then((value) => setState(() {}));
               },
@@ -62,12 +92,35 @@ class _TransactionListState extends State<TransactionList> {
     );
   }
 
+  Future<List<ChartValue>> getChartValue() async {
+    final controller = Provider.of(context);
+    final transactions = await controller.getTransactions();
+    final Map<String, int> chartV = {};
+    for (var transaction in transactions) {
+      if (!transaction.income) {
+        continue;
+      }
+      final category = await controller.getCategoryById(transaction.categoryId);
+      if (chartV[category.categoryName] == null) {
+        chartV[category.categoryName] = transaction.amount;
+      } else {
+        chartV[category.categoryName] =
+            chartV[category.categoryName]! + transaction.amount;
+      }
+    }
+    final List<ChartValue> res = [];
+    chartV.forEach((key, value) {
+      res.add(ChartValue(key, value));
+    });
+    return res;
+  }
+
   Future<List<Widget>> _buildTransactionList() async {
     final transactions = await Provider.of(context).getTransactions();
     final tiles = <Widget>[];
-    transactions.forEach((t) {
+    for (var t in transactions) {
       tiles.add(_buildTransactionTile(t));
-    });
+    }
     return tiles;
   }
 
@@ -92,8 +145,8 @@ class _TransactionListState extends State<TransactionList> {
         trailing: Text(
           "$isIncome" + "${transaction.amount}\$",
           style: transaction.income
-              ? TextStyle(color: Colors.green, fontSize: 15)
-              : TextStyle(color: Colors.red, fontSize: 15),
+              ? const TextStyle(color: Colors.green, fontSize: 15)
+              : const TextStyle(color: Colors.red, fontSize: 15),
         ),
         onTap: () {
           Navigator.push(
@@ -101,7 +154,14 @@ class _TransactionListState extends State<TransactionList> {
             MaterialPageRoute(
               builder: (context) => TransactionDetail(transaction),
             ),
-          );
+          ).then((value) => setState(() {}));
         });
   }
+}
+
+class ChartValue {
+  final String category;
+  final int amount;
+
+  ChartValue(this.category, this.amount);
 }

@@ -13,7 +13,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     return Container(
       // width: 250,
-      margin: EdgeInsets.all(100),
+      margin: const EdgeInsets.all(100),
       alignment: Alignment.center,
       child: _buildMenu(),
     );
@@ -29,12 +29,12 @@ class _MenuScreenState extends State<MenuScreen> {
             controller.user.email,
             style: TextStyle(fontSize: 20),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             'user_id: ${controller.user.userId}',
             style: TextStyle(fontSize: 18),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);

@@ -11,9 +11,9 @@ class Account {
   static const keyAccountName = 'account_name';
   static const keyBalance = 'balance';
 
-  String get account_id => _accountId;
+  String get accountId => _accountId;
 
-  String get account_name => _accountName;
+  String get accountName => _accountName;
 
   int get balance => _balance;
 
@@ -27,10 +27,10 @@ class Account {
 
   @override
   bool operator ==(Object other) =>
-      other is Account && other.account_name == account_name;
+      other is Account && other._accountName == _accountName;
 
   @override
-  int get hashCode => account_name.hashCode;
+  int get hashCode => _accountName.hashCode;
 
   Account.fromJson(Map<String, dynamic> data) {
     _accountId = data[keyAccountId];

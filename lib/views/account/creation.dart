@@ -18,7 +18,7 @@ class _AccountCreationState extends State<AccountCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cash Flow"),
+        title: const Text("Cash Flow"),
       ),
       body: ListView(
         children: [
@@ -26,7 +26,7 @@ class _AccountCreationState extends State<AccountCreation> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _accountNameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "account name",
               ),
             ),
@@ -36,7 +36,7 @@ class _AccountCreationState extends State<AccountCreation> {
             child: TextField(
               keyboardType: TextInputType.number,
               controller: _balanceController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "balance",
               ),
             ),
@@ -47,7 +47,7 @@ class _AccountCreationState extends State<AccountCreation> {
                 await _createAccount();
                 Navigator.pop(context);
               },
-              child: Text("Submit"),
+              child: const Text("Submit"),
             ),
           ),
         ],

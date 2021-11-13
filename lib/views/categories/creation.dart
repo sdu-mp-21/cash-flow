@@ -16,24 +16,26 @@ class _CategoryCreationState extends State<CategoryCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Category'),
+        title: const Text('Create Category'),
       ),
       body: Container(
-        padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Column(
-        children: [
-          TextField(
-            controller: _categoryNameController,
-            decoration: InputDecoration(
-              hintText: "Category name",
-            ),
-          ),
-          ElevatedButton(onPressed: () async {
-            await _createCategory();
-            Navigator.pop(context);
-          }, child: Text('Submit')),
-        ],
-      )),
+            children: [
+              TextField(
+                controller: _categoryNameController,
+                decoration: const InputDecoration(
+                  hintText: "Category name",
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    await _createCategory();
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Submit')),
+            ],
+          )),
     );
   }
 
