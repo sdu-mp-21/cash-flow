@@ -1,5 +1,6 @@
 import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:final_project/provider.dart';
 
 import 'package:final_project/provider.dart';
 
@@ -17,14 +18,14 @@ class TransactionDetail extends StatelessWidget {
           IconButton(
               onPressed: () async {
                 final controller = Provider.of(context);
-                controller.deleteTransaction(transaction);
+                await controller.deleteTransaction(transaction);
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.delete)),
           IconButton(
               onPressed: () async {
                 final controller = Provider.of(context);
-                controller.deleteTransaction(transaction);
+                await controller.deleteTransaction(transaction);
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.change_circle)),
@@ -41,12 +42,23 @@ class TransactionDetail extends StatelessWidget {
             "${transaction.description}",
             style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 15),
-          Text('account_id: ${transaction.accountId}'),
-          const SizedBox(height: 15),
-          Text('category_id: ${transaction.categoryId}'),
-          const SizedBox(height: 15),
-          Text('creation date: ${transaction.createdAt}'),
+          SizedBox(height: 15),
+          Text('Account ID: ${transaction.accountId}'),
+          SizedBox(height: 15),
+          FutureBuilder<Category>(
+            future:
+                Provider.of(context).getCategoryById(transaction.categoryId),
+            builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+              if (snapshot.hasData) {
+                Category category = snapshot.data!;
+                return Text('Category: ${category.categoryName}');
+              } else {
+                return Text("Loading...");
+              }
+            },
+          ),
+          SizedBox(height: 15),
+          Text('Creation time: ${transaction.createdTime}'),
         ],
       ),
     );

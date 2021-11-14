@@ -1,8 +1,11 @@
 import 'package:final_project/provider.dart';
 import 'package:flutter/material.dart';
-import './views/home.dart';
+import 'package:final_project/views/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -14,7 +17,7 @@ class MyApp extends StatelessWidget {
     return Provider(
       child: MaterialApp(
         theme: ThemeData(primarySwatch: Colors.red),
-        home: const Home(),
+        home: LoginScreen(),
       ),
     );
   }

@@ -1,8 +1,10 @@
-import 'package:final_project/repositories/file_repository.dart';
 import 'package:final_project/models/models.dart';
+import 'package:final_project/repositories/firebase_repository.dart';
 
 class Service {
-  final repositories = FileRepository();
+  final repositories = FirebaseRepository();
+
+  User get user => repositories.user;
 
   Future<bool> loginUser(User user) async {
     return await repositories.loginUser(user);
@@ -10,10 +12,6 @@ class Service {
 
   Future<bool> registerUser(User user) async {
     return await repositories.registerUser(user);
-  }
-
-  void clearUsers() {
-    repositories.clearUsers();
   }
 
   Future createAccount(Account account) async {
@@ -24,8 +22,9 @@ class Service {
     return await repositories.getAccounts();
   }
 
-  Future createTransaction(Account account, Transaction transaction) async {
-    await repositories.createTransaction(account, transaction);
+  Future createTransaction(
+      Transaction transaction, Account account, Category category) async {
+    await repositories.createTransaction(transaction, account, category);
   }
 
   Future<List<Transaction>> getTransactions() async {
@@ -40,17 +39,11 @@ class Service {
     await repositories.createCategory(category);
   }
 
-  Future<Category> getCategory(int id) async {
-    return await repositories.getCategory(id);
+  Future<Category> getCategoryById(String id) async {
+    return await repositories.getCategoryById(id);
   }
 
   Future<List<Category>> getCategories() async {
     return await repositories.getCategories();
   }
-
-  Future deleteTransaction(Transaction transaction) async {
-    return await repositories.deleteTransaction(transaction);
-  }
-
-  User get user => repositories.user;
 }

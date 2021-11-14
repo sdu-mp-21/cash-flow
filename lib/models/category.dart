@@ -1,22 +1,18 @@
 class Category {
-  late int _categoryId;
-  late int _userId;
+  String _categoryId = '';
   late String _categoryName;
 
   Category(this._categoryName);
 
   static const keyCategoryId = 'category_id';
-  static const keyUserId = 'user_id';
   static const keyCategoryName = 'category_name';
 
-  int get categoryId => _categoryId;
-  String get categoryName => _categoryName;
-  set setCategoryId(int id) {
-    _categoryId = id;
-  }
+  String get categoryId => _categoryId;
 
-  set setUserId(int id) {
-    _userId = id;
+  String get categoryName => _categoryName;
+
+  set setCategoryId(String id) {
+    _categoryId = id;
   }
 
   @override
@@ -28,14 +24,12 @@ class Category {
 
   Category.fromJson(Map<String, dynamic> data) {
     _categoryId = data[keyCategoryId];
-    _userId = data[keyUserId];
     _categoryName = data[keyCategoryName];
   }
 
   Map<String, dynamic> toJson() {
     return {
       keyCategoryId: _categoryId,
-      keyUserId: _userId,
       keyCategoryName: _categoryName,
     };
   }

@@ -100,11 +100,12 @@ class _TransactionListState extends State<TransactionList> {
       if (!transaction.income) {
         continue;
       }
-      final category = await controller.getCategory(transaction.categoryId);
+      final category = await controller.getCategoryById(transaction.categoryId);
       if (chartV[category.categoryName] == null) {
         chartV[category.categoryName] = transaction.amount;
       } else {
-        chartV[category.categoryName] = chartV[category.categoryName]! + transaction.amount;
+        chartV[category.categoryName] =
+            chartV[category.categoryName]! + transaction.amount;
       }
     }
     final List<ChartValue> res = [];
@@ -129,13 +130,14 @@ class _TransactionListState extends State<TransactionList> {
     final controller = Provider.of(context);
 
     return ListTile(
-        title: FutureBuilder(
-          future: controller.getCategory(transaction.categoryId),
+        title: FutureBuilder<Category>(
+          future: controller.getCategoryById(transaction.categoryId),
           builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
             if (snapshot.hasData) {
-              return Text(snapshot.data!.categoryName);
+              Category category = snapshot.data!;
+              return Text(category.categoryName);
             } else {
-              return const Text("");
+              return Text("Loading...");
             }
           },
         ),
@@ -153,7 +155,6 @@ class _TransactionListState extends State<TransactionList> {
               builder: (context) => TransactionDetail(transaction),
             ),
           ).then((value) => setState(() {}));
-          
         });
   }
 }
@@ -161,5 +162,6 @@ class _TransactionListState extends State<TransactionList> {
 class ChartValue {
   final String category;
   final int amount;
+
   ChartValue(this.category, this.amount);
 }

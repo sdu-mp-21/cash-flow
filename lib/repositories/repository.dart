@@ -10,7 +10,15 @@ abstract class Repository {
 
   getAccounts();
 
-  createTransaction(Account account, Transaction transaction);
+  createTransaction(Transaction transaction, Account account, Category category);
 
   getTransactions();
+
+  getTransactionsByAccount(Account account);
+
+  createCategory(Category category);
+
+  getCategories();
+
+  getCategoryById(String id);
 }

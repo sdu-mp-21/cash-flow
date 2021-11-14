@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class AccountDetail extends StatelessWidget {
   late Account account;
+
   AccountDetail(this.account, {Key? key}) : super(key: key);
 
   Account getAccount() {
@@ -65,7 +66,7 @@ class TransactionTile extends StatelessWidget {
         ),
         ListTile(
           title: FutureBuilder(
-            future: controller.getCategory(elem.categoryId),
+            future: controller.getCategoryById(elem.categoryId),
             builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
               if (snapshot.hasData) {
                 return Text(snapshot.data!.categoryName);
@@ -74,7 +75,7 @@ class TransactionTile extends StatelessWidget {
               }
             },
           ),
-          subtitle: Text(elem.createdAt),
+          subtitle: Text(elem.createdTime),
           trailing: Text(
             "$isIncome ${elem.amount}\$",
             style: elem.income
