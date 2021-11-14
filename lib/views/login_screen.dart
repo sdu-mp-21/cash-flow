@@ -2,7 +2,6 @@ import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/views/home.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -14,11 +13,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _usernameController = TextEditingController();
   late TextEditingController _passwordController = TextEditingController();
-
-  void initState() {
-    Firebase.initializeApp();
-    super.initState();
-  }
 
   @override
   void dispose() {
