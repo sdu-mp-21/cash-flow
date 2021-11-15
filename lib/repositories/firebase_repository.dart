@@ -104,6 +104,13 @@ class FirebaseRepository extends Repository {
         .toList();
   }
 
+  Future deleteTransaction(Models.Transaction transaction) async{
+    collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionTransactions).doc(transaction.transactionId).delete();
+  }
+
+
   Future<List<Models.Transaction>> getTransactionsByAccount(
       Models.Account acc) async {
     final snapshot = await collectionUsersReference
@@ -125,7 +132,6 @@ class FirebaseRepository extends Repository {
         .doc(_user.userId)
         .collection(collectionCategories)
         .doc();
-
     category.setCategoryId = docRef.id;
     await docRef.set(category.toJson());
   }

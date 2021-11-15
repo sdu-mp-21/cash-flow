@@ -35,6 +35,10 @@ class Service {
     return await repositories.getTransactionsByAccount(acc);
   }
 
+  Future deleteTransaction(Transaction transaction) async {
+    await repositories.deleteTransaction(transaction);
+  }
+
   Future createCategory(Category category) async {
     await repositories.createCategory(category);
   }
