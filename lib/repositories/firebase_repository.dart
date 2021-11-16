@@ -78,6 +78,19 @@ class FirebaseRepository extends Repository {
     return documents.map((doc) => Models.Account.fromJson(doc.data())).toList();
   }
 
+  Future updateAccountBalanceByAmount(
+      String accountId, int amount, bool income) async {
+    final docRef = await collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionAccounts)
+        .doc(accountId);
+
+    final snapshot = await docRef.get();
+    int balance = snapshot.data()!["balance"];
+    balance += (income) ? amount : -amount;
+    await docRef.update({"balance": balance});
+  }
+
   //---transactions---
 
   Future createTransaction(Models.Transaction transaction,
@@ -90,6 +103,8 @@ class FirebaseRepository extends Repository {
     transaction.setTransactionId = docRef.id;
     transaction.setAccountId = account.accountId;
     transaction.setCategoryId = category.categoryId;
+    await updateAccountBalanceByAmount(
+        account.accountId, transaction.amount, transaction.income);
     await docRef.set(transaction.toJson());
   }
 
@@ -104,12 +119,15 @@ class FirebaseRepository extends Repository {
         .toList();
   }
 
-  Future deleteTransaction(Models.Transaction transaction) async{
-    collectionUsersReference
+  Future deleteTransaction(Models.Transaction transaction) async {
+    await collectionUsersReference
         .doc(_user.userId)
-        .collection(collectionTransactions).doc(transaction.transactionId).delete();
+        .collection(collectionTransactions)
+        .doc(transaction.transactionId)
+        .delete();
+    await updateAccountBalanceByAmount(
+        transaction.accountId, transaction.amount, !transaction.income);
   }
-
 
   Future<List<Models.Transaction>> getTransactionsByAccount(
       Models.Account acc) async {
