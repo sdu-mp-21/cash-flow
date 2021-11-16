@@ -50,4 +50,8 @@ class Service {
   Future<List<Category>> getCategories() async {
     return await repositories.getCategories();
   }
+
+  Future deleteCategory(Category category) async {
+    await repositories.deleteCategory(category);
+  }
 }

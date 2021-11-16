@@ -17,6 +17,8 @@ class FirebaseRepository extends Repository {
   static const collectionTransactions = 'transactions';
   static const collectionCategories = 'categories';
 
+  static const categoryNotFound = "Uncategorized";
+
   // for developing purposes, todo: delete initialization and make it 'late'
   Models.User _user = Models.User('dias@mail.com', 'qwerty');
 
@@ -172,6 +174,17 @@ class FirebaseRepository extends Repository {
         .doc(id);
 
     final data = (await docRef.get()).data();
-    return Models.Category.fromJson(data!);
+    if (data == null) {
+      return Models.Category(categoryNotFound);
+    }
+    return Models.Category.fromJson(data);
+  }
+
+  Future deleteCategory(Models.Category category) async {
+    await collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionCategories)
+        .doc(category.categoryId)
+        .delete();
   }
 }

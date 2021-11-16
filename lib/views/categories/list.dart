@@ -66,9 +66,20 @@ class _CategoriesListState extends State<CategoriesList> {
   }
 
   Widget _buildCategoryTile(Category category) {
-    return ListTile(
-      title: Text(category.categoryName, style: const TextStyle(fontSize: 18)),
-      onTap: () {},
+    return Dismissible(
+      key: Key(category.categoryName),
+      onDismissed: (direction) async {
+        final controller = Provider.of(context);
+        await controller.deleteCategory(category);
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${category.categoryName} dismissed')));
+      },
+      background: Container(color: Colors.red),
+      child: ListTile(
+        title:
+            Text(category.categoryName, style: const TextStyle(fontSize: 18)),
+        onTap: () {},
+      ),
     );
   }
 }

@@ -22,7 +22,8 @@ class Controller {
     return await services.getAccounts();
   }
 
-  Future createTransaction(Transaction transaction, Account account, Category category) async {
+  Future createTransaction(
+      Transaction transaction, Account account, Category category) async {
     await services.createTransaction(transaction, account, category);
   }
 
@@ -48,5 +49,9 @@ class Controller {
 
   Future<Category> getCategoryById(String id) async {
     return await services.getCategoryById(id);
+  }
+
+  Future deleteCategory(Category category) async {
+    await services.deleteCategory(category);
   }
 }
