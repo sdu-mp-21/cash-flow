@@ -11,21 +11,12 @@ Members:
 - 190103485 - Dias Nurmangaliyev
 - 190107047 - Zhandos Tangatar
 
-<img src = "screenshots/tool.png" width ="200" /> 
-
-
 ![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/uml.png)
-
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_list.jpg)
-
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transaction_list.jpg)
-
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transaction_detail.jpg)
-
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/category_list.jpg)
-
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_detail.jpg)
-
-![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/menu.jpg)
+<img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_list.jpg" alt="✂-1" style="width:30%;">
+<img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transaction_list.jpg" alt="✂-1" style="width:30%;">
+<img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transaction_detail.jpg" alt="✂-1" style="width:30%;">
+<img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/category_list.jpg" alt="✂-1" style="width:30%;">
+<img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_detail.jpg" alt="✂-1" style="width:30%;">
+<img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/menu.jpg" alt="✂-1" style="width:30%;">
 
 
