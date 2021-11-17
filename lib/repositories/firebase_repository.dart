@@ -80,6 +80,12 @@ class FirebaseRepository extends Repository {
     return documents.map((doc) => Models.Account.fromJson(doc.data())).toList();
   }
 
+  CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
+    return collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionAccounts);
+  }
+
   Future updateAccountBalanceByAmount(
       String accountId, int amount, bool income) async {
     final docRef = await collectionUsersReference
@@ -110,15 +116,12 @@ class FirebaseRepository extends Repository {
     await docRef.set(transaction.toJson());
   }
 
-  Future<List<Models.Transaction>> getTransactions() async {
-    final colRef = await collectionUsersReference
+  CollectionReference<Map<String, dynamic>> getTransactions() {
+    final colRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions);
 
-    final documents = (await colRef.get()).docs;
-    return documents
-        .map((doc) => Models.Transaction.fromJson(doc.data()))
-        .toList();
+    return colRef;
   }
 
   Future deleteTransaction(Models.Transaction transaction) async {
@@ -167,8 +170,14 @@ class FirebaseRepository extends Repository {
         .toList();
   }
 
+  CollectionReference<Map<String, dynamic>> getCategoriesDocuments() {
+    return collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionCategories);
+  }
+
   Future<Models.Category> getCategoryById(String id) async {
-    final docRef = await collectionUsersReference
+    final docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)
         .doc(id);
@@ -178,6 +187,13 @@ class FirebaseRepository extends Repository {
       return Models.Category(categoryNotFound);
     }
     return Models.Category.fromJson(data);
+  }
+
+  DocumentReference<Map<String, dynamic>> getCategoryDocumentById(String id) {
+    return collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionCategories)
+        .doc(id);
   }
 
   Future deleteCategory(Models.Category category) async {

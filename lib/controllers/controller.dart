@@ -1,5 +1,7 @@
 import 'package:final_project/models/models.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 import 'package:final_project/services/service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 
 class Controller {
   final services = Service();
@@ -22,13 +24,17 @@ class Controller {
     return await services.getAccounts();
   }
 
+  fire.CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
+    return services.getAccountsDocuments();
+  }
+
   Future createTransaction(
       Transaction transaction, Account account, Category category) async {
     await services.createTransaction(transaction, account, category);
   }
 
-  Future<List<Transaction>> getTransactions() async {
-    return await services.getTransactions();
+  fire.CollectionReference<Map<String, dynamic>> getTransactions() {
+    return services.getTransactions();
   }
 
   Future<List<Transaction>> getTransactionsByAccount(Account account) async {
@@ -47,8 +53,17 @@ class Controller {
     return await services.getCategories();
   }
 
+  fire.CollectionReference<Map<String, dynamic>> getCategoriesDocuments() {
+    return services.getCategoriesDocuments();
+  }
+
   Future<Category> getCategoryById(String id) async {
     return await services.getCategoryById(id);
+  }
+
+  fire.DocumentReference<Map<String, dynamic>> getCategoryDocumentById(
+      String id) {
+    return services.getCategoryDocumentById(id);
   }
 
   Future deleteCategory(Category category) async {
