@@ -1,4 +1,5 @@
 import 'package:final_project/models/models.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 import 'package:final_project/views/account/creation.dart';
 import 'package:final_project/views/account/detail.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class AccountList extends StatefulWidget {
 class _AccountListState extends State<AccountList> {
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       child: Column(
@@ -43,26 +45,25 @@ class _AccountListState extends State<AccountList> {
           ),
           const SizedBox(height: 20),
           Container(
-            child: FutureBuilder(
-              future: _buildAccountList(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Container(
-                    // set the height to container, cause nester columns trigger overflow error
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: ListView(
-                      children: ListTile.divideTiles(
-                              context: context, tiles: snapshot.data!)
-                          .toList(),
-                    ),
-                  );
-                } else {
-                  return const Text('loading...');
-                }
+            child: StreamBuilder(
+              stream: controller.getAccountsDocuments().snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
+                  snapshot) {
+                final documents = snapshot.data?.docs ?? [];
+                final x = documents
+                    .map((doc) => Account.fromJson(doc.data()))
+                    .toList();
+                final tiles = x.map((e) => _buildAccountTile(e)).toList();
+                return Container(
+                  // set the height to container, cause nester columns trigger overflow error
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: ListView(
+                    children:
+                    ListTile.divideTiles(context: context, tiles: tiles)
+                        .toList(),
+                  ),
+                );
               },
             ),
           ),
@@ -79,15 +80,6 @@ class _AccountListState extends State<AccountList> {
         ],
       ),
     );
-  }
-
-  Future<List<Widget>> _buildAccountList() async {
-    final accounts = await Provider.of(context).getAccounts();
-    final tiles = <Widget>[];
-    for (var account in accounts) {
-      tiles.add(_buildAccountTile(account));
-    }
-    return tiles;
   }
 
   Widget _buildAccountTile(Account account) {

@@ -5,6 +5,7 @@ import 'package:final_project/models/models.dart';
 import 'package:final_project/views/transaction/creation.dart';
 import 'package:final_project/views/transaction/detail.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 
 class TransactionList extends StatefulWidget {
   const TransactionList({Key? key}) : super(key: key);
@@ -19,58 +20,87 @@ class _TransactionListState extends State<TransactionList> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
           Container(
-              child: FutureBuilder(
-                  future: getChartValue(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('${snapshot.error}');
-                    }
+            child: StreamBuilder(
+              stream: controller.getTransactions().snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
+                      snapshot) {
+                final documents = snapshot.data?.docs ?? [];
+                if (documents.isEmpty) {
+                  return const Text("");
+                }
+                final transactions = documents
+                    .map((doc) => Transaction.fromJson(doc.data()))
+                    .toList();
 
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return SfCircularChart(
-                        title: ChartTitle(text: "transaction amount chart"),
-                        legend: Legend(isVisible: true),
-                        tooltipBehavior: TooltipBehavior(enable: true),
-                        series: <CircularSeries>[
-                          DoughnutSeries<ChartValue, String>(
-                              dataSource: snapshot.data,
-                              xValueMapper: (ChartValue data, _) =>
-                                  data.category,
-                              yValueMapper: (ChartValue data, _) => data.amount,
-                              dataLabelSettings:
-                                  const DataLabelSettings(isVisible: true),
-                              enableTooltip: true)
-                        ],
-                      );
-                    } else {
-                      return const Text('loading...');
+                // final chartData = getChartValue(transactions);
+                return StreamBuilder(
+                  stream: controller.getCategoriesDocuments().snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
+                          snapshot) {
+                    final categoryDocuments = snapshot.data?.docs ?? [];
+                    if (categoryDocuments.isEmpty) {
+                      return const Text("Loading");
                     }
-                  })),
+                    final categories = categoryDocuments
+                        .map((e) => Category.fromJson(e.data()))
+                        .toList();
+                    Map<String, String> transactionToCategory = {};
+                    for (var transaction in transactions) {
+                      for (var category in categories) {
+                        if (transaction.categoryId == category.categoryId) {
+                          transactionToCategory[transaction.transactionId] =
+                              category.categoryName;
+                          break;
+                        }
+                      }
+                    }
+                    return SfCircularChart(
+                      title: ChartTitle(text: "transaction amount chart"),
+                      legend: Legend(isVisible: true),
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <CircularSeries>[
+                        DoughnutSeries<ChartValue, String>(
+                            dataSource: getChartValue(
+                                transactions, transactionToCategory),
+                            xValueMapper: (ChartValue data, _) => data.category,
+                            yValueMapper: (ChartValue data, _) => data.amount,
+                            dataLabelSettings:
+                                const DataLabelSettings(isVisible: true),
+                            enableTooltip: true)
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ),
           Expanded(
-            child: FutureBuilder(
-              future: _buildTransactionList(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
-
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Container(
-                    child: ListView(
-                      children: ListTile.divideTiles(
-                              context: context, tiles: snapshot.data!)
-                          .toList(),
-                    ),
-                  );
-                } else {
-                  return const Text('loading...');
-                }
+            child: StreamBuilder(
+              stream: controller.getTransactions().snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
+                      snapshot) {
+                final documents = snapshot.data?.docs ?? [];
+                final transactions = documents
+                    .map((doc) => Transaction.fromJson(doc.data()))
+                    .toList();
+                final tiles =
+                    transactions.map((e) => _buildTransactionTile(e)).toList();
+                return Container(
+                  child: ListView(
+                    children:
+                        ListTile.divideTiles(context: context, tiles: tiles)
+                            .toList(),
+                  ),
+                );
               },
             ),
           ),
@@ -92,20 +122,19 @@ class _TransactionListState extends State<TransactionList> {
     );
   }
 
-  Future<List<ChartValue>> getChartValue() async {
+  List<ChartValue> getChartValue(List<Transaction> transactions,
+      Map<String, String> transactionToCategory) {
     final controller = Provider.of(context);
-    final transactions = await controller.getTransactions();
     final Map<String, int> chartV = {};
     for (var transaction in transactions) {
       if (!transaction.income) {
         continue;
       }
-      final category = await controller.getCategoryById(transaction.categoryId);
-      if (chartV[category.categoryName] == null) {
-        chartV[category.categoryName] = transaction.amount;
+      final category = transactionToCategory[transaction.transactionId]!;
+      if (chartV[category] == null) {
+        chartV[category] = transaction.amount;
       } else {
-        chartV[category.categoryName] =
-            chartV[category.categoryName]! + transaction.amount;
+        chartV[category] = chartV[category]! + transaction.amount;
       }
     }
     final List<ChartValue> res = [];
@@ -115,35 +144,34 @@ class _TransactionListState extends State<TransactionList> {
     return res;
   }
 
-  Future<List<Widget>> _buildTransactionList() async {
-    final transactions = await Provider.of(context).getTransactions();
-    final tiles = <Widget>[];
-    for (var t in transactions) {
-      tiles.add(_buildTransactionTile(t));
-    }
-    return tiles;
-  }
-
   Widget _buildTransactionTile(Transaction transaction) {
     String isIncome = '';
     transaction.income ? isIncome = '+' : isIncome = '-';
     final controller = Provider.of(context);
 
     return ListTile(
-        title: FutureBuilder<Category>(
-          future: controller.getCategoryById(transaction.categoryId),
-          builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+        title: StreamBuilder(
+          stream: controller
+              .getCategoryDocumentById(transaction.categoryId)
+              .snapshots(),
+          builder: (BuildContext context,
+              AsyncSnapshot<fire.DocumentSnapshot<Map<String, dynamic>>>
+                  snapshot) {
             if (snapshot.hasData) {
-              Category category = snapshot.data!;
+              final document = snapshot.data!.data();
+              Category category;
+              if (document == null) {
+                category = Category("Uncategorized");
+              }
+              category = Category.fromJson(document!);
               return Text(category.categoryName);
-            } else {
-              return Text("Loading...");
             }
+            return const Text("Loading");
           },
         ),
         subtitle: Text(transaction.description),
         trailing: Text(
-          "$isIncome" + "${transaction.amount}\$",
+          isIncome + "${transaction.amount}\$",
           style: transaction.income
               ? const TextStyle(color: Colors.green, fontSize: 15)
               : const TextStyle(color: Colors.red, fontSize: 15),

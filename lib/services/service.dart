@@ -1,5 +1,7 @@
 import 'package:final_project/models/models.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 import 'package:final_project/repositories/firebase_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 
 class Service {
   final repositories = FirebaseRepository();
@@ -22,13 +24,17 @@ class Service {
     return await repositories.getAccounts();
   }
 
+  fire.CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
+    return repositories.getAccountsDocuments();
+  }
+
   Future createTransaction(
       Transaction transaction, Account account, Category category) async {
     await repositories.createTransaction(transaction, account, category);
   }
 
-  Future<List<Transaction>> getTransactions() async {
-    return await repositories.getTransactions();
+  fire.CollectionReference<Map<String, dynamic>> getTransactions() {
+    return repositories.getTransactions();
   }
 
   Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
@@ -47,8 +53,17 @@ class Service {
     return await repositories.getCategoryById(id);
   }
 
+  fire.DocumentReference<Map<String, dynamic>> getCategoryDocumentById(
+      String id) {
+    return repositories.getCategoryDocumentById(id);
+  }
+
   Future<List<Category>> getCategories() async {
     return await repositories.getCategories();
+  }
+
+  fire.CollectionReference<Map<String, dynamic>> getCategoriesDocuments() {
+    return repositories.getCategoriesDocuments();
   }
 
   Future deleteCategory(Category category) async {
