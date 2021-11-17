@@ -58,8 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     bool loggedIn = await _loginUser();
                     if (loggedIn) {
-                      Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Home()))
+                      Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Home()))
                           .then((value) => setState(() {}));
                     }
                   },

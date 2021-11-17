@@ -1,7 +1,6 @@
 import 'package:final_project/models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 import 'package:final_project/services/service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 
 class Controller {
   final services = Service();
