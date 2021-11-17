@@ -1,4 +1,5 @@
 import 'package:final_project/models/models.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 import 'package:final_project/services/service.dart';
 
 class Controller {
@@ -20,6 +21,10 @@ class Controller {
 
   Future<List<Account>> getAccounts() async {
     return await services.getAccounts();
+  }
+
+  fire.CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
+    return services.getAccountsDocuments();
   }
 
   Future createTransaction(

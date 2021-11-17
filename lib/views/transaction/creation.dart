@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 
 // changed to stateful cause stateless doesn't see the context from other functions
 class TransactionCreation extends StatefulWidget {
@@ -97,31 +98,43 @@ class _TransactionCreationState extends State<TransactionCreation> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: FutureBuilder<List<Account>>(
-            future: controller.getAccounts(),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
-              if (snapshot.hasData) {
-                List<Account> accounts = (snapshot.data!);
-                selectedAccount ??= accounts[0];
-                return DropdownButton<Account>(
-                  value: selectedAccount,
-                  onChanged: (Account? newValue) {
-                    setState(() {
-                      selectedAccount = newValue!;
-                    });
-                  },
-                  items:
-                      accounts.map<DropdownMenuItem<Account>>((Account value) {
-                    return DropdownMenuItem<Account>(
-                      value: value,
-                      child: Text(value.accountName),
-                    );
-                  }).toList(),
-                );
-              } else {
-                return Text("Loading");
+          child: StreamBuilder(
+            stream: controller.getAccountsDocuments().snapshots(),
+            builder: (BuildContext context,
+                AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
+                    snapshot) {
+              final documents = snapshot.data?.docs ?? [];
+              var accounts = <Account>[];
+              if (documents.isNotEmpty) {
+                accounts = documents.map((doc) => Account.fromJson(doc.data())).toList();
               }
+              if (accounts.isEmpty) {
+                final temp = Account("", 0);
+                return DropdownButton<Account>(
+                  value: temp,
+                  items: [
+                    DropdownMenuItem<Account>(
+                      value: temp,
+                      child: Text(temp.accountName),
+                    ),
+                  ],
+                );
+              }
+              selectedAccount ??= accounts[0];
+              return DropdownButton<Account>(
+                value: selectedAccount,
+                onChanged: (Account? newValue) {
+                  setState(() {
+                    selectedAccount = newValue!;
+                  });
+                },
+                items: accounts.map<DropdownMenuItem<Account>>((Account value) {
+                  return DropdownMenuItem<Account>(
+                    value: value,
+                    child: Text(value.accountName),
+                  );
+                }).toList(),
+              );
             },
           ),
         ),

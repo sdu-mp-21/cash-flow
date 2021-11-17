@@ -80,6 +80,12 @@ class FirebaseRepository extends Repository {
     return documents.map((doc) => Models.Account.fromJson(doc.data())).toList();
   }
 
+  CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
+    return collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionAccounts);
+  }
+
   Future updateAccountBalanceByAmount(
       String accountId, int amount, bool income) async {
     final docRef = await collectionUsersReference
