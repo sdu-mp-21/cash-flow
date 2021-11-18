@@ -162,8 +162,9 @@ class _TransactionListState extends State<TransactionList> {
               Category category;
               if (document == null) {
                 category = Category("Uncategorized");
+              } else {
+                category = Category.fromJson(document);
               }
-              category = Category.fromJson(document!);
               return Text(category.categoryName);
             }
             return const Text("Loading");
