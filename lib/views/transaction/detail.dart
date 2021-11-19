@@ -34,31 +34,111 @@ class TransactionDetail extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Center(
-            child: _getAmountFromIncome(),
-          ),
+          TweenAnimationBuilder(
+            child: Center(
+              child: _getAmountFromIncome(),
+            ),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(seconds: 1),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.only(top: _val * 100),
+                  child: child!,
+                ),
+              );
+            }),
           const SizedBox(height: 15),
-          Text(
-            "${transaction.description}",
-            style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-          ),
+          // Text(
+          //   "${transaction.description}",
+          //   style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          // ),
+          TweenAnimationBuilder(
+            child:  Text(
+                      "${transaction.description}",
+                      style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(seconds: 1),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.only(left: _val * 50),
+                  child: child!,
+                ),
+              );
+            }),
           SizedBox(height: 15),
-          Text('Account ID: ${transaction.accountId}'),
+          // Text('Account ID: ${transaction.accountId}'),
+          TweenAnimationBuilder(
+            child:  Text(
+                      "Account ID: ${transaction.accountId}"
+                    ),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(seconds: 1),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.only(left: _val * 50),
+                  child: child!,
+                ),
+            );
+          }),
           SizedBox(height: 15),
-          FutureBuilder<Category>(
-            future:
-                Provider.of(context).getCategoryById(transaction.categoryId),
-            builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
-              if (snapshot.hasData) {
-                Category category = snapshot.data!;
-                return Text('Category: ${category.categoryName}');
-              } else {
-                return Text("Loading...");
-              }
-            },
-          ),
+          // FutureBuilder<Category>(
+          //   future:
+          //       Provider.of(context).getCategoryById(transaction.categoryId),
+          //   builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+          //     if (snapshot.hasData) {
+          //       Category category = snapshot.data!;
+          //       return Text('Category: ${category.categoryName}');
+          //     } else {
+          //       return Text("Loading...");
+          //     }
+          //   },
+          // ),
+          TweenAnimationBuilder(
+            child: FutureBuilder<Category>(
+                    future:
+                        Provider.of(context).getCategoryById(transaction.categoryId),
+                    builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+                      if (snapshot.hasData) {
+                        Category category = snapshot.data!;
+                        return Text('Category: ${category.categoryName}');
+                      } else {
+                        return Text("Loading...");
+                      }
+                    },
+            ),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(seconds: 1),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.only(left: _val * 50),
+                  child: child!,
+                ),
+            );
+          }),
           SizedBox(height: 15),
-          Text('Creation time: ${transaction.createdTime}'),
+          // Text('Creation time: ${transaction.createdTime}'),
+          TweenAnimationBuilder(
+            child: Text('Creation time: ${transaction.createdTime}'),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(seconds: 1),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.only(left: _val * 50),
+                  child: child!,
+                ),
+            );
+          }),
         ],
       ),
     );
