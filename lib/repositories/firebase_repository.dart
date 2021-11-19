@@ -24,6 +24,11 @@ class FirebaseRepository extends Repository {
 
   Models.User get user => _user;
 
+  loadUser(String email, String uid) {
+    _user = Models.User(email, '******');
+    _user.setID = uid;
+  }
+
   Future<bool> loginUser(Models.User u) async {
     try {
       final UserCredential credential =

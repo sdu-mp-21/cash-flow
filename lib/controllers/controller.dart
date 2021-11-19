@@ -7,6 +7,10 @@ class Controller {
 
   User get user => services.user;
 
+  loadUser(String email, String uid) {
+    services.loadUser(email, uid);
+  }
+
   Future<bool> loginUser(User user) async {
     return await services.loginUser(user);
   }

@@ -7,6 +7,10 @@ class Service {
 
   User get user => repositories.user;
 
+  loadUser(String email, String uid) {
+    repositories.loadUser(email, uid);
+  }
+
   Future<bool> loginUser(User user) async {
     return await repositories.loginUser(user);
   }
