@@ -40,6 +40,10 @@ class Service {
     return repositories.getTransactions();
   }
 
+  Stream<List<Transaction>> getTransactionsStream() {
+    return repositories.getTransactionsStream();
+  }
+
   Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
     return await repositories.getTransactionsByAccount(acc);
   }
@@ -56,17 +60,16 @@ class Service {
     return await repositories.getCategoryById(id);
   }
 
-  fire.DocumentReference<Map<String, dynamic>> getCategoryDocumentById(
-      String id) {
-    return repositories.getCategoryDocumentById(id);
+  Stream<Category> getCategoryStreamById(String id) {
+    return repositories.getCategoryStreamById(id);
   }
 
   Future<List<Category>> getCategories() async {
     return await repositories.getCategories();
   }
 
-  fire.CollectionReference<Map<String, dynamic>> getCategoriesDocuments() {
-    return repositories.getCategoriesDocuments();
+  Stream<List<Category>> getCategoriesStream() {
+    return repositories.getCategoriesStream();
   }
 
   Future deleteCategory(Category category) async {

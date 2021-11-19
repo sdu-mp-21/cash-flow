@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:final_project/models/models.dart' as Models;
+import 'package:final_project/models/models.dart' as models;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/repositories/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,16 +20,16 @@ class FirebaseRepository extends Repository {
   static const categoryNotFound = "Uncategorized";
 
   // for developing purposes, todo: delete initialization and make it 'late'
-  Models.User _user = Models.User('dias@mail.com', 'qwerty');
+  models.User _user = models.User('dias@mail.com', 'qwerty');
 
-  Models.User get user => _user;
+  models.User get user => _user;
 
   loadUser(String email, String uid) {
-    _user = Models.User(email, '******');
+    _user = models.User(email, '******');
     _user.setID = uid;
   }
 
-  Future<bool> loginUser(Models.User u) async {
+  Future<bool> loginUser(models.User u) async {
     try {
       final UserCredential credential =
           await _firebaseAuth.signInWithEmailAndPassword(
@@ -45,7 +45,7 @@ class FirebaseRepository extends Repository {
     return true;
   }
 
-  Future<bool> registerUser(Models.User u) async {
+  Future<bool> registerUser(models.User u) async {
     try {
       final UserCredential credential =
           await _firebaseAuth.createUserWithEmailAndPassword(
@@ -55,8 +55,8 @@ class FirebaseRepository extends Repository {
       u.setID = credential.user!.uid;
       _user = u;
 
-      await createAccount(Models.Account('Account1', 0));
-      await createCategory(Models.Category('Health'));
+      await createAccount(models.Account('Account1', 0));
+      await createCategory(models.Category('Health'));
     } catch (error) {
       print(error);
       return false;
@@ -66,7 +66,7 @@ class FirebaseRepository extends Repository {
 
   //---accounts---
 
-  Future createAccount(Models.Account account) async {
+  Future createAccount(models.Account account) async {
     final docRef = await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionAccounts)
@@ -76,13 +76,13 @@ class FirebaseRepository extends Repository {
     await docRef.set(account.toJson());
   }
 
-  Future<List<Models.Account>> getAccounts() async {
+  Future<List<models.Account>> getAccounts() async {
     final colRef = await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionAccounts);
 
     final documents = (await colRef.get()).docs;
-    return documents.map((doc) => Models.Account.fromJson(doc.data())).toList();
+    return documents.map((doc) => models.Account.fromJson(doc.data())).toList();
   }
 
   CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
@@ -106,8 +106,8 @@ class FirebaseRepository extends Repository {
 
   //---transactions---
 
-  Future createTransaction(Models.Transaction transaction,
-      Models.Account account, Models.Category category) async {
+  Future createTransaction(models.Transaction transaction,
+      models.Account account, models.Category category) async {
     final DocumentReference docRef = await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
@@ -129,7 +129,21 @@ class FirebaseRepository extends Repository {
     return colRef;
   }
 
-  Future deleteTransaction(Models.Transaction transaction) async {
+  Stream<List<models.Transaction>> getTransactionsStream() async* {
+    final colRef = collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionTransactions);
+    final stream = colRef.snapshots();
+    await for (final snapshot in stream) {
+      final rawTransactions = snapshot.docs;
+      final transactions = rawTransactions
+          .map((e) => models.Transaction.fromJson(e.data()))
+          .toList();
+      yield transactions;
+    }
+  }
+
+  Future deleteTransaction(models.Transaction transaction) async {
     await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
@@ -139,8 +153,8 @@ class FirebaseRepository extends Repository {
         transaction.accountId, transaction.amount, !transaction.income);
   }
 
-  Future<List<Models.Transaction>> getTransactionsByAccount(
-      Models.Account acc) async {
+  Future<List<models.Transaction>> getTransactionsByAccount(
+      models.Account acc) async {
     final snapshot = await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
@@ -149,13 +163,13 @@ class FirebaseRepository extends Repository {
 
     final documents = snapshot.docs;
     return documents
-        .map((doc) => Models.Transaction.fromJson(doc.data()))
+        .map((doc) => models.Transaction.fromJson(doc.data()))
         .toList();
   }
 
   //---categories---
 
-  Future createCategory(Models.Category category) async {
+  Future createCategory(models.Category category) async {
     final DocumentReference docRef = await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)
@@ -164,24 +178,32 @@ class FirebaseRepository extends Repository {
     await docRef.set(category.toJson());
   }
 
-  Future<List<Models.Category>> getCategories() async {
+  Future<List<models.Category>> getCategories() async {
     final colRef = await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories);
 
     final documents = (await colRef.get()).docs;
     return documents
-        .map((doc) => Models.Category.fromJson(doc.data()))
+        .map((doc) => models.Category.fromJson(doc.data()))
         .toList();
   }
 
-  CollectionReference<Map<String, dynamic>> getCategoriesDocuments() {
-    return collectionUsersReference
+  Stream<List<models.Category>> getCategoriesStream() async* {
+    final colRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories);
+
+    final stream = colRef.snapshots();
+    await for (final snapshot in stream) {
+      final rawCategories = snapshot.docs;
+      final categories =
+          rawCategories.map((e) => models.Category.fromJson(e.data())).toList();
+      yield categories;
+    }
   }
 
-  Future<Models.Category> getCategoryById(String id) async {
+  Future<models.Category> getCategoryById(String id) async {
     final docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)
@@ -189,19 +211,27 @@ class FirebaseRepository extends Repository {
 
     final data = (await docRef.get()).data();
     if (data == null) {
-      return Models.Category(categoryNotFound);
+      return models.Category(categoryNotFound);
     }
-    return Models.Category.fromJson(data);
+    return models.Category.fromJson(data);
   }
 
-  DocumentReference<Map<String, dynamic>> getCategoryDocumentById(String id) {
-    return collectionUsersReference
+  Stream<models.Category> getCategoryStreamById(String id) async* {
+    final docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)
         .doc(id);
+    final docsStream = docRef.snapshots();
+    await for (final doc in docsStream) {
+      if (doc.data() != null) {
+        yield models.Category.fromJson(doc.data()!);
+      } else {
+        yield models.Category(categoryNotFound);
+      }
+    }
   }
 
-  Future deleteCategory(Models.Category category) async {
+  Future deleteCategory(models.Category category) async {
     await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)
