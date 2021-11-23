@@ -31,9 +31,18 @@ class Controller {
     return services.getAccountsStream();
   }
 
+  Future<Account> getAccountById(String id) {
+    return services.getAccountById(id);
+  }
+
   Future createTransaction(
       Transaction transaction, Account account, Category category) async {
     await services.createTransaction(transaction, account, category);
+  }
+
+  Future updateTransaction(
+      Transaction transaction, Account account, Category category) async {
+    await services.updateTransaction(transaction, account, category);
   }
 
   fire.CollectionReference<Map<String, dynamic>> getTransactions() {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 
 // changed to stateful cause stateless doesn't see the context from other functions
 class TransactionCreation extends StatefulWidget {
@@ -12,8 +11,8 @@ class TransactionCreation extends StatefulWidget {
 }
 
 class _TransactionCreationState extends State<TransactionCreation> {
-  final _amountController = TextEditingController(text: "100");
-  final _descriptionController = TextEditingController(text: "Money");
+  final _amountController = TextEditingController();
+  final _descriptionController = TextEditingController();
   Account? selectedAccount;
   Category? selectedCategory;
   bool isIncome = true;

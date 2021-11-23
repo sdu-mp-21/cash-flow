@@ -1,5 +1,4 @@
 import 'package:final_project/models/models.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 import 'package:final_project/views/account/creation.dart';
 import 'package:final_project/views/account/detail.dart';
 import 'package:flutter/material.dart';
