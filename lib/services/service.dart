@@ -27,8 +27,8 @@ class Service {
     return await repositories.getAccounts();
   }
 
-  fire.CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
-    return repositories.getAccountsDocuments();
+  Stream<List<Account>> getAccountsStream() {
+    return repositories.getAccountsStream();
   }
 
   Future createTransaction(

@@ -1,5 +1,3 @@
-import 'package:final_project/models/models.dart' as Models;
-
 class Account {
   String _accountId = '';
   late String _accountName;

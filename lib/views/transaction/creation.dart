@@ -12,8 +12,8 @@ class TransactionCreation extends StatefulWidget {
 }
 
 class _TransactionCreationState extends State<TransactionCreation> {
-  final _amountController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  final _amountController = TextEditingController(text: "100");
+  final _descriptionController = TextEditingController(text: "Money");
   Account? selectedAccount;
   Category? selectedCategory;
   bool isIncome = true;
@@ -99,16 +99,10 @@ class _TransactionCreationState extends State<TransactionCreation> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: StreamBuilder(
-            stream: controller.getAccountsDocuments().snapshots(),
-            builder: (BuildContext context,
-                AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
-                    snapshot) {
-              final documents = snapshot.data?.docs ?? [];
-              var accounts = <Account>[];
-              if (documents.isNotEmpty) {
-                accounts = documents.map((doc) => Account.fromJson(doc.data())).toList();
-              }
-              if (accounts.isEmpty) {
+            stream: controller.getAccountsStream(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
+              if (!snapshot.hasData) {
                 final temp = Account("", 0);
                 return DropdownButton<Account>(
                   value: temp,
@@ -120,6 +114,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                   ],
                 );
               }
+              var accounts = snapshot.data!;
               selectedAccount ??= accounts[0];
               return DropdownButton<Account>(
                 value: selectedAccount,

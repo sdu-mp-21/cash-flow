@@ -46,22 +46,22 @@ class _AccountListState extends State<AccountList> {
           const SizedBox(height: 20),
           Container(
             child: StreamBuilder(
-              stream: controller.getAccountsDocuments().snapshots(),
+              stream: controller.getAccountsStream(),
               builder: (BuildContext context,
-                  AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
-                  snapshot) {
-                final documents = snapshot.data?.docs ?? [];
-                final x = documents
-                    .map((doc) => Account.fromJson(doc.data()))
-                    .toList();
-                final tiles = x.map((e) => _buildAccountTile(e)).toList();
+                  AsyncSnapshot<List<Account>> snapshot) {
+                if (!snapshot.hasData) {
+                  return const SizedBox.shrink();
+                }
+                final accounts = snapshot.data!;
+                final tiles =
+                    accounts.map((e) => _buildAccountTile(e)).toList();
                 return Container(
                   // set the height to container, cause nester columns trigger overflow error
                   height: MediaQuery.of(context).size.height / 3,
                   child: ListView(
                     children:
-                    ListTile.divideTiles(context: context, tiles: tiles)
-                        .toList(),
+                        ListTile.divideTiles(context: context, tiles: tiles)
+                            .toList(),
                   ),
                 );
               },

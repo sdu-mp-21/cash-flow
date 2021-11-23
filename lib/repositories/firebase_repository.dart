@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:final_project/models/models.dart' as models;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/repositories/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class FirebaseRepository extends Repository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -85,10 +83,17 @@ class FirebaseRepository extends Repository {
     return documents.map((doc) => models.Account.fromJson(doc.data())).toList();
   }
 
-  CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
-    return collectionUsersReference
+  Stream<List<models.Account>> getAccountsStream() async* {
+    final colRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionAccounts);
+    final stream = colRef.snapshots();
+    await for (final snapshot in stream) {
+      final rawAccounts = snapshot.docs;
+      final accounts =
+          rawAccounts.map((e) => models.Account.fromJson(e.data())).toList();
+      yield accounts;
+    }
   }
 
   Future updateAccountBalanceByAmount(
