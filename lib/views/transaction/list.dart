@@ -56,11 +56,38 @@ class TransactionsView extends StatelessWidget {
         }
         final tiles =
             transactions.map((e) => TransactionTile(transaction: e)).toList();
-        return ListView(
-          children:
-              ListTile.divideTiles(context: context, tiles: tiles).toList(),
-        );
+        return _buildTransactionList(tiles);
+        // return ListView(
+        //   children:
+        //       ListTile.divideTiles(context: context, tiles: tiles).toList(),
+        // );
       },
+    );
+  }
+
+  Widget _buildTransactionList(List<TransactionTile> tiles) {
+    final res = <Widget>[];
+    var time = "";
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].transaction.createdTime.split(' ')[0] != time) {
+        if (time != "") {
+          res.add(const Divider());
+        }
+        time = tiles[i].transaction.createdTime.split(' ')[0];
+        final row = Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+              child: Text(time, style: const TextStyle(fontWeight: FontWeight.w300)),
+            ),
+          ],
+        );
+        res.add(row);
+      }
+      res.add(tiles[i]);
+    }
+    return ListView(
+      children: res,
     );
   }
 }

@@ -163,7 +163,7 @@ class FirebaseRepository extends Repository {
   Stream<List<models.Transaction>> getTransactionsStream({models.Account? account}) async* {
     final colRef = collectionUsersReference
         .doc(_user.userId)
-        .collection(collectionTransactions);
+        .collection(collectionTransactions).orderBy("creation_time", descending: true);
     final stream = colRef.snapshots();
     await for (final snapshot in stream) {
       final rawTransactions = snapshot.docs;
