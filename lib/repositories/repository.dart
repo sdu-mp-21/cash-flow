@@ -14,8 +14,6 @@ abstract class Repository {
 
   getTransactions();
 
-  getTransactionsByAccount(Account account);
-
   createCategory(Category category);
 
   getCategories();

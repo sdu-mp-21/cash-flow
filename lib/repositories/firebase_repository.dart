@@ -129,16 +129,21 @@ class FirebaseRepository extends Repository {
     return colRef;
   }
 
-  Stream<List<models.Transaction>> getTransactionsStream() async* {
+  Stream<List<models.Transaction>> getTransactionsStream({models.Account? account}) async* {
     final colRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions);
     final stream = colRef.snapshots();
     await for (final snapshot in stream) {
       final rawTransactions = snapshot.docs;
-      final transactions = rawTransactions
+      var transactions = rawTransactions
           .map((e) => models.Transaction.fromJson(e.data()))
           .toList();
+
+      if(account != null) {
+        transactions = transactions.where((e) => e.accountId == account!.accountId).toList();
+      }
+
       yield transactions;
     }
   }
@@ -151,20 +156,6 @@ class FirebaseRepository extends Repository {
         .delete();
     await updateAccountBalanceByAmount(
         transaction.accountId, transaction.amount, !transaction.income);
-  }
-
-  Future<List<models.Transaction>> getTransactionsByAccount(
-      models.Account acc) async {
-    final snapshot = await collectionUsersReference
-        .doc(_user.userId)
-        .collection(collectionTransactions)
-        .where('account_id', isEqualTo: acc.accountId)
-        .get();
-
-    final documents = snapshot.docs;
-    return documents
-        .map((doc) => models.Transaction.fromJson(doc.data()))
-        .toList();
   }
 
   //---categories---

@@ -40,12 +40,8 @@ class Service {
     return repositories.getTransactions();
   }
 
-  Stream<List<Transaction>> getTransactionsStream() {
-    return repositories.getTransactionsStream();
-  }
-
-  Future<List<Transaction>> getTransactionsByAccount(Account acc) async {
-    return await repositories.getTransactionsByAccount(acc);
+  Stream<List<Transaction>> getTransactionsStream({Account? account}) {
+    return repositories.getTransactionsStream(account: account);
   }
 
   Future deleteTransaction(Transaction transaction) async {

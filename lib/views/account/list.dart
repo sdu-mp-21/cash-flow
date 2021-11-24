@@ -1,5 +1,6 @@
 import 'package:final_project/models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as fire;
+import 'package:final_project/views/account/chart.dart';
 import 'package:final_project/views/account/creation.dart';
 import 'package:final_project/views/account/detail.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,17 @@ class _AccountListState extends State<AccountList> {
                 Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CategoriesList()))
+                            builder: (context) => const TransactionsChart()))
+                    .then((value) => setState(() {}));
+              },
+              child: const Text('Statistics')),
+          const SizedBox(height: 20),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CategoriesList()))
                     .then((value) => setState(() {}));
               },
               child: const Text('Categories')),

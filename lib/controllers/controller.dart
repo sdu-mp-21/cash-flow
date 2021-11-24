@@ -36,17 +36,17 @@ class Controller {
     await services.createTransaction(transaction, account, category);
   }
 
-  fire.CollectionReference<Map<String, dynamic>> getTransactions() {
-    return services.getTransactions();
+  // fire.CollectionReference<Map<String, dynamic>> getTransactions() {
+  //   return services.getTransactions();
+  // }
+
+  Stream<List<Transaction>> getTransactionsStream({Account? account}) {
+    return services.getTransactionsStream(account: account);
   }
 
-  Stream<List<Transaction>> getTransactionsStream() {
-    return services.getTransactionsStream();
-  }
-
-  Future<List<Transaction>> getTransactionsByAccount(Account account) async {
-    return await services.getTransactionsByAccount(account);
-  }
+  // Future<List<Transaction>> getTransactionsByAccount(Account account) async {
+  //   return await services.getTransactionsByAccount(account);
+  // }
 
   Future deleteTransaction(Transaction transaction) async {
     await services.deleteTransaction(transaction);
