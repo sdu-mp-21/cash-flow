@@ -20,11 +20,41 @@ class AccountDetail extends StatelessWidget {
       ),
       body: Column(
         children: [
-          AccountInfo(account),
+           TweenAnimationBuilder(
+            child: AccountInfo(account),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 700),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.only(top: _val * 50),
+                  child: child!,
+                ),
+              );
+            },
+          ),
+          // AccountInfo(account),
           Expanded(
-            child: TransactionsView(
+            child: TweenAnimationBuilder(
+            child:TransactionsView(
               account: account,
             ),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 700),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(_val * 50, 0, _val * 50, 0),
+                  child: child!,
+                ),
+              );
+            },
+          ), 
+          // TransactionsView(
+          //     account: account,
+          //   ),
           ),
         ],
       ),

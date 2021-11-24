@@ -47,7 +47,7 @@ class TransactionDetail extends StatelessWidget {
                 child: _getAmountFromIncome(),
               ),
               tween: Tween<double>(begin: 0, end: 1),
-              duration: const Duration(seconds: 1),
+              duration: const Duration(milliseconds: 700),
               builder: (BuildContext context, double _val, Widget? child) {
                 return Opacity(
                   opacity: _val,
@@ -69,7 +69,7 @@ class TransactionDetail extends StatelessWidget {
                     fontSize: 20.0, fontWeight: FontWeight.bold),
               ),
               tween: Tween<double>(begin: 0, end: 1),
-              duration: const Duration(seconds: 1),
+              duration: const Duration(milliseconds: 700),
               builder: (BuildContext context, double _val, Widget? child) {
                 return Opacity(
                   opacity: _val,
@@ -84,7 +84,7 @@ class TransactionDetail extends StatelessWidget {
           TweenAnimationBuilder(
             child: Text("Account ID: ${transaction.accountId}"),
             tween: Tween<double>(begin: 0, end: 1),
-            duration: const Duration(seconds: 1),
+            duration: const Duration(milliseconds: 700),
             builder: (BuildContext context, double _val, Widget? child) {
               return Opacity(
                 opacity: _val,
@@ -123,7 +123,7 @@ class TransactionDetail extends StatelessWidget {
                 },
               ),
               tween: Tween<double>(begin: 0, end: 1),
-              duration: const Duration(seconds: 1),
+              duration: const Duration(milliseconds: 700),
               builder: (BuildContext context, double _val, Widget? child) {
                 return Opacity(
                   opacity: _val,
@@ -138,7 +138,7 @@ class TransactionDetail extends StatelessWidget {
           TweenAnimationBuilder(
             child: Text('Creation time: ${transaction.createdTime}'),
             tween: Tween<double>(begin: 0, end: 1),
-            duration: const Duration(seconds: 1),
+            duration: const Duration(milliseconds: 700),
             builder: (BuildContext context, double _val, Widget? child) {
               return Opacity(
                 opacity: _val,
