@@ -27,8 +27,12 @@ class Controller {
     return await services.getAccounts();
   }
 
-  fire.CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
-    return services.getAccountsDocuments();
+  Stream<List<Account>> getAccountsStream() {
+    return services.getAccountsStream();
+  }
+
+  Future<Account> getAccountById(String id) {
+    return services.getAccountById(id);
   }
 
   Future createTransaction(
@@ -36,9 +40,14 @@ class Controller {
     await services.createTransaction(transaction, account, category);
   }
 
-  // fire.CollectionReference<Map<String, dynamic>> getTransactions() {
-  //   return services.getTransactions();
-  // }
+  Future updateTransaction(
+      Transaction transaction, Account account, Category category) async {
+    await services.updateTransaction(transaction, account, category);
+  }
+
+  fire.CollectionReference<Map<String, dynamic>> getTransactions() {
+    return services.getTransactions();
+  }
 
   Stream<List<Transaction>> getTransactionsStream({Account? account}) {
     return services.getTransactionsStream(account: account);

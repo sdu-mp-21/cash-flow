@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:final_project/models/models.dart' as models;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/repositories/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class FirebaseRepository extends Repository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -85,15 +83,31 @@ class FirebaseRepository extends Repository {
     return documents.map((doc) => models.Account.fromJson(doc.data())).toList();
   }
 
-  CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
-    return collectionUsersReference
+  Stream<List<models.Account>> getAccountsStream() async* {
+    final colRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionAccounts);
+    final stream = colRef.snapshots();
+    await for (final snapshot in stream) {
+      final rawAccounts = snapshot.docs;
+      final accounts =
+          rawAccounts.map((e) => models.Account.fromJson(e.data())).toList();
+      yield accounts;
+    }
+  }
+
+  Future<models.Account> getAccountById(String id) async {
+    final docRef = collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionAccounts)
+        .doc(id);
+    final data = (await docRef.get()).data();
+    return models.Account.fromJson(data!);
   }
 
   Future updateAccountBalanceByAmount(
       String accountId, int amount, bool income) async {
-    final docRef = await collectionUsersReference
+    final docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionAccounts)
         .doc(accountId);
@@ -108,7 +122,7 @@ class FirebaseRepository extends Repository {
 
   Future createTransaction(models.Transaction transaction,
       models.Account account, models.Category category) async {
-    final DocumentReference docRef = await collectionUsersReference
+    final DocumentReference docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
         .doc();
@@ -118,6 +132,23 @@ class FirebaseRepository extends Repository {
     transaction.setCategoryId = category.categoryId;
     await updateAccountBalanceByAmount(
         account.accountId, transaction.amount, transaction.income);
+    await docRef.set(transaction.toJson());
+  }
+
+  Future updateTransaction(models.Transaction transaction,
+      models.Account account, models.Category category) async {
+    final DocumentReference docRef = collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionTransactions)
+        .doc(transaction.transactionId);
+    // final oldTransaction = (await docRef.get()).data()!['amount'];
+    transaction.setAccountId = account.accountId;
+    transaction.setCategoryId = category.categoryId;
+    // FIXME: updateAccountBalanceByAmount is not working
+    // need to calculate difference
+    // between oldTransaction.amount and newTransaction.amount
+    // await updateAccountBalanceByAmount(
+    //     account.accountId, transaction.amount, transaction.income);
     await docRef.set(transaction.toJson());
   }
 

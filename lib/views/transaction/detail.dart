@@ -1,4 +1,5 @@
 import 'package:final_project/models/models.dart';
+import 'package:final_project/views/transaction/updation.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 
@@ -9,22 +10,31 @@ class TransactionDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Transaction Detail"),
         actions: [
           IconButton(
               onPressed: () async {
-                final controller = Provider.of(context);
                 await controller.deleteTransaction(transaction);
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.delete)),
           IconButton(
               onPressed: () async {
-                final controller = Provider.of(context);
-                await controller.deleteTransaction(transaction);
-                Navigator.pop(context);
+                final account =
+                    controller.getAccountById(transaction.accountId);
+                final category =
+                    await controller.getCategoryById(transaction.categoryId);
+                final loadedAccount = await account;
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        TransactionUpdate(transaction, loadedAccount, category),
+                  ),
+                );
               },
               icon: const Icon(Icons.change_circle)),
         ],
