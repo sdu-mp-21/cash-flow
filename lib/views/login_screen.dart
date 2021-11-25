@@ -2,7 +2,6 @@ import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/views/home.dart';
-// import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -22,12 +21,9 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  //<------------->
-  // String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-  RegExp regExpPassword = new RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{5,}$');
-  RegExp regExpUser = new RegExp(r'[A-Za-z0-9_]$');
-  bool _validate = false;
-  //<------->
+  RegExp regExpPassword =
+      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{5,}$');
+  RegExp regExpUser = RegExp(r'[A-Za-z0-9_]$');
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             TextField(
-              // inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[@.]).{8,}$')),],
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Email",
-                //<--->
                 // errorText: _validate ? 'Invalid Email' : null, //<--->
               ),
               controller: _usernameController,
@@ -61,11 +55,6 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    // <-------->
-                    // setState(() {
-                    //   regExp.hasMatch(_usernameController.text) ?  _validate=true : _validate=false;
-                    // });
-                    // <--------->
                     await _registerUser();
                   },
                   child: const Text("register"),
@@ -91,7 +80,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
   Future<bool> _loginUser() async {
     final username = _usernameController.text;
     final password = _passwordController.text;
@@ -99,11 +87,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (username == '' || password == '') {
       showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-                title: Text('Failed login'),
-                content: Text('Empty fields'),
-              ));
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text('Failed login'),
+          content: Text('Empty fields'),
+        ),
+      );
       return false;
     }
 
@@ -113,11 +102,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     showDialog(
-        context: context,
-        builder: (_) => const AlertDialog(
-              title: Text('Failed login'),
-              content: Text('Incorrect username or password'),
-            ));
+      context: context,
+      builder: (_) => const AlertDialog(
+        title: Text('Failed login'),
+        content: Text(
+          'Incorrect username or password',
+        ),
+      ),
+    );
 
     return false;
   }
@@ -129,30 +121,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (!regExpUser.hasMatch(_usernameController.text)) {
       showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-            title: Text('Failed registration'),
-            content: Text('Invalid Email'),
-          ));
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text('Failed registration'),
+          content: Text('Invalid Email'),
+        ),
+      );
       return false;
     }
     if (!regExpPassword.hasMatch(_passwordController.text)) {
       showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-            title: Text('Failed registration'),
-            content: Text('Invalid Password'),
-          ));
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text('Failed registration'),
+          content: Text('Invalid Password'),
+        ),
+      );
       return false;
     }
 
     if (username == '' || password == '') {
       showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-                title: Text('Failed registration'),
-                content: Text('Empty fields'),
-              ));
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text('Failed registration'),
+          content: Text('Empty fields'),
+        ),
+      );
       return false;
     }
 
@@ -160,18 +155,21 @@ class _LoginScreenState extends State<LoginScreen> {
         await controller.registerUser(User(username, password));
     if (validUsername) {
       showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-                title: const Text('Successful registration'),
-                content: Text('Username : $username'),
-              ));
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Successful registration'),
+          content: Text('Username : $username'),
+        ),
+      );
       _clearTextFields();
     } else {
       showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-              title: Text('Failed registration'),
-              content: Text('Such username already exists')));
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text('Failed registration'),
+          content: Text('Such username already exists'),
+        ),
+      );
     }
   }
 

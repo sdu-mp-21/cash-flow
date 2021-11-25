@@ -12,7 +12,7 @@ abstract class Repository {
 
   createTransaction(Transaction transaction, Account account, Category category);
 
-  getTransactions();
+  // getTransactions();
 
   createCategory(Category category);
 

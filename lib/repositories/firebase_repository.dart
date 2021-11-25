@@ -152,18 +152,20 @@ class FirebaseRepository extends Repository {
     await docRef.set(transaction.toJson());
   }
 
-  CollectionReference<Map<String, dynamic>> getTransactions() {
+  // CollectionReference<Map<String, dynamic>> getTransactions() {
+  //   final colRef = collectionUsersReference
+  //       .doc(_user.userId)
+  //       .collection(collectionTransactions);
+  //
+  //   return colRef;
+  // }
+
+  Stream<List<models.Transaction>> getTransactionsStream(
+      {models.Account? account}) async* {
     final colRef = collectionUsersReference
         .doc(_user.userId)
-        .collection(collectionTransactions);
-
-    return colRef;
-  }
-
-  Stream<List<models.Transaction>> getTransactionsStream({models.Account? account}) async* {
-    final colRef = collectionUsersReference
-        .doc(_user.userId)
-        .collection(collectionTransactions).orderBy("creation_time", descending: true);
+        .collection(collectionTransactions)
+        .orderBy("creation_time", descending: true);
     final stream = colRef.snapshots();
     await for (final snapshot in stream) {
       final rawTransactions = snapshot.docs;
@@ -171,8 +173,10 @@ class FirebaseRepository extends Repository {
           .map((e) => models.Transaction.fromJson(e.data()))
           .toList();
 
-      if(account != null) {
-        transactions = transactions.where((e) => e.accountId == account!.accountId).toList();
+      if (account != null) {
+        transactions = transactions
+            .where((e) => e.accountId == account.accountId)
+            .toList();
       }
 
       yield transactions;

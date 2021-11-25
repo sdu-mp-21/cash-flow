@@ -4,8 +4,8 @@ import 'package:final_project/models/models.dart';
 import 'package:final_project/views/transaction/creation.dart';
 import 'package:final_project/views/transaction/detail.dart';
 
-class TransactionList extends StatelessWidget {
-  const TransactionList({Key? key}) : super(key: key);
+class TransactionsScreen extends StatelessWidget {
+  const TransactionsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class TransactionList extends StatelessWidget {
       child: Column(
         children: [
           const Expanded(
-            child: TransactionsView(),
+            child: TransactionsList(),
           ),
           Center(
             child: addTransactionButton(context),
@@ -39,9 +39,10 @@ class TransactionList extends StatelessWidget {
   }
 }
 
-class TransactionsView extends StatelessWidget {
+class TransactionsList extends StatelessWidget {
   final Account? account;
-  const TransactionsView({Key? key, this.account}) : super(key: key);
+
+  const TransactionsList({Key? key, this.account}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +57,12 @@ class TransactionsView extends StatelessWidget {
         }
         final tiles =
             transactions.map((e) => TransactionTile(transaction: e)).toList();
-        return _buildTransactionList(tiles);
-        // return ListView(
-        //   children:
-        //       ListTile.divideTiles(context: context, tiles: tiles).toList(),
-        // );
+        return _buildList(tiles);
       },
     );
   }
 
-  Widget _buildTransactionList(List<TransactionTile> tiles) {
+  Widget _buildList(List<TransactionTile> tiles) {
     final res = <Widget>[];
     var time = "";
     for (var i = 0; i < tiles.length; i++) {
@@ -78,7 +75,8 @@ class TransactionsView extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: Text(time, style: const TextStyle(fontWeight: FontWeight.w300)),
+              child: Text(time,
+                  style: const TextStyle(fontWeight: FontWeight.w300)),
             ),
           ],
         );

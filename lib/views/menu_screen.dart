@@ -13,7 +13,6 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // width: 250,
       margin: const EdgeInsets.all(100),
       alignment: Alignment.center,
       child: _buildMenu(),
@@ -23,29 +22,25 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget _buildMenu() {
     final controller = Provider.of(context);
 
-    return Container(
-      child: Column(
-        children: [
-          Text(
-            controller.user.email,
-            style: const TextStyle(fontSize: 20),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'user_id: ${controller.user.userId}',
-            style: const TextStyle(fontSize: 18),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()));
-              },
-              child: const Icon(Icons.logout)),
-        ],
-      ),
+    return Column(
+      children: [
+        Text(
+          controller.user.email,
+          style: const TextStyle(fontSize: 20),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          'user_id: ${controller.user.userId}',
+          style: const TextStyle(fontSize: 18),
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()));
+            },
+            child: const Icon(Icons.logout)),
+      ],
     );
   }
 }

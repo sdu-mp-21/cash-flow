@@ -11,6 +11,7 @@ class CategoryCreation extends StatefulWidget {
 
 class _CategoryCreationState extends State<CategoryCreation> {
   final _categoryNameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -18,24 +19,36 @@ class _CategoryCreationState extends State<CategoryCreation> {
       appBar: AppBar(
         title: const Text('Create Category'),
       ),
-      body: Container(
-          padding: const EdgeInsets.all(10),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
-              TextField(
+              TextFormField(
                 controller: _categoryNameController,
-                decoration: const InputDecoration(
-                  hintText: "Category name",
-                ),
+                decoration: const InputDecoration(hintText: "Category name"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Category name is empty';
+                  }
+                  return null;
+                },
               ),
+              const SizedBox(height: 20.0),
               ElevatedButton(
-                  onPressed: () async {
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
                     await _createCategory();
                     Navigator.pop(context);
-                  },
-                  child: const Text('Submit')),
+                  }
+                },
+                child: const Text('Submit'),
+              ),
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 

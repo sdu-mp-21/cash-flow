@@ -16,15 +16,22 @@ class _HomeState extends State<Home> {
 
   final _navBarItems = <BottomNavigationBarItem>[
     const BottomNavigationBarItem(
-        icon: Icon(Icons.account_balance), label: 'accounts'),
+      icon: Icon(Icons.account_balance),
+      label: 'accounts',
+    ),
     const BottomNavigationBarItem(
-        icon: Icon(Icons.compare_arrows), label: 'transactions'),
-    const BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'menu'),
+      icon: Icon(Icons.compare_arrows),
+      label: 'transactions',
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.menu),
+      label: 'menu',
+    ),
   ];
 
   final _routes = <Widget>[
-    const AccountList(),
-    const TransactionList(),
+    const AccountsScreen(),
+    const TransactionsScreen(),
     const MenuScreen(),
   ];
 
@@ -34,7 +41,10 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text('CashFlow'),
       ),
-      body: _routes[_currentIndex],
+      body: Padding(
+        child: _routes[_currentIndex],
+        padding: const EdgeInsets.all(20.0),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: _navBarItems,
         currentIndex: _currentIndex,

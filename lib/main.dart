@@ -17,9 +17,12 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp(
-      {Key? key, required this.signed, required this.email, required this.uid})
-      : super(key: key);
+  const MyApp({
+    Key? key,
+    required this.signed,
+    required this.email,
+    required this.uid,
+  }) : super(key: key);
   final bool signed;
   final String email;
   final String uid;

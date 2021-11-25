@@ -45,10 +45,6 @@ class Controller {
     await services.updateTransaction(transaction, account, category);
   }
 
-  fire.CollectionReference<Map<String, dynamic>> getTransactions() {
-    return services.getTransactions();
-  }
-
   Stream<List<Transaction>> getTransactionsStream({Account? account}) {
     return services.getTransactionsStream(account: account);
   }

@@ -1,6 +1,6 @@
 import 'package:final_project/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/views/categories/creation.dart';
+import 'package:final_project/views/categories/form.dart';
 import 'package:final_project/provider.dart';
 
 class CategoriesList extends StatefulWidget {
@@ -32,26 +32,25 @@ class _CategoriesListState extends State<CategoriesList> {
           ),
         ],
       ),
-      body: Container(
-        child: StreamBuilder(
-          stream: controller.getCategoriesStream(),
-          builder: (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
-            var categories = [];
-            if (snapshot.hasData) {
-              categories = snapshot.data!;
-            }
-            final tiles = categories.map((e) => _buildCategoryTile(e)).toList();
-            return ListView(
-              children:
-              ListTile.divideTiles(context: context, tiles: tiles).toList(),
-            );
-          },
-        ),
+      body: StreamBuilder(
+        stream: controller.getCategoriesStream(),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
+          var categories = [];
+          if (snapshot.hasData) {
+            categories = snapshot.data!;
+          }
+          final tiles = categories.map((e) => _buildCategoryTile(e)).toList();
+          return ListView(
+            children:
+                ListTile.divideTiles(context: context, tiles: tiles).toList(),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildCategoryTile(Category category, {Category}) {
+  Widget _buildCategoryTile(Category category) {
     return Dismissible(
       key: Key(category.categoryName),
       onDismissed: (direction) async {
