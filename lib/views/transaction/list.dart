@@ -1,195 +1,132 @@
 import 'package:flutter/material.dart';
-
 import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
 import 'package:final_project/views/transaction/creation.dart';
 import 'package:final_project/views/transaction/detail.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 
-class TransactionList extends StatefulWidget {
+class TransactionList extends StatelessWidget {
   const TransactionList({Key? key}) : super(key: key);
 
   @override
-  _TransactionListState createState() => _TransactionListState();
-}
-
-class _TransactionListState extends State<TransactionList> {
-  final moneyController = TextEditingController();
-  final categoryController = TextEditingController();
-
-  @override
   Widget build(BuildContext context) {
-    final controller = Provider.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
-          Container(
-            child: StreamBuilder(
-              stream: controller.getTransactions().snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
-                      snapshot) {
-                final documents = snapshot.data?.docs ?? [];
-                if (documents.isEmpty) {
-                  return const Text("");
-                }
-                final transactions = documents
-                    .map((doc) => Transaction.fromJson(doc.data()))
-                    .toList();
-
-                // final chartData = getChartValue(transactions);
-                return StreamBuilder(
-                  stream: controller.getCategoriesDocuments().snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
-                          snapshot) {
-                    final categoryDocuments = snapshot.data?.docs ?? [];
-                    if (categoryDocuments.isEmpty) {
-                      return const Text("Loading");
-                    }
-                    final categories = categoryDocuments
-                        .map((e) => Category.fromJson(e.data()))
-                        .toList();
-                    Map<String, String> transactionToCategory = {};
-                    for (var transaction in transactions) {
-                      for (var category in categories) {
-                        if (transaction.categoryId == category.categoryId) {
-                          transactionToCategory[transaction.transactionId] =
-                              category.categoryName;
-                          break;
-                        }
-                      }
-                    }
-                    return SfCircularChart(
-                      title: ChartTitle(text: "transaction amount chart"),
-                      legend: Legend(isVisible: true),
-                      tooltipBehavior: TooltipBehavior(enable: true),
-                      series: <CircularSeries>[
-                        DoughnutSeries<ChartValue, String>(
-                            dataSource: getChartValue(
-                                transactions, transactionToCategory),
-                            xValueMapper: (ChartValue data, _) => data.category,
-                            yValueMapper: (ChartValue data, _) => data.amount,
-                            dataLabelSettings:
-                                const DataLabelSettings(isVisible: true),
-                            enableTooltip: true)
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          Expanded(
-            child: StreamBuilder(
-              stream: controller.getTransactions().snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<fire.QuerySnapshot<Map<String, dynamic>>>
-                      snapshot) {
-                final documents = snapshot.data?.docs ?? [];
-                final transactions = documents
-                    .map((doc) => Transaction.fromJson(doc.data()))
-                    .toList();
-                final tiles =
-                    transactions.map((e) => _buildTransactionTile(e)).toList();
-                return Container(
-                  child: ListView(
-                    children:
-                        ListTile.divideTiles(context: context, tiles: tiles)
-                            .toList(),
-                  ),
-                );
-              },
-            ),
+          const Expanded(
+            child: TransactionsView(),
           ),
           Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const TransactionCreation(),
-                  ),
-                ).then((value) => setState(() {}));
-              },
-              child: const Text("Add transaction"),
-            ),
+            child: addTransactionButton(context),
           ),
         ],
       ),
     );
   }
 
-  List<ChartValue> getChartValue(List<Transaction> transactions,
-      Map<String, String> transactionToCategory) {
-    final controller = Provider.of(context);
-    final Map<String, int> chartV = {};
-    for (var transaction in transactions) {
-      if (!transaction.income) {
-        continue;
-      }
-      final category = transactionToCategory[transaction.transactionId]!;
-      if (chartV[category] == null) {
-        chartV[category] = transaction.amount;
-      } else {
-        chartV[category] = chartV[category]! + transaction.amount;
-      }
-    }
-    final List<ChartValue> res = [];
-    chartV.forEach((key, value) {
-      res.add(ChartValue(key, value));
-    });
-    return res;
-  }
-
-  Widget _buildTransactionTile(Transaction transaction) {
-    String isIncome = '';
-    transaction.income ? isIncome = '+' : isIncome = '-';
-    final controller = Provider.of(context);
-
-    return ListTile(
-        title: StreamBuilder(
-          stream: controller
-              .getCategoryDocumentById(transaction.categoryId)
-              .snapshots(),
-          builder: (BuildContext context,
-              AsyncSnapshot<fire.DocumentSnapshot<Map<String, dynamic>>>
-                  snapshot) {
-            if (snapshot.hasData) {
-              final document = snapshot.data!.data();
-              Category category;
-              if (document == null) {
-                category = Category("Uncategorized");
-              }
-              category = Category.fromJson(document!);
-              return Text(category.categoryName);
-            }
-            return const Text("Loading");
-          },
-        ),
-        subtitle: Text(transaction.description),
-        trailing: Text(
-          isIncome + "${transaction.amount}\$",
-          style: transaction.income
-              ? const TextStyle(color: Colors.green, fontSize: 15)
-              : const TextStyle(color: Colors.red, fontSize: 15),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => TransactionDetail(transaction),
-            ),
-          ).then((value) => setState(() {}));
-        });
+  ElevatedButton addTransactionButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const TransactionCreation(),
+          ),
+        );
+      },
+      child: const Text("Add transaction"),
+    );
   }
 }
 
-class ChartValue {
-  final String category;
-  final int amount;
+class TransactionsView extends StatelessWidget {
+  final Account? account;
+  const TransactionsView({Key? key, this.account}) : super(key: key);
 
-  ChartValue(this.category, this.amount);
+  @override
+  Widget build(BuildContext context) {
+    final controller = Provider.of(context);
+    return StreamBuilder(
+      stream: controller.getTransactionsStream(account: account),
+      builder:
+          (BuildContext context, AsyncSnapshot<List<Transaction>> snapshot) {
+        var transactions = [];
+        if (snapshot.hasData) {
+          transactions = snapshot.data!;
+        }
+        final tiles =
+            transactions.map((e) => TransactionTile(transaction: e)).toList();
+        return _buildTransactionList(tiles);
+        // return ListView(
+        //   children:
+        //       ListTile.divideTiles(context: context, tiles: tiles).toList(),
+        // );
+      },
+    );
+  }
+
+  Widget _buildTransactionList(List<TransactionTile> tiles) {
+    final res = <Widget>[];
+    var time = "";
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i].transaction.createdTime.split(' ')[0] != time) {
+        if (time != "") {
+          res.add(const Divider());
+        }
+        time = tiles[i].transaction.createdTime.split(' ')[0];
+        final row = Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+              child: Text(time, style: const TextStyle(fontWeight: FontWeight.w300)),
+            ),
+          ],
+        );
+        res.add(row);
+      }
+      res.add(tiles[i]);
+    }
+    return ListView(
+      children: res,
+    );
+  }
+}
+
+class TransactionTile extends StatelessWidget {
+  const TransactionTile({Key? key, required this.transaction})
+      : super(key: key);
+  final Transaction transaction;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Provider.of(context);
+    final isIncome = transaction.income ? '+' : '-';
+    return ListTile(
+      title: StreamBuilder(
+        stream: controller.getCategoryStreamById(transaction.categoryId),
+        builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
+          if (snapshot.hasData) {
+            final Category category = snapshot.data!;
+            return Text(category.categoryName);
+          }
+          return const Text("Loading");
+        },
+      ),
+      subtitle: Text(transaction.description),
+      trailing: Text(
+        isIncome + "${transaction.amount}\$",
+        style: transaction.income
+            ? const TextStyle(color: Colors.green, fontSize: 15)
+            : const TextStyle(color: Colors.red, fontSize: 15),
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TransactionDetail(transaction),
+          ),
+        );
+      },
+    );
+  }
 }

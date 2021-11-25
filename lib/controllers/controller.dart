@@ -1,12 +1,15 @@
 import 'package:final_project/models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 import 'package:final_project/services/service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as fire;
 
 class Controller {
   final services = Service();
 
   User get user => services.user;
+
+  loadUser(String email, String uid) {
+    services.loadUser(email, uid);
+  }
 
   Future<bool> loginUser(User user) async {
     return await services.loginUser(user);
@@ -24,8 +27,12 @@ class Controller {
     return await services.getAccounts();
   }
 
-  fire.CollectionReference<Map<String, dynamic>> getAccountsDocuments() {
-    return services.getAccountsDocuments();
+  Stream<List<Account>> getAccountsStream() {
+    return services.getAccountsStream();
+  }
+
+  Future<Account> getAccountById(String id) {
+    return services.getAccountById(id);
   }
 
   Future createTransaction(
@@ -33,13 +40,22 @@ class Controller {
     await services.createTransaction(transaction, account, category);
   }
 
+  Future updateTransaction(
+      Transaction transaction, Account account, Category category) async {
+    await services.updateTransaction(transaction, account, category);
+  }
+
   fire.CollectionReference<Map<String, dynamic>> getTransactions() {
     return services.getTransactions();
   }
 
-  Future<List<Transaction>> getTransactionsByAccount(Account account) async {
-    return await services.getTransactionsByAccount(account);
+  Stream<List<Transaction>> getTransactionsStream({Account? account}) {
+    return services.getTransactionsStream(account: account);
   }
+
+  // Future<List<Transaction>> getTransactionsByAccount(Account account) async {
+  //   return await services.getTransactionsByAccount(account);
+  // }
 
   Future deleteTransaction(Transaction transaction) async {
     await services.deleteTransaction(transaction);
@@ -53,17 +69,16 @@ class Controller {
     return await services.getCategories();
   }
 
-  fire.CollectionReference<Map<String, dynamic>> getCategoriesDocuments() {
-    return services.getCategoriesDocuments();
+  Stream<List<Category>> getCategoriesStream() {
+    return services.getCategoriesStream();
   }
 
   Future<Category> getCategoryById(String id) async {
     return await services.getCategoryById(id);
   }
 
-  fire.DocumentReference<Map<String, dynamic>> getCategoryDocumentById(
-      String id) {
-    return services.getCategoryDocumentById(id);
+  Stream<Category> getCategoryStreamById(String id) {
+    return services.getCategoryStreamById(id);
   }
 
   Future deleteCategory(Category category) async {

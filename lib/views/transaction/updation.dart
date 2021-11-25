@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
 
-class TransactionCreation extends StatefulWidget {
-  const TransactionCreation({Key? key}) : super(key: key);
+class TransactionUpdate extends StatefulWidget {
+  final Transaction transaction;
+  final Account startingAccout;
+  final Category startingCategory;
+
+  const TransactionUpdate(
+      this.transaction, this.startingAccout, this.startingCategory,
+      {Key? key})
+      : super(key: key);
 
   @override
-  _TransactionCreationState createState() => _TransactionCreationState();
+  _TransactionUpdateState createState() => _TransactionUpdateState();
 }
 
-class _TransactionCreationState extends State<TransactionCreation> {
+class _TransactionUpdateState extends State<TransactionUpdate> {
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
   Account? selectedAccount;
@@ -17,11 +24,20 @@ class _TransactionCreationState extends State<TransactionCreation> {
   bool isIncome = true;
 
   @override
+  void initState() {
+    _amountController.text = "${widget.transaction.amount}";
+    _descriptionController.text = widget.transaction.description;
+    selectedAccount = widget.startingAccout;
+    selectedCategory = widget.startingCategory;
+    isIncome = widget.transaction.income;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add transaction"),
+        title: const Text("Update transaction"),
       ),
       body: ListView(
         padding: const EdgeInsets.all(10),
@@ -42,75 +58,8 @@ class _TransactionCreationState extends State<TransactionCreation> {
             ),
           ),
           const SizedBox(height: 15),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text('account:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FutureBuilder<List<Account>>(
-                future: controller.getAccounts(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Account>> snapshot) {
-                  if (snapshot.hasData) {
-                    List<Account> accounts = (snapshot.data!);
-                    selectedAccount ??= accounts[0];
-                    return DropdownButton<Account>(
-                      value: selectedAccount,
-                      onChanged: (Account? newValue) {
-                        setState(() {
-                          selectedAccount = newValue!;
-                        });
-                      },
-                      items: accounts
-                          .map<DropdownMenuItem<Account>>((Account value) {
-                        return DropdownMenuItem<Account>(
-                          value: value,
-                          child: Text(value.accountName),
-                        );
-                      }).toList(),
-                    );
-                  } else {
-                    return const Text("Loading");
-                  }
-                },
-              ),
-            ),
-          ]),
-
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text('category:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FutureBuilder<List<Category>>(
-                future: controller.getCategories(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Category>> snapshot) {
-                  if (snapshot.hasData) {
-                    List<Category> categories = (snapshot.data!);
-                    selectedCategory ??= categories[0];
-                    return DropdownButton<Category>(
-                      value: selectedCategory,
-                      onChanged: (Category? newValue) {
-                        setState(() {
-                          selectedCategory = newValue!;
-                        });
-                      },
-                      items: categories
-                          .map<DropdownMenuItem<Category>>((Category c) {
-                        return DropdownMenuItem<Category>(
-                          value: c,
-                          child: Text(c.categoryName),
-                        );
-                      }).toList(),
-                    );
-                  } else {
-                    return const Text("Loading");
-                  }
-                },
-              ),
-            ),
-          ]),
+          _buildAccountDropdown(),
+          _buildCategoryDropdown(),
           Column(
             children: [
               ListTile(
@@ -154,20 +103,110 @@ class _TransactionCreationState extends State<TransactionCreation> {
     );
   }
 
-  Future<bool> _createTransaction() async {
+  Widget _buildAccountDropdown() {
     final controller = Provider.of(context);
 
-    final int amount =
-        int.parse(_amountController.text != '' ? _amountController.text : '0');
-    final String description = _descriptionController.text;
-    if (amount == 0) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('Account:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: StreamBuilder(
+            stream: controller.getAccountsStream(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
+              if (!snapshot.hasData) {
+                final temp = Account("", 0);
+                return DropdownButton<Account>(
+                  value: temp,
+                  items: [
+                    DropdownMenuItem<Account>(
+                      value: temp,
+                      child: Text(temp.accountName),
+                    ),
+                  ],
+                );
+              }
+              var accounts = snapshot.data!;
+              selectedAccount ??= accounts[0];
+              return DropdownButton<Account>(
+                value: selectedAccount,
+                onChanged: (Account? newValue) {
+                  setState(() {
+                    selectedAccount = newValue!;
+                  });
+                },
+                items: accounts.map<DropdownMenuItem<Account>>((Account value) {
+                  return DropdownMenuItem<Account>(
+                    value: value,
+                    child: Text(value.accountName),
+                  );
+                }).toList(),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryDropdown() {
+    final controller = Provider.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('Category:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FutureBuilder<List<Category>>(
+            future: controller.getCategories(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
+              if (snapshot.hasData) {
+                List<Category> categories = (snapshot.data!);
+                selectedCategory ??= categories[0];
+                return DropdownButton<Category>(
+                  value: selectedCategory,
+                  onChanged: (Category? newValue) {
+                    setState(() {
+                      selectedCategory = newValue!;
+                    });
+                  },
+                  items:
+                      categories.map<DropdownMenuItem<Category>>((Category c) {
+                    return DropdownMenuItem<Category>(
+                      value: c,
+                      child: Text(c.categoryName),
+                    );
+                  }).toList(),
+                );
+              } else {
+                return const Text("Loading");
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<bool> _createTransaction() async {
+    final controller = Provider.of(context);
+    if (_amountController.text == '' || _descriptionController.text == '') {
       return false;
     }
 
-    await controller.createTransaction(
-        Transaction(amount, isIncome, description),
-        selectedAccount!,
-        selectedCategory!);
+    final int amount = int.parse(_amountController.text);
+    final updatedTransaction =
+        Transaction(amount, isIncome, _descriptionController.text);
+    updatedTransaction.setTransactionId = widget.transaction.transactionId;
+
+    await controller.updateTransaction(
+        updatedTransaction, selectedAccount!, selectedCategory!);
     return true;
   }
 }

@@ -13,6 +13,7 @@ class CategoriesList extends StatefulWidget {
 class _CategoriesListState extends State<CategoriesList> {
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
@@ -32,40 +33,25 @@ class _CategoriesListState extends State<CategoriesList> {
         ],
       ),
       body: Container(
-        child: FutureBuilder(
-          future: _buildCategoriesList(),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (snapshot.hasError) {
-              return Text('${snapshot.error}');
+        child: StreamBuilder(
+          stream: controller.getCategoriesStream(),
+          builder: (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
+            var categories = [];
+            if (snapshot.hasData) {
+              categories = snapshot.data!;
             }
-
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Container(
-                child: ListView(
-                  children: snapshot.data!,
-                ),
-              );
-            } else {
-              return const Text('loading...');
-            }
+            final tiles = categories.map((e) => _buildCategoryTile(e)).toList();
+            return ListView(
+              children:
+              ListTile.divideTiles(context: context, tiles: tiles).toList(),
+            );
           },
         ),
       ),
     );
   }
 
-  Future<List<Widget>> _buildCategoriesList() async {
-    final List<Widget> tiles = <Widget>[];
-
-    final controller = Provider.of(context);
-    final categories = await controller.getCategories();
-    for (var c in categories) {
-      tiles.add(_buildCategoryTile(c));
-    }
-    return tiles;
-  }
-
-  Widget _buildCategoryTile(Category category) {
+  Widget _buildCategoryTile(Category category, {Category}) {
     return Dismissible(
       key: Key(category.categoryName),
       onDismissed: (direction) async {

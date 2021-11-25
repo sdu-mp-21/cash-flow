@@ -1,3 +1,4 @@
+import 'package:final_project/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 
@@ -27,19 +28,22 @@ class _MenuScreenState extends State<MenuScreen> {
         children: [
           Text(
             controller.user.email,
-            style: TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 20),
           ),
           const SizedBox(height: 20),
           Text(
             'user_id: ${controller.user.userId}',
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
               },
-              child: Icon(Icons.logout)),
+              child: const Icon(Icons.logout)),
         ],
       ),
     );

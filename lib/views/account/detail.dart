@@ -1,11 +1,12 @@
 import 'package:final_project/models/models.dart';
 import 'package:final_project/provider.dart';
+import 'package:final_project/views/transaction/list.dart';
 import 'package:flutter/material.dart';
 
 class AccountDetail extends StatelessWidget {
-  late Account account;
+  final Account account;
 
-  AccountDetail(this.account, {Key? key}) : super(key: key);
+  const AccountDetail(this.account, {Key? key}) : super(key: key);
 
   Account getAccount() {
     return account;
@@ -13,32 +14,47 @@ class AccountDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Cash Flow"),
       ),
       body: Column(
         children: [
-          AccountInfo(account),
-          FutureBuilder(
-            future: controller.getTransactionsByAccount(account),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<Transaction>> snapshot) {
-              if (snapshot.hasData) {
-                final data = snapshot.data!;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final elem = data[index];
-                    return TransactionTile(elem: elem);
-                  },
-                );
-              } else {
-                return const Text("");
-              }
+           TweenAnimationBuilder(
+            child: AccountInfo(account),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 700),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.only(top: _val * 50),
+                  child: child!,
+                ),
+              );
             },
+          ),
+          // AccountInfo(account),
+          Expanded(
+            child: TweenAnimationBuilder(
+            child:TransactionsView(
+              account: account,
+            ),
+            tween: Tween<double>(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 700),
+            builder: (BuildContext context, double _val, Widget? child) {
+              return Opacity(
+                opacity: _val,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(_val * 50, 0, _val * 50, 0),
+                  child: child!,
+                ),
+              );
+            },
+          ), 
+          // TransactionsView(
+          //     account: account,
+          //   ),
           ),
         ],
       ),
