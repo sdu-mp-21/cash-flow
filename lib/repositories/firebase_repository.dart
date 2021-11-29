@@ -27,7 +27,7 @@ class FirebaseRepository extends Repository {
     _user.setID = uid;
   }
 
-  Future<bool> loginUser(models.User u) async {
+  Future<String?> loginUser(models.User u) async {
     try {
       final UserCredential credential =
           await _firebaseAuth.signInWithEmailAndPassword(
@@ -37,13 +37,12 @@ class FirebaseRepository extends Repository {
       u.setID = credential.user!.uid;
       _user = u;
     } catch (error) {
-      print(error);
-      return false;
+      return error.toString();
     }
-    return true;
+    return null;
   }
 
-  Future<bool> registerUser(models.User u) async {
+  Future<String?> registerUser(models.User u) async {
     try {
       final UserCredential credential =
           await _firebaseAuth.createUserWithEmailAndPassword(
@@ -56,10 +55,9 @@ class FirebaseRepository extends Repository {
       await createAccount(models.Account('Account1', 0));
       await createCategory(models.Category('Health'));
     } catch (error) {
-      print(error);
-      return false;
+      return error.toString();
     }
-    return true;
+    return null;
   }
 
   //---accounts---

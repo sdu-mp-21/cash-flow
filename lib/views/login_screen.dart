@@ -11,8 +11,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController _usernameController = TextEditingController();
-  late TextEditingController _passwordController = TextEditingController();
+  late TextEditingController _usernameController;
+  late TextEditingController _passwordController;
+  final _formKey = GlobalKey<FormState>();
+  bool isLogin = true;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController = TextEditingController();
+    _passwordController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -21,58 +31,61 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  RegExp regExpPassword =
-      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{5,}$');
-  RegExp regExpUser = RegExp(r'[A-Za-z0-9_]$');
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: isLogin ? const Text('Login') : const Text('Registration'),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(30),
+      body: Form(
+        key: _formKey,
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              decoration: const InputDecoration(
-                hintText: "Email",
-                // errorText: _validate ? 'Invalid Email' : null, //<--->
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Email',
+                ),
+                controller: _usernameController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is empty';
+                  }
+                  return null;
+                },
               ),
-              controller: _usernameController,
             ),
-            TextField(
-              decoration: const InputDecoration(
-                hintText: "Password",
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Password',
+                ),
+                controller: _passwordController,
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is empty';
+                  }
+                  return null;
+                },
               ),
-              controller: _passwordController,
-              obscureText: true,
             ),
             const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    await _registerUser();
-                  },
-                  child: const Text("register"),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    bool loggedIn = await _loginUser();
-                    if (loggedIn) {
-                      Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Home()))
-                          .then((value) => setState(() {}));
-                    }
-                  },
-                  child: const Text("login"),
-                ),
-              ],
+            isLoading
+                ? const CircularProgressIndicator()
+                : _authButton(isLogin ? 'Login' : 'Register',
+                    isLogin ? _onLogin : _onRegister),
+            TextButton(
+              onPressed: () {
+                isLogin = !isLogin;
+                setState(() {});
+              },
+              child: isLogin ? const Text('Register') : const Text('Login'),
             ),
           ],
         ),
@@ -80,38 +93,65 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget _authButton(String txt, VoidCallback callback) {
+    return ElevatedButton(
+      onPressed: callback,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          txt,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onLogin() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => isLoading = true);
+      bool loggedIn = await _loginUser();
+      setState(() => isLoading = false);
+      if (loggedIn) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Home(),
+          ),
+        ).then((value) => setState(() {}));
+      }
+    }
+  }
+
   Future<bool> _loginUser() async {
     final username = _usernameController.text;
     final password = _passwordController.text;
     final controller = Provider.of(context);
 
-    if (username == '' || password == '') {
-      showDialog(
-        context: context,
-        builder: (_) => const AlertDialog(
-          title: Text('Failed login'),
-          content: Text('Empty fields'),
-        ),
-      );
-      return false;
-    }
-
-    final loggedIn = await controller.loginUser(User(username, password));
-    if (loggedIn) {
+    final loginError = await controller.loginUser(User(username, password));
+    if (loginError == null) {
       return true;
     }
 
     showDialog(
       context: context,
-      builder: (_) => const AlertDialog(
-        title: Text('Failed login'),
-        content: Text(
-          'Incorrect username or password',
-        ),
+      builder: (_) => AlertDialog(
+        title: const Text('Failed login'),
+        content: Text(loginError),
       ),
     );
 
     return false;
+  }
+
+  Future<void> _onRegister() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => isLoading = true);
+      await _registerUser();
+      setState(() => isLoading = false);
+    }
   }
 
   Future _registerUser() async {
@@ -119,41 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
     final controller = Provider.of(context);
 
-    if (!regExpUser.hasMatch(_usernameController.text)) {
-      showDialog(
-        context: context,
-        builder: (_) => const AlertDialog(
-          title: Text('Failed registration'),
-          content: Text('Invalid Email'),
-        ),
-      );
-      return false;
-    }
-    if (!regExpPassword.hasMatch(_passwordController.text)) {
-      showDialog(
-        context: context,
-        builder: (_) => const AlertDialog(
-          title: Text('Failed registration'),
-          content: Text('Invalid Password'),
-        ),
-      );
-      return false;
-    }
-
-    if (username == '' || password == '') {
-      showDialog(
-        context: context,
-        builder: (_) => const AlertDialog(
-          title: Text('Failed registration'),
-          content: Text('Empty fields'),
-        ),
-      );
-      return false;
-    }
-
-    final validUsername =
+    final registrationError =
         await controller.registerUser(User(username, password));
-    if (validUsername) {
+    if (registrationError == null) {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -165,9 +173,9 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       showDialog(
         context: context,
-        builder: (_) => const AlertDialog(
-          title: Text('Failed registration'),
-          content: Text('Such username already exists'),
+        builder: (_) => AlertDialog(
+          title: const Text('Failed registration'),
+          content: Text(registrationError),
         ),
       );
     }

@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
       ),
       body: Padding(
         child: _routes[_currentIndex],
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: _navBarItems,

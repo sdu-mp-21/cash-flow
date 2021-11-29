@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
+import 'package:flutter/services.dart';
 
 // changed to stateful cause stateless doesn't see the context from other functions
 class TransactionCreation extends StatefulWidget {
@@ -16,6 +17,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
   Account? selectedAccount;
   Category? selectedCategory;
   bool isIncome = true;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -23,66 +25,80 @@ class _TransactionCreationState extends State<TransactionCreation> {
       appBar: AppBar(
         title: const Text("Add transaction"),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(10),
-        children: [
-          TextField(
-            keyboardType: TextInputType.number,
-            controller: _amountController,
-            decoration: const InputDecoration(
-              hintText: "Money amount",
-            ),
-          ),
-          // SizedBox(height: 10),
-          TextField(
-            keyboardType: TextInputType.text,
-            controller: _descriptionController,
-            decoration: const InputDecoration(
-              hintText: "Description",
-            ),
-          ),
-          SizedBox(height: 15),
-          _buildAccountDropdown(),
-          _buildCategoryDropdown(),
-          Column(
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
             children: [
-              ListTile(
-                title: const Text("income"),
-                leading: Radio(
-                  value: true,
-                  groupValue: isIncome,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isIncome = true;
-                    });
-                  },
+              TextFormField(
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                controller: _amountController,
+                decoration: const InputDecoration(
+                  hintText: "Money amount",
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Money amount is empty';
+                  }
+                  return null;
+                },
+              ),
+              // SizedBox(height: 10),
+              TextFormField(
+                keyboardType: TextInputType.text,
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  hintText: "Description",
                 ),
               ),
-              ListTile(
-                title: const Text("outcome"),
-                leading: Radio(
-                  value: false,
-                  groupValue: isIncome,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isIncome = false;
-                    });
+              const SizedBox(height: 15),
+              _buildAccountDropdown(),
+              _buildCategoryDropdown(),
+              Column(
+                children: [
+                  ListTile(
+                    title: const Text("income"),
+                    leading: Radio(
+                      value: true,
+                      groupValue: isIncome,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isIncome = true;
+                        });
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text("outcome"),
+                    leading: Radio(
+                      value: false,
+                      groupValue: isIncome,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isIncome = false;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await _createTransaction();
+                      Navigator.pop(context);
+                    }
                   },
+                  child: const Text("Submit"),
                 ),
               ),
             ],
           ),
-          Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                if (await _createTransaction()) {
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text("Submit"),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -93,7 +109,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Account:',
+        const Text('Account:',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -142,7 +158,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Category:',
+        const Text('Category:',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -169,7 +185,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
                   }).toList(),
                 );
               } else {
-                return Text("Loading");
+                return const Text("Loading");
               }
             },
           ),
@@ -178,11 +194,8 @@ class _TransactionCreationState extends State<TransactionCreation> {
     );
   }
 
-  Future<bool> _createTransaction() async {
+  Future<void> _createTransaction() async {
     final controller = Provider.of(context);
-    if (_amountController.text == '' || _descriptionController.text == '') {
-      return false;
-    }
 
     final int amount = int.parse(_amountController.text);
 
@@ -190,6 +203,5 @@ class _TransactionCreationState extends State<TransactionCreation> {
         Transaction(amount, isIncome, _descriptionController.text),
         selectedAccount!,
         selectedCategory!);
-    return true;
   }
 }

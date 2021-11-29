@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
-import 'package:final_project/views/transaction/creation.dart';
+import 'package:final_project/views/transaction/form.dart';
 import 'package:final_project/views/transaction/detail.dart';
 
 class TransactionsScreen extends StatelessWidget {
@@ -9,22 +9,19 @@ class TransactionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        children: [
-          const Expanded(
-            child: TransactionsList(),
-          ),
-          Center(
-            child: addTransactionButton(context),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        const Expanded(
+          child: TransactionsList(),
+        ),
+        Center(
+          child: addTransactionButton(context),
+        ),
+      ],
     );
   }
 
-  ElevatedButton addTransactionButton(BuildContext context) {
+  Widget addTransactionButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
         Navigator.push(
@@ -51,6 +48,9 @@ class TransactionsList extends StatelessWidget {
       stream: controller.getTransactionsStream(account: account),
       builder:
           (BuildContext context, AsyncSnapshot<List<Transaction>> snapshot) {
+        // if (snapshot.connectionState == ConnectionState.active) {
+        //   return const Center(child: CircularProgressIndicator());
+        // }
         var transactions = [];
         if (snapshot.hasData) {
           transactions = snapshot.data!;
@@ -65,24 +65,19 @@ class TransactionsList extends StatelessWidget {
   Widget _buildList(List<TransactionTile> tiles) {
     final res = <Widget>[];
     var time = "";
-    for (var i = 0; i < tiles.length; i++) {
-      if (tiles[i].transaction.createdTime.split(' ')[0] != time) {
+
+    for (var element in tiles) {
+      final temp = element.transaction.createdTime.split(' ')[0];
+      if (temp != time) {
         if (time != "") {
           res.add(const Divider());
         }
-        time = tiles[i].transaction.createdTime.split(' ')[0];
-        final row = Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: Text(time,
-                  style: const TextStyle(fontWeight: FontWeight.w300)),
-            ),
-          ],
-        );
-        res.add(row);
+        time = temp;
+        final timeText =
+            Text(time, style: const TextStyle(fontWeight: FontWeight.w300));
+        res.add(timeText);
       }
-      res.add(tiles[i]);
+      res.add(element);
     }
     return ListView(
       children: res,

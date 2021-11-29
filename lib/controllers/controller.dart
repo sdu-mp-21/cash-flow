@@ -1,83 +1,79 @@
 import 'package:final_project/models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as fire;
-import 'package:final_project/services/service.dart';
+import 'package:final_project/repositories/firebase_repository.dart';
 
 class Controller {
-  final services = Service();
+  final repository = FirebaseRepository();
 
-  User get user => services.user;
+  User get user => repository.user;
 
   loadUser(String email, String uid) {
-    services.loadUser(email, uid);
+    repository.loadUser(email, uid);
   }
 
-  Future<bool> loginUser(User user) async {
-    return await services.loginUser(user);
+  Future<String?> loginUser(User user) async {
+    return await repository.loginUser(user);
   }
 
-  Future<bool> registerUser(User user) async {
-    return await services.registerUser(user);
+  Future<String?> registerUser(User user) async {
+    return await repository.registerUser(user);
   }
 
   Future createAccount(Account account) async {
-    await services.createAccount(account);
+    await repository.createAccount(account);
   }
 
   Future<List<Account>> getAccounts() async {
-    return await services.getAccounts();
+    return await repository.getAccounts();
   }
 
   Stream<List<Account>> getAccountsStream() {
-    return services.getAccountsStream();
+    return repository.getAccountsStream();
   }
 
   Future<Account> getAccountById(String id) {
-    return services.getAccountById(id);
+    return repository.getAccountById(id);
   }
 
   Future createTransaction(
       Transaction transaction, Account account, Category category) async {
-    await services.createTransaction(transaction, account, category);
+    await repository.createTransaction(transaction, account, category);
   }
 
   Future updateTransaction(
       Transaction transaction, Account account, Category category) async {
-    await services.updateTransaction(transaction, account, category);
+    await repository.updateTransaction(transaction, account, category);
   }
 
   Stream<List<Transaction>> getTransactionsStream({Account? account}) {
-    return services.getTransactionsStream(account: account);
+    return repository.getTransactionsStream(account: account);
   }
 
-  // Future<List<Transaction>> getTransactionsByAccount(Account account) async {
-  //   return await services.getTransactionsByAccount(account);
-  // }
-
   Future deleteTransaction(Transaction transaction) async {
-    await services.deleteTransaction(transaction);
+    await repository.deleteTransaction(transaction);
   }
 
   Future createCategory(Category category) async {
-    await services.createCategory(category);
+    await repository.createCategory(category);
   }
 
   Future<List<Category>> getCategories() async {
-    return await services.getCategories();
+    return await repository.getCategories();
   }
 
   Stream<List<Category>> getCategoriesStream() {
-    return services.getCategoriesStream();
+    return repository.getCategoriesStream();
   }
 
   Future<Category> getCategoryById(String id) async {
-    return await services.getCategoryById(id);
+    return await repository.getCategoryById(id);
   }
 
   Stream<Category> getCategoryStreamById(String id) {
-    return services.getCategoryStreamById(id);
+    return repository.getCategoryStreamById(id);
   }
 
   Future deleteCategory(Category category) async {
-    await services.deleteCategory(category);
+    await repository.deleteCategory(category);
   }
 }
