@@ -1,4 +1,4 @@
-import 'package:final_project/views/login_screen.dart';
+import 'package:final_project/views/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 
