@@ -36,7 +36,7 @@ class Controller {
   }
 
   Future createTransaction(
-      Transaction transaction, Account account, Category category) async {
+      Transaction transaction, Account account, Category? category) async {
     await repository.createTransaction(transaction, account, category);
   }
 

@@ -1,5 +1,5 @@
 import 'package:final_project/models/models.dart';
-import 'package:final_project/views/transaction/updation.dart';
+import 'package:final_project/views/transaction/form.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/provider.dart';
 
@@ -31,8 +31,10 @@ class TransactionDetail extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      TransactionUpdate(transaction, account, category),
+                  builder: (context) => TransactionCreation(
+                      transaction: transaction,
+                      account: account,
+                      category: category),
                 ),
               );
             },
@@ -83,7 +85,6 @@ class TransactionDetail extends StatelessWidget {
                       return Text('Account: ${account.accountName}');
                     }
                     return const Text('Loading...');
-                    ;
                   },
                 ),
                 const SizedBox(height: 15),
