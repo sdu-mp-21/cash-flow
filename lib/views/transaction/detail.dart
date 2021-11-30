@@ -24,17 +24,11 @@ class TransactionDetail extends StatelessWidget {
           ),
           IconButton(
             onPressed: () async {
-              final account =
-                  await controller.getAccountById(transaction.accountId);
-              final category =
-                  await controller.getCategoryById(transaction.categoryId);
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => TransactionCreation(
-                      transaction: transaction,
-                      account: account,
-                      category: category),
+                  builder: (context) =>
+                      TransactionCreation(transaction: transaction),
                 ),
               );
             },

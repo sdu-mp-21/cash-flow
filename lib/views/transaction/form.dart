@@ -3,17 +3,12 @@ import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
 import 'package:flutter/services.dart';
 
-// changed to stateful cause stateless doesn't see the context from other functions
 class TransactionCreation extends StatefulWidget {
   final Transaction? transaction;
-  final Account? account;
-  final Category? category;
 
   const TransactionCreation({
     Key? key,
     this.transaction,
-    this.account,
-    this.category,
   }) : super(key: key);
 
   @override
@@ -29,14 +24,27 @@ class _TransactionCreationState extends State<TransactionCreation> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     if (widget.transaction != null) {
       _amountController.text = '${widget.transaction!.amount}';
       _descriptionController.text = widget.transaction!.description;
-      selectedAccount = widget.account;
-      selectedCategory = widget.category;
       isIncome = widget.transaction!.income;
+    }
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (widget.transaction != null) {
+      final controller = Provider.of(context);
+      await controller
+          .getAccountById(widget.transaction!.accountId)
+          .then((value) => selectedAccount = value);
+      await controller
+          .getCategoryById(widget.transaction!.categoryId)
+          .then((value) => selectedCategory = value);
+      setState(() {});
     }
   }
 
@@ -113,7 +121,9 @@ class _TransactionCreationState extends State<TransactionCreation> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      await _createTransaction();
+                      widget.transaction == null
+                          ? await _createTransaction()
+                          : await _updateTransaction();
                       Navigator.pop(context);
                     }
                   },
@@ -151,7 +161,8 @@ class _TransactionCreationState extends State<TransactionCreation> {
               }
 
               if (snapshot.data!.isEmpty) {
-                final temp = Account('Default Account', 0);
+                //todo: empty static account instance
+                final temp = Account('No account', 0);
                 return DropdownButton<Account>(
                   value: temp,
                   items: [
@@ -163,20 +174,18 @@ class _TransactionCreationState extends State<TransactionCreation> {
                 );
               }
 
-              var accounts = snapshot.data!;
+              List<Account> accounts = snapshot.data!;
               selectedAccount ??= accounts[0];
               return DropdownButton<Account>(
                 value: selectedAccount,
                 onChanged: (Account? newValue) {
-                  setState(() {
-                    selectedAccount = newValue!;
-                  });
+                  setState(() => selectedAccount = newValue);
                 },
                 items: accounts.map<DropdownMenuItem<Account>>(
-                  (Account value) {
+                  (Account acc) {
                     return DropdownMenuItem<Account>(
-                      value: value,
-                      child: Text(value.accountName),
+                      value: acc,
+                      child: Text(acc.accountName),
                     );
                   },
                 ).toList(),
@@ -210,7 +219,9 @@ class _TransactionCreationState extends State<TransactionCreation> {
               if (!snapshot.hasData) {
                 return const CircularProgressIndicator();
               }
+
               if (snapshot.data!.isEmpty) {
+                //todo: static instance
                 final temp = Category("Uncategorized");
                 return DropdownButton<Category>(
                   value: temp,
@@ -223,21 +234,21 @@ class _TransactionCreationState extends State<TransactionCreation> {
                 );
               }
 
-              List<Category> categories = (snapshot.data!);
+              List<Category> categories = snapshot.data!;
               selectedCategory ??= categories[0];
               return DropdownButton<Category>(
                 value: selectedCategory,
                 onChanged: (Category? newValue) {
-                  setState(() {
-                    selectedCategory = newValue!;
-                  });
+                  setState(() => selectedCategory = newValue);
                 },
-                items: categories.map<DropdownMenuItem<Category>>((Category c) {
-                  return DropdownMenuItem<Category>(
-                    value: c,
-                    child: Text(c.categoryName),
-                  );
-                }).toList(),
+                items: categories.map<DropdownMenuItem<Category>>(
+                  (Category ctg) {
+                    return DropdownMenuItem<Category>(
+                      value: ctg,
+                      child: Text(ctg.categoryName),
+                    );
+                  },
+                ).toList(),
               );
             },
           ),
@@ -249,21 +260,27 @@ class _TransactionCreationState extends State<TransactionCreation> {
   Future<void> _createTransaction() async {
     final controller = Provider.of(context);
 
-    final int amount = int.parse(_amountController.text);
+    await controller.createTransaction(
+        Transaction(
+          int.parse(_amountController.text),
+          isIncome,
+          _descriptionController.text,
+        ),
+        selectedAccount!,
+        selectedCategory);
+  }
 
-    if (widget.transaction != null) {
-      //update
-      final updatedTransaction =
-          Transaction(amount, isIncome, _descriptionController.text);
-      updatedTransaction.setTransactionId = widget.transaction!.transactionId;
+  Future<void> _updateTransaction() async {
+    final controller = Provider.of(context);
 
-      await controller.updateTransaction(
-          updatedTransaction, selectedAccount!, selectedCategory!);
-    } else {
-      await controller.createTransaction(
-          Transaction(amount, isIncome, _descriptionController.text),
-          selectedAccount!,
-          selectedCategory);
-    }
+    final updatedTransaction = Transaction(
+      int.parse(_amountController.text),
+      isIncome,
+      _descriptionController.text,
+    );
+    updatedTransaction.setTransactionId = widget.transaction!.transactionId;
+
+    await controller.updateTransaction(
+        updatedTransaction, selectedAccount!, selectedCategory!);
   }
 }
