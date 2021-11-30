@@ -31,8 +31,16 @@ class Controller {
     return repository.getAccountsStream();
   }
 
-  Future<Account> getAccountById(String id) {
-    return repository.getAccountById(id);
+  Future<Account> getAccountById(String id) async {
+    return await repository.getAccountById(id);
+  }
+
+  Future<void> updateAccount(Account account) async {
+    await repository.updateAccount(account);
+  }
+
+  Future<void> deleteAccount(Account account) async {
+    await repository.deleteAccount(account);
   }
 
   Future createTransaction(

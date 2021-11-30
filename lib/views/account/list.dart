@@ -34,7 +34,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CreateAccountForm(),
+                    builder: (context) => const AccountForm(),
                   ),
                 ).then((value) => setState(() {}));
               },
@@ -71,23 +71,23 @@ class _AccountsScreenState extends State<AccountsScreen> {
   Widget _buildAccountsList() {
     final controller = Provider.of(context);
 
-    return StreamBuilder(
-      stream: controller.getAccountsStream(),
-      builder: (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
-        if (!snapshot.hasData) {
-          return const SizedBox.shrink();
-        }
-        final accounts = snapshot.data!;
-        final tiles = accounts.map((e) => _buildAccountTile(e)).toList();
-        return SizedBox(
-          // set the height to container, cause nester columns trigger overflow error
-          height: MediaQuery.of(context).size.height / 3,
-          child: ListView(
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 3,
+      child: StreamBuilder(
+        stream: controller.getAccountsStream(),
+        builder: (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final accounts = snapshot.data!;
+          final tiles = accounts.map((e) => _buildAccountTile(e)).toList();
+          return ListView(
             children:
                 ListTile.divideTiles(context: context, tiles: tiles).toList(),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

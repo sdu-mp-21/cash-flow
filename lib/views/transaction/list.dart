@@ -27,7 +27,7 @@ class TransactionsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const TransactionCreation(),
+            builder: (context) => const TransactionForm(),
           ),
         );
       },

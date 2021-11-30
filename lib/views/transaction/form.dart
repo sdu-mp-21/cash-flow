@@ -3,19 +3,19 @@ import 'package:final_project/provider.dart';
 import 'package:final_project/models/models.dart';
 import 'package:flutter/services.dart';
 
-class TransactionCreation extends StatefulWidget {
+class TransactionForm extends StatefulWidget {
   final Transaction? transaction;
 
-  const TransactionCreation({
+  const TransactionForm({
     Key? key,
     this.transaction,
   }) : super(key: key);
 
   @override
-  _TransactionCreationState createState() => _TransactionCreationState();
+  _TransactionFormState createState() => _TransactionFormState();
 }
 
-class _TransactionCreationState extends State<TransactionCreation> {
+class _TransactionFormState extends State<TransactionForm> {
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
   Account? selectedAccount;
@@ -261,9 +261,17 @@ class _TransactionCreationState extends State<TransactionCreation> {
   }
 
   Future<void> _createTransaction() async {
-    final controller = Provider.of(context);
+    if (selectedAccount == Account.empty) {
+      showDialog(
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text('User has no account'),
+          content: Text('Please create an account'),
+        ),
+      );
+    }
 
-    await controller.createTransaction(
+    await Provider.of(context).createTransaction(
         Transaction(
           int.parse(_amountController.text),
           isIncome,
@@ -274,8 +282,6 @@ class _TransactionCreationState extends State<TransactionCreation> {
   }
 
   Future<void> _updateTransaction() async {
-    final controller = Provider.of(context);
-
     final updatedTransaction = Transaction(
       int.parse(_amountController.text),
       isIncome,
@@ -283,7 +289,7 @@ class _TransactionCreationState extends State<TransactionCreation> {
     );
     updatedTransaction.setTransactionId = widget.transaction!.transactionId;
 
-    await controller.updateTransaction(
+    await Provider.of(context).updateTransaction(
         updatedTransaction, selectedAccount!, selectedCategory!);
   }
 }

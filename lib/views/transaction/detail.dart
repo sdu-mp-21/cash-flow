@@ -28,7 +28,7 @@ class TransactionDetail extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      TransactionCreation(transaction: transaction),
+                      TransactionForm(transaction: transaction),
                 ),
               );
             },
@@ -47,7 +47,7 @@ class TransactionDetail extends StatelessWidget {
             duration: const Duration(milliseconds: 500),
             builder: (BuildContext context, double _val, Widget? child) {
               return Padding(
-                padding: EdgeInsets.only(top: _val * 100),
+                padding: EdgeInsets.only(top: _val * 30),
                 child: child,
               );
             },
@@ -105,7 +105,12 @@ class TransactionDetail extends StatelessWidget {
             duration: const Duration(milliseconds: 500),
             builder: (_, double _val, child) {
               return Padding(
-                padding: EdgeInsets.only(left: _val * 50),
+                padding: EdgeInsets.fromLTRB(
+                  _val * 20,
+                  0,
+                  _val * 20,
+                  0,
+                ),
                 child: child,
               );
             },

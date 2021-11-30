@@ -117,6 +117,38 @@ class FirebaseRepository implements Repository {
     await docRef.update({"balance": balance});
   }
 
+  Future<void> updateAccount(Account account) async {
+    final docRef = collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionAccounts)
+        .doc(account.accountId);
+
+    docRef.set(account.toJson());
+  }
+
+  Future<void> deleteAccount(Account account) async {
+    await collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionAccounts)
+        .doc(account.accountId)
+        .delete();
+
+    await deleteTransactionsByAccount(account);
+  }
+
+  Future<void> deleteTransactionsByAccount(Account account) async {
+    final colRef = collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionTransactions);
+
+    final snapshot =
+        await colRef.where('account_id', isEqualTo: account.accountId).get();
+
+    for (var element in snapshot.docs) {
+      await colRef.doc(element.id).delete();
+    }
+  }
+
   //---transactions---
 
   @override

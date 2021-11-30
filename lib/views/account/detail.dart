@@ -1,6 +1,8 @@
 import 'package:final_project/models/models.dart';
 import 'package:final_project/views/transaction/list.dart';
 import 'package:flutter/material.dart';
+import '../../provider.dart';
+import 'form.dart';
 
 class AccountDetail extends StatelessWidget {
   final Account account;
@@ -12,6 +14,26 @@ class AccountDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Account detail'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await Provider.of(context).deleteAccount(account);
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.delete),
+          ),
+          IconButton(
+            onPressed: () async {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AccountForm(account: account),
+                ),
+              );
+            },
+            icon: const Icon(Icons.change_circle),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -20,12 +42,9 @@ class AccountDetail extends StatelessWidget {
             tween: Tween<double>(begin: 0, end: 1),
             duration: const Duration(milliseconds: 500),
             builder: (_, double _val, child) {
-              return Opacity(
-                opacity: _val,
-                child: Padding(
-                  padding: EdgeInsets.only(top: _val * 50),
-                  child: child,
-                ),
+              return Padding(
+                padding: EdgeInsets.only(top: _val * 20),
+                child: child,
               );
             },
           ),
@@ -37,17 +56,14 @@ class AccountDetail extends StatelessWidget {
               tween: Tween<double>(begin: 0, end: 1),
               duration: const Duration(milliseconds: 500),
               builder: (_, double _val, child) {
-                return Opacity(
-                  opacity: _val,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      _val * 50,
-                      0,
-                      _val * 50,
-                      0,
-                    ),
-                    child: child,
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    _val * 10,
+                    0,
+                    _val * 10,
+                    0,
                   ),
+                  child: child,
                 );
               },
             ),
