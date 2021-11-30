@@ -48,9 +48,8 @@ class Controller {
     await repository.createTransaction(transaction, account, category);
   }
 
-  Future updateTransaction(
-      Transaction transaction, Account account, Category category) async {
-    await repository.updateTransaction(transaction, account, category);
+  Future updateTransaction(Transaction old, Transaction updated) async {
+    await repository.updateTransaction(old, updated);
   }
 
   Stream<List<Transaction>> getTransactionsStream({Account? account}) {

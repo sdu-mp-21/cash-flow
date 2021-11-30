@@ -300,15 +300,17 @@ class _TransactionFormState extends State<TransactionForm> {
       return;
     }
 
-    final updatedTransaction = Transaction(
+    final newTransaction = Transaction(
       int.parse(_amountController.text),
       isIncome,
       _descriptionController.text,
     );
-    updatedTransaction.setTransactionId = widget.transaction!.transactionId;
+    newTransaction.setTransactionId = widget.transaction!.transactionId;
+    newTransaction.setAccountId = selectedAccount!.accountId;
+    newTransaction.setCategoryId = selectedCategory!.categoryId;
 
-    await Provider.of(context).updateTransaction(
-        updatedTransaction, selectedAccount!, selectedCategory!);
+    await Provider.of(context)
+        .updateTransaction(widget.transaction!, newTransaction);
     Navigator.pop(context);
   }
 }

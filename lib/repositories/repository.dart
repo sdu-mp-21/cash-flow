@@ -2,21 +2,40 @@ import 'package:final_project/models/models.dart';
 import 'package:final_project/models/transaction.dart';
 
 abstract class Repository {
+  // auth
   loginUser(User user);
 
   registerUser(User user);
 
+  // account
   createAccount(Account account);
 
   getAccounts();
 
-  createTransaction(Transaction transaction, Account account, Category category);
+  getAccountById(String id);
 
-  // getTransactions();
+  updateAccount(Account account);
 
+  deleteAccount(Account account);
+
+  // transaction
+  createTransaction(
+      Transaction transaction, Account account, Category category);
+
+  getTransactionsStream();
+
+  updateTransaction(Transaction old, Transaction updated);
+
+  deleteTransaction(Transaction transaction);
+
+  // category
   createCategory(Category category);
 
   getCategories();
 
   getCategoryById(String id);
+
+  updateCategory(Category category);
+
+  deleteCategory(Category category);
 }

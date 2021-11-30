@@ -95,6 +95,7 @@ class FirebaseRepository implements Repository {
     }
   }
 
+  @override
   Future<Account> getAccountById(String id) async {
     final docRef = collectionUsersReference
         .doc(_user.userId)
@@ -117,6 +118,7 @@ class FirebaseRepository implements Repository {
     await docRef.update({"balance": balance});
   }
 
+  @override
   Future<void> updateAccount(Account account) async {
     final docRef = collectionUsersReference
         .doc(_user.userId)
@@ -126,6 +128,7 @@ class FirebaseRepository implements Repository {
     docRef.set(account.toJson());
   }
 
+  @override
   Future<void> deleteAccount(Account account) async {
     await collectionUsersReference
         .doc(_user.userId)
@@ -152,7 +155,7 @@ class FirebaseRepository implements Repository {
   //---transactions---
 
   @override
-  Future createTransaction(
+  Future<void> createTransaction(
       Transaction transaction, Account account, Category category) async {
     final firestore.DocumentReference docRef = collectionUsersReference
         .doc(_user.userId)
@@ -167,23 +170,20 @@ class FirebaseRepository implements Repository {
     await docRef.set(transaction.toJson());
   }
 
-  Future updateTransaction(
-      Transaction transaction, Account account, Category category) async {
+  @override
+  Future<void> updateTransaction(Transaction old, Transaction updated) async {
     final firestore.DocumentReference docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
-        .doc(transaction.transactionId);
-    // final oldTransaction = (await docRef.get()).data()!['amount'];
-    transaction.setAccountId = account.accountId;
-    transaction.setCategoryId = category.categoryId;
-    // FIXME: updateAccountBalanceByAmount is not working
-    // need to calculate difference
-    // between oldTransaction.amount and newTransaction.amount
-    // await updateAccountBalanceByAmount(
-    //     account.accountId, transaction.amount, transaction.income);
-    await docRef.set(transaction.toJson());
+        .doc(old.transactionId);
+
+    await updateAccountBalanceByAmount(old.accountId, old.amount, !old.income);
+    await updateAccountBalanceByAmount(
+        old.accountId, updated.amount, updated.income);
+    await docRef.set(updated.toJson());
   }
 
+  @override
   Stream<List<Transaction>> getTransactionsStream({Account? account}) async* {
     final colRef = collectionUsersReference
         .doc(_user.userId)
@@ -205,7 +205,8 @@ class FirebaseRepository implements Repository {
     }
   }
 
-  Future deleteTransaction(Transaction transaction) async {
+  @override
+  Future<void> deleteTransaction(Transaction transaction) async {
     await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
@@ -227,6 +228,7 @@ class FirebaseRepository implements Repository {
     await docRef.set(category.toJson());
   }
 
+  @override
   Future<void> updateCategory(Category category) async {
     final docRef = collectionUsersReference
         .doc(_user.userId)
@@ -296,7 +298,8 @@ class FirebaseRepository implements Repository {
     }
   }
 
-  Future deleteCategory(Category category) async {
+  @override
+  Future<void> deleteCategory(Category category) async {
     await collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)
