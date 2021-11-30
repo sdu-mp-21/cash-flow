@@ -82,8 +82,8 @@ class TransactionDetail extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 15),
-                FutureBuilder<Category>(
-                  future: Provider.of(context).getCategoryById(
+                StreamBuilder<Category>(
+                  stream: Provider.of(context).getCategoryStreamById(
                     transaction.categoryId,
                   ),
                   builder: (

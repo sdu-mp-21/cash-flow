@@ -17,7 +17,6 @@ class _AccountsScreenState extends State<AccountsScreen> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,7 +53,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
                   .then((value) => setState(() {}));
             },
             child: const Text('Statistics')),
-        const SizedBox(height: 20),
+        const SizedBox(height: 8.0),
         ElevatedButton(
             onPressed: () {
               Navigator.push(
@@ -71,13 +70,16 @@ class _AccountsScreenState extends State<AccountsScreen> {
   Widget _buildAccountsList() {
     final controller = Provider.of(context);
 
-    return SizedBox(
-      height: MediaQuery.of(context).size.height / 3,
+    return Expanded(
+      // height: MediaQuery.of(context).size.height / 3,
       child: StreamBuilder(
         stream: controller.getAccountsStream(),
         builder: (BuildContext context, AsyncSnapshot<List<Account>> snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.data!.isEmpty) {
+            return const Center(child: Text('No accounts'));
           }
 
           final accounts = snapshot.data!;

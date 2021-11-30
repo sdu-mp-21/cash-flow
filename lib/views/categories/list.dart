@@ -26,7 +26,7 @@ class _CategoriesListState extends State<CategoriesList> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const CategoryCreation()),
+                        builder: (context) => const CategoryForm()),
                   ).then((value) => setState(() {}));
                 }),
           ),
@@ -36,10 +36,13 @@ class _CategoriesListState extends State<CategoriesList> {
         stream: controller.getCategoriesStream(),
         builder:
             (BuildContext context, AsyncSnapshot<List<Category>> snapshot) {
-          var categories = [];
-          if (snapshot.hasData) {
-            categories = snapshot.data!;
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
           }
+          if (snapshot.data!.isEmpty) {
+            return const Center(child: Text('No categories'));
+          }
+          var categories = snapshot.data!;
           final tiles = categories.map((e) => _buildCategoryTile(e)).toList();
           return ListView(
             children:
@@ -63,7 +66,12 @@ class _CategoriesListState extends State<CategoriesList> {
       child: ListTile(
         title:
             Text(category.categoryName, style: const TextStyle(fontSize: 18)),
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => CategoryForm(category: category)),
+          );
+        },
       ),
     );
   }

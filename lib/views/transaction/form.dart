@@ -58,6 +58,7 @@ class _TransactionFormState extends State<TransactionForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.transaction == null
             ? 'Add transaction'
@@ -131,7 +132,6 @@ class _TransactionFormState extends State<TransactionForm> {
                       widget.transaction == null
                           ? await _createTransaction()
                           : await _updateTransaction();
-                      Navigator.pop(context);
                     }
                   },
                   child: const Text('Submit'),
@@ -168,12 +168,13 @@ class _TransactionFormState extends State<TransactionForm> {
               }
 
               if (snapshot.data!.isEmpty) {
+                selectedAccount = Account.empty;
                 return DropdownButton<Account>(
-                  value: Account.empty,
+                  value: selectedAccount,
                   items: [
                     DropdownMenuItem<Account>(
-                      value: Account.empty,
-                      child: Text(Account.empty.accountName),
+                      value: selectedAccount,
+                      child: Text(selectedAccount!.accountName),
                     ),
                   ],
                 );
@@ -226,19 +227,23 @@ class _TransactionFormState extends State<TransactionForm> {
               }
 
               if (snapshot.data!.isEmpty) {
+                selectedCategory = Category.empty;
                 return DropdownButton<Category>(
-                  value: Category.empty,
+                  value: selectedCategory,
                   items: [
                     DropdownMenuItem<Category>(
-                      value: Category.empty,
-                      child: Text(Category.empty.categoryName),
+                      value: selectedCategory,
+                      child: Text(selectedCategory!.categoryName),
                     ),
                   ],
                 );
               }
 
               List<Category> categories = snapshot.data!;
-              selectedCategory = categories[0];
+              if (selectedCategory == null ||
+                  selectedCategory == Category.empty) {
+                selectedCategory = categories[0];
+              }
               return DropdownButton<Category>(
                 value: selectedCategory,
                 onChanged: (Category? newValue) {
@@ -262,26 +267,39 @@ class _TransactionFormState extends State<TransactionForm> {
 
   Future<void> _createTransaction() async {
     if (selectedAccount == Account.empty) {
-      showDialog(
+      await showDialog(
         context: context,
         builder: (_) => const AlertDialog(
           title: Text('User has no account'),
           content: Text('Please create an account'),
         ),
       );
+      return;
     }
-
     await Provider.of(context).createTransaction(
-        Transaction(
-          int.parse(_amountController.text),
-          isIncome,
-          _descriptionController.text,
-        ),
-        selectedAccount!,
-        selectedCategory);
+      Transaction(
+        int.parse(_amountController.text),
+        isIncome,
+        _descriptionController.text,
+      ),
+      selectedAccount!,
+      selectedCategory!,
+    );
+    Navigator.pop(context);
   }
 
   Future<void> _updateTransaction() async {
+    if (selectedAccount == Account.empty) {
+      await showDialog(
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text('User has no account'),
+          content: Text('Please create an account'),
+        ),
+      );
+      return;
+    }
+
     final updatedTransaction = Transaction(
       int.parse(_amountController.text),
       isIncome,
@@ -291,5 +309,6 @@ class _TransactionFormState extends State<TransactionForm> {
 
     await Provider.of(context).updateTransaction(
         updatedTransaction, selectedAccount!, selectedCategory!);
+    Navigator.pop(context);
   }
 }

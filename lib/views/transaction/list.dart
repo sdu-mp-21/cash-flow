@@ -52,6 +52,10 @@ class TransactionsList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
+        if (snapshot.data!.isEmpty) {
+          return const Center(child: Text('No transactions'));
+        }
+
         final transactions = snapshot.data!;
         final tiles =
             transactions.map((e) => TransactionTile(transaction: e)).toList();

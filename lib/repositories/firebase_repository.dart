@@ -153,7 +153,7 @@ class FirebaseRepository implements Repository {
 
   @override
   Future createTransaction(
-      Transaction transaction, Account account, Category? category) async {
+      Transaction transaction, Account account, Category category) async {
     final firestore.DocumentReference docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
@@ -161,7 +161,7 @@ class FirebaseRepository implements Repository {
 
     transaction.setTransactionId = docRef.id;
     transaction.setAccountId = account.accountId;
-    transaction.setCategoryId = category?.categoryId ?? '';
+    transaction.setCategoryId = category.categoryId;
     await updateAccountBalanceByAmount(
         account.accountId, transaction.amount, transaction.income);
     await docRef.set(transaction.toJson());
@@ -227,6 +227,15 @@ class FirebaseRepository implements Repository {
     await docRef.set(category.toJson());
   }
 
+  Future<void> updateCategory(Category category) async {
+    final docRef = collectionUsersReference
+        .doc(_user.userId)
+        .collection(collectionCategories)
+        .doc(category.categoryId);
+
+    docRef.set(category.toJson());
+  }
+
   @override
   Future<List<Category>> getCategories() async {
     final colRef = collectionUsersReference
@@ -253,6 +262,8 @@ class FirebaseRepository implements Repository {
 
   @override
   Future<Category> getCategoryById(String id) async {
+    if (id == '') return Category.empty;
+
     final docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)
@@ -266,6 +277,11 @@ class FirebaseRepository implements Repository {
   }
 
   Stream<Category> getCategoryStreamById(String id) async* {
+    if (id == '') {
+      yield Category.empty;
+      return;
+    }
+
     final docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)

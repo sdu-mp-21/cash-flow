@@ -44,7 +44,7 @@ class Controller {
   }
 
   Future createTransaction(
-      Transaction transaction, Account account, Category? category) async {
+      Transaction transaction, Account account, Category category) async {
     await repository.createTransaction(transaction, account, category);
   }
 
@@ -63,6 +63,10 @@ class Controller {
 
   Future createCategory(Category category) async {
     await repository.createCategory(category);
+  }
+
+  Future<void> updateCategory(Category category) async {
+    await repository.updateCategory(category);
   }
 
   Future<List<Category>> getCategories() async {
