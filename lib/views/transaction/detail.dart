@@ -78,7 +78,7 @@ class TransactionDetail extends StatelessWidget {
                       Account account = snapshot.data!;
                       return Text('Account: ${account.accountName}');
                     }
-                    return const Text('Loading...');
+                    return const SizedBox.shrink();
                   },
                 ),
                 const SizedBox(height: 15),
@@ -94,7 +94,7 @@ class TransactionDetail extends StatelessWidget {
                       Category category = snapshot.data!;
                       return Text('Category: ${category.categoryName}');
                     }
-                    return const Text('Loading...');
+                    return const SizedBox.shrink();
                   },
                 ),
                 const SizedBox(height: 15),

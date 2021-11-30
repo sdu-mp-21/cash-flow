@@ -1,4 +1,6 @@
 class Category {
+  static Category empty = Category('Uncategorized');
+
   String _categoryId = '';
   late String _categoryName;
 

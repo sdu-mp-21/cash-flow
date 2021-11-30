@@ -49,6 +49,13 @@ class _TransactionCreationState extends State<TransactionCreation> {
   }
 
   @override
+  void dispose() {
+    _amountController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -161,14 +168,12 @@ class _TransactionCreationState extends State<TransactionCreation> {
               }
 
               if (snapshot.data!.isEmpty) {
-                //todo: empty static account instance
-                final temp = Account('No account', 0);
                 return DropdownButton<Account>(
-                  value: temp,
+                  value: Account.empty,
                   items: [
                     DropdownMenuItem<Account>(
-                      value: temp,
-                      child: Text(temp.accountName),
+                      value: Account.empty,
+                      child: Text(Account.empty.accountName),
                     ),
                   ],
                 );
@@ -221,21 +226,19 @@ class _TransactionCreationState extends State<TransactionCreation> {
               }
 
               if (snapshot.data!.isEmpty) {
-                //todo: static instance
-                final temp = Category("Uncategorized");
                 return DropdownButton<Category>(
-                  value: temp,
+                  value: Category.empty,
                   items: [
                     DropdownMenuItem<Category>(
-                      value: temp,
-                      child: Text(temp.categoryName),
+                      value: Category.empty,
+                      child: Text(Category.empty.categoryName),
                     ),
                   ],
                 );
               }
 
               List<Category> categories = snapshot.data!;
-              selectedCategory ??= categories[0];
+              selectedCategory = categories[0];
               return DropdownButton<Category>(
                 value: selectedCategory,
                 onChanged: (Category? newValue) {

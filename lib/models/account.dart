@@ -1,4 +1,6 @@
 class Account {
+  static Account empty = Account('Non-existing account', 0);
+
   String _accountId = '';
   late String _accountName;
   late int _balance;

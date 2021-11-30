@@ -14,8 +14,6 @@ class FirebaseRepository implements Repository {
   static const collectionTransactions = 'transactions';
   static const collectionCategories = 'categories';
 
-  static const categoryNotFound = "Uncategorized";
-
   // for developing purposes, todo: delete initialization and make it 'late'
   User _user = User('dias@mail.com', 'qwerty');
 
@@ -230,7 +228,7 @@ class FirebaseRepository implements Repository {
 
     final data = (await docRef.get()).data();
     if (data == null) {
-      return Category(categoryNotFound);
+      return Category.empty;
     }
     return Category.fromJson(data);
   }
@@ -245,7 +243,7 @@ class FirebaseRepository implements Repository {
       if (doc.data() != null) {
         yield Category.fromJson(doc.data()!);
       } else {
-        yield Category(categoryNotFound);
+        yield Category.empty;
       }
     }
   }

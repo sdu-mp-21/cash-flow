@@ -48,13 +48,11 @@ class TransactionsList extends StatelessWidget {
       stream: controller.getTransactionsStream(account: account),
       builder:
           (BuildContext context, AsyncSnapshot<List<Transaction>> snapshot) {
-        // if (snapshot.connectionState == ConnectionState.active) {
-        //   return const Center(child: CircularProgressIndicator());
-        // }
-        var transactions = [];
-        if (snapshot.hasData) {
-          transactions = snapshot.data!;
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
         }
+
+        final transactions = snapshot.data!;
         final tiles =
             transactions.map((e) => TransactionTile(transaction: e)).toList();
         return _buildList(tiles);
@@ -93,24 +91,24 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of(context);
-    final isIncome = transaction.income ? '+' : '-';
     return ListTile(
       title: StreamBuilder(
         stream: controller.getCategoryStreamById(transaction.categoryId),
         builder: (BuildContext context, AsyncSnapshot<Category> snapshot) {
-          if (snapshot.hasData) {
-            final Category category = snapshot.data!;
-            return Text(category.categoryName);
+          if (!snapshot.hasData) {
+            return const SizedBox.shrink();
           }
-          return const Text("Loading");
+
+          Category category = snapshot.data!;
+          return Text(category.categoryName);
         },
       ),
       subtitle: Text(transaction.description),
       trailing: Text(
-        isIncome + "${transaction.amount}\$",
-        style: transaction.income
-            ? const TextStyle(color: Colors.green, fontSize: 15)
-            : const TextStyle(color: Colors.red, fontSize: 15),
+        (transaction.income ? '+' : '-') + "${transaction.amount}\$",
+        style: TextStyle(
+            color: transaction.income ? Colors.green : Colors.red,
+            fontSize: 15),
       ),
       onTap: () {
         Navigator.push(
