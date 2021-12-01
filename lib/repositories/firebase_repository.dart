@@ -102,7 +102,10 @@ class FirebaseRepository implements Repository {
         .collection(collectionAccounts)
         .doc(id);
     final data = (await docRef.get()).data();
-    return Account.fromJson(data!);
+    if (data == null) {
+      return Account.empty;
+    }
+    return Account.fromJson(data);
   }
 
   Future updateAccountBalanceByAmount(

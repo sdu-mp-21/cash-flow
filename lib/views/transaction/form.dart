@@ -181,7 +181,9 @@ class _TransactionFormState extends State<TransactionForm> {
               }
 
               List<Account> accounts = snapshot.data!;
-              selectedAccount ??= accounts[0];
+              if (selectedAccount == null || selectedAccount == Account.empty) {
+                selectedAccount = accounts[0];
+              }
               return DropdownButton<Account>(
                 value: selectedAccount,
                 onChanged: (Account? newValue) {
