@@ -3,41 +3,67 @@ import 'package:cash_flow/provider.dart';
 import 'package:cash_flow/models/models.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class TransactionsChart extends StatelessWidget {
+class TransactionsChart extends StatefulWidget {
   const TransactionsChart({Key? key}) : super(key: key);
 
   @override
+  State<TransactionsChart> createState() => _TransactionsChartState();
+}
+
+class _TransactionsChartState extends State<TransactionsChart> {
+  String dropdownValue = 'Outcome';
+  @override
   Widget build(BuildContext context) {
+    bool isIncome = dropdownValue == 'Income';
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistics'),),
-      body: StreamBuilder(
-        stream: streamCharValue(context),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<ChartValue>> snapshot) {
-          if (!snapshot.hasData) return const Text('');
-          return SfCircularChart(
-            title: ChartTitle(text: "transaction amount chart"),
-            legend: Legend(isVisible: true),
-            tooltipBehavior: TooltipBehavior(enable: true),
-            series: <CircularSeries>[
-              DoughnutSeries<ChartValue, String>(
-                  dataSource: snapshot.data!,
-                  xValueMapper: (ChartValue data, _) => data.category,
-                  yValueMapper: (ChartValue data, _) => data.amount,
-                  dataLabelSettings: const DataLabelSettings(isVisible: true),
-                  enableTooltip: true)
-            ],
-          );
-        },
+      appBar: AppBar(
+        title: const Text('Statistics'),
+      ),
+      body: Column(
+        children: [
+          DropdownButton<String>(
+            value: dropdownValue,
+            onChanged: (String? newValue) {
+              setState(() {
+                dropdownValue = newValue!;
+              });
+            },
+            items: <String>["Income", "Outcome"]
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(value: value, child: Text(value));
+            }).toList(),
+          ),
+          StreamBuilder(
+            stream: streamCharValue(context, isIncome),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<ChartValue>> snapshot) {
+              if (!snapshot.hasData) return const Text('');
+              return SfCircularChart(
+                title: ChartTitle(text: "transaction amount chart"),
+                legend: Legend(isVisible: true),
+                tooltipBehavior: TooltipBehavior(enable: true),
+                series: <CircularSeries>[
+                  DoughnutSeries<ChartValue, String>(
+                      dataSource: snapshot.data!,
+                      xValueMapper: (ChartValue data, _) => data.category,
+                      yValueMapper: (ChartValue data, _) => data.amount,
+                      dataLabelSettings:
+                          const DataLabelSettings(isVisible: true),
+                      enableTooltip: true)
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 
   List<ChartValue> getChartValue(List<Transaction> transactions,
-      Map<String, String> transactionToCategory) {
+      Map<String, String> transactionToCategory, bool isIncome) {
     final Map<String, int> chartV = {};
     for (var transaction in transactions) {
-      if (!transaction.income) {
+      if (transaction.income != isIncome) {
         continue;
       }
       String category;
@@ -59,13 +85,14 @@ class TransactionsChart extends StatelessWidget {
     return res;
   }
 
-  Stream<List<ChartValue>> streamCharValue(BuildContext context) async* {
+  Stream<List<ChartValue>> streamCharValue(
+      BuildContext context, bool isIncome) async* {
     final controller = Provider.of(context);
     await for (final transactions in controller.getTransactionsStream()) {
       await for (final categories in controller.getCategoriesStream()) {
         Map<String, String> transactionToCategory =
             createTransactionToCategory(transactions, categories);
-        yield getChartValue(transactions, transactionToCategory);
+        yield getChartValue(transactions, transactionToCategory, isIncome);
       }
     }
   }
