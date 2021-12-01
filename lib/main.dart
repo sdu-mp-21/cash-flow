@@ -1,8 +1,8 @@
-import 'package:final_project/provider.dart';
-import 'package:final_project/views/home.dart';
+import 'package:cash_flow/provider.dart';
+import 'package:cash_flow/views/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/views/auth_screen.dart';
+import 'package:cash_flow/views/auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {

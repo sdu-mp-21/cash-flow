@@ -1,6 +1,6 @@
-import 'package:final_project/views/auth_screen.dart';
+import 'package:cash_flow/views/auth_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/provider.dart';
+import 'package:cash_flow/provider.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);

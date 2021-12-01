@@ -1,7 +1,7 @@
-import 'package:final_project/models/models.dart';
+import 'package:cash_flow/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/views/categories/form.dart';
-import 'package:final_project/provider.dart';
+import 'package:cash_flow/views/categories/form.dart';
+import 'package:cash_flow/provider.dart';
 
 class CategoriesList extends StatefulWidget {
   const CategoriesList({Key? key}) : super(key: key);
