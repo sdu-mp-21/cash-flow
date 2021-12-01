@@ -23,16 +23,43 @@ class _MenuScreenState extends State<MenuScreen> {
     final controller = Provider.of(context);
 
     return Column(
-      children: [
-        Text(
-          controller.user.email,
-          style: const TextStyle(fontSize: 20),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          'user_id: ${controller.user.userId}',
-          style: const TextStyle(fontSize: 18),
-        ),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children:[
+      Row(
+        children: [
+          Expanded(
+          flex: 3,
+              child: Container(
+                height: 100,
+                width: 100,
+                child: ClipRRect(
+                  child: Image.asset('assets/images/default_user_pic.png'),
+                  borderRadius: BorderRadius.circular(50.0),
+                ),
+              ),
+
+          ),
+          Expanded(
+            flex: 7,
+
+            child: Column(
+              children: [
+                Text(
+                  controller.user.email,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'user_id: ${controller.user.userId}',
+                  style: const TextStyle(fontSize: 18),
+                ),],
+           ),
+          ),
+        ],),
+
+
+
         const SizedBox(height: 20),
         ElevatedButton(
             onPressed: () {
@@ -40,7 +67,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   MaterialPageRoute(builder: (context) => const LoginScreen()));
             },
             child: const Icon(Icons.logout)),
-      ],
+    ],
     );
   }
 }
