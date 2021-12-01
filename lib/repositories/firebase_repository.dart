@@ -113,6 +113,9 @@ class FirebaseRepository implements Repository {
         .doc(accountId);
 
     final snapshot = await docRef.get();
+    if (snapshot.data() == null) {
+      return;
+    }
     int balance = snapshot.data()!["balance"];
     balance += (income) ? amount : -amount;
     await docRef.update({"balance": balance});
@@ -135,8 +138,6 @@ class FirebaseRepository implements Repository {
         .collection(collectionAccounts)
         .doc(account.accountId)
         .delete();
-
-    await deleteTransactionsByAccount(account);
   }
 
   Future<void> deleteTransactionsByAccount(Account account) async {
@@ -179,7 +180,7 @@ class FirebaseRepository implements Repository {
 
     await updateAccountBalanceByAmount(old.accountId, old.amount, !old.income);
     await updateAccountBalanceByAmount(
-        old.accountId, updated.amount, updated.income);
+        updated.accountId, updated.amount, updated.income);
     await docRef.set(updated.toJson());
   }
 
