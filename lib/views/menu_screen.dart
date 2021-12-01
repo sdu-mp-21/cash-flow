@@ -13,7 +13,7 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(100),
+      margin: const EdgeInsets.all(50),
       alignment: Alignment.center,
       child: _buildMenu(),
     );
@@ -22,15 +22,19 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget _buildMenu() {
     final controller = Provider.of(context);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return
+      Column(
+      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      // crossAxisAlignment: CrossAxisAlignment.stretch,
       children:[
       Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+
         children: [
           Expanded(
           flex: 3,
               child: Container(
+                // color: Colors.green,
                 height: 100,
                 width: 100,
                 child: ClipRRect(
@@ -40,6 +44,7 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
 
           ),
+          const SizedBox(width: 20),
           Expanded(
             flex: 7,
 
@@ -60,7 +65,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
 
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 40),
         ElevatedButton(
             onPressed: () {
               Navigator.pushReplacement(context,
