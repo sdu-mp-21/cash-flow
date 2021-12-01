@@ -99,28 +99,28 @@ class _TransactionFormState extends State<TransactionForm> {
               _buildCategoryDropdown(),
               Column(
                 children: [
-                  ListTile(
-                    title: const Text('Income'),
-                    leading: Radio(
-                      value: true,
-                      groupValue: isIncome,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isIncome = true;
-                        });
-                      },
+                  GestureDetector(
+                    onTap: () => setState(() => isIncome = true),
+                    child: ListTile(
+                      title: const Text('Income'),
+                      leading: Radio(
+                        value: true,
+                        groupValue: isIncome,
+                        onChanged: (bool? value) =>
+                            setState(() => isIncome = true),
+                      ),
                     ),
                   ),
-                  ListTile(
-                    title: const Text('Outcome'),
-                    leading: Radio(
-                      value: false,
-                      groupValue: isIncome,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isIncome = false;
-                        });
-                      },
+                  GestureDetector(
+                    onTap: () => setState(() => isIncome = false),
+                    child: ListTile(
+                      title: const Text('Outcome'),
+                      leading: Radio(
+                        value: false,
+                        groupValue: isIncome,
+                        onChanged: (bool? value) =>
+                            setState(() => isIncome = false),
+                      ),
                     ),
                   ),
                 ],
