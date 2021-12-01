@@ -1,5 +1,5 @@
-import 'package:final_project/models/models.dart';
-import 'package:final_project/models/transaction.dart';
+import 'package:cash_flow/models/models.dart';
+import 'package:cash_flow/models/transaction.dart';
 
 abstract class Repository {
   // auth

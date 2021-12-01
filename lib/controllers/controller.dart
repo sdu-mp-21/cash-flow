@@ -1,6 +1,6 @@
-import 'package:final_project/models/models.dart';
+import 'package:cash_flow/models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as fire;
-import 'package:final_project/repositories/firebase_repository.dart';
+import 'package:cash_flow/repositories/firebase_repository.dart';
 
 class Controller {
   final repository = FirebaseRepository();

@@ -1,7 +1,7 @@
-import 'package:final_project/models/models.dart';
-import 'package:final_project/views/transaction/form.dart';
+import 'package:cash_flow/models/models.dart';
+import 'package:cash_flow/views/transaction/form.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/provider.dart';
+import 'package:cash_flow/provider.dart';
 
 class TransactionDetail extends StatelessWidget {
   final Transaction transaction;

@@ -1,7 +1,7 @@
-import 'package:final_project/models/models.dart';
+import 'package:cash_flow/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/provider.dart';
-import 'package:final_project/views/home.dart';
+import 'package:cash_flow/provider.dart';
+import 'package:cash_flow/views/home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

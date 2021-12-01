@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'package:final_project/views/menu_screen.dart';
-import 'package:final_project/views/transaction/list.dart';
-import 'package:final_project/views/account/list.dart';
+import 'package:cash_flow/views/menu_screen.dart';
+import 'package:cash_flow/views/transaction/list.dart';
+import 'package:cash_flow/views/account/list.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

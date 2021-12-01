@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:final_project/models/models.dart';
+import 'package:cash_flow/models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
-import 'package:final_project/repositories/repository.dart';
+import 'package:cash_flow/repositories/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fire_auth;
 
 class FirebaseRepository implements Repository {

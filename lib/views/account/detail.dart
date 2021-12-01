@@ -1,5 +1,5 @@
-import 'package:final_project/models/models.dart';
-import 'package:final_project/views/transaction/list.dart';
+import 'package:cash_flow/models/models.dart';
+import 'package:cash_flow/views/transaction/list.dart';
 import 'package:flutter/material.dart';
 import '../../provider.dart';
 import 'form.dart';

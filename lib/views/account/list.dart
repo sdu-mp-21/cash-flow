@@ -1,10 +1,10 @@
-import 'package:final_project/models/models.dart';
-import 'package:final_project/views/account/chart.dart';
-import 'package:final_project/views/account/form.dart';
-import 'package:final_project/views/account/detail.dart';
+import 'package:cash_flow/models/models.dart';
+import 'package:cash_flow/views/account/chart.dart';
+import 'package:cash_flow/views/account/form.dart';
+import 'package:cash_flow/views/account/detail.dart';
 import 'package:flutter/material.dart';
-import 'package:final_project/provider.dart';
-import 'package:final_project/views/categories/list.dart';
+import 'package:cash_flow/provider.dart';
+import 'package:cash_flow/views/categories/list.dart';
 
 class AccountsScreen extends StatefulWidget {
   const AccountsScreen({Key? key}) : super(key: key);
