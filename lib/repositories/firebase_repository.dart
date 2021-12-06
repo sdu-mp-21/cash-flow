@@ -5,22 +5,28 @@ import 'package:cash_flow/repositories/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fire_auth;
 
 class FirebaseRepository implements Repository {
-  final fire_auth.FirebaseAuth _firebaseAuth = fire_auth.FirebaseAuth.instance;
-  final firestore.CollectionReference collectionUsersReference =
-      firestore.FirebaseFirestore.instance.collection(collectionUsers);
+  FirebaseRepository({
+    required this.firebaseAuthInstance,
+    required this.firestoreInstance,
+  })  : collectionUsersReference =
+            firestoreInstance.collection(collectionUsers),
+        _user = User('test@mail.com', 'heavy_password');
+
+  final fire_auth.FirebaseAuth firebaseAuthInstance;
+  final firestore.FirebaseFirestore firestoreInstance;
+  final firestore.CollectionReference collectionUsersReference;
 
   static const collectionUsers = 'users';
   static const collectionAccounts = 'accounts';
   static const collectionTransactions = 'transactions';
   static const collectionCategories = 'categories';
 
-  // for developing purposes, todo: delete initialization and make it 'late'
-  User _user = User('dias@mail.com', 'qwerty');
+  User _user;
 
   User get user => _user;
 
   loadUser(String email, String uid) {
-    _user = User(email, '******');
+    _user = User(email);
     _user.setID = uid;
   }
 
@@ -28,7 +34,7 @@ class FirebaseRepository implements Repository {
   Future<String?> loginUser(User u) async {
     try {
       final fire_auth.UserCredential credential =
-          await _firebaseAuth.signInWithEmailAndPassword(
+          await firebaseAuthInstance.signInWithEmailAndPassword(
         email: u.email,
         password: u.password,
       );
@@ -44,7 +50,7 @@ class FirebaseRepository implements Repository {
   Future<String?> registerUser(User u) async {
     try {
       final fire_auth.UserCredential credential =
-          await _firebaseAuth.createUserWithEmailAndPassword(
+          await firebaseAuthInstance.createUserWithEmailAndPassword(
         email: u.email,
         password: u.password,
       );
@@ -62,7 +68,7 @@ class FirebaseRepository implements Repository {
   //---accounts---
 
   @override
-  Future createAccount(Account account) async {
+  Future<String> createAccount(Account account) async {
     final docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionAccounts)
@@ -70,6 +76,7 @@ class FirebaseRepository implements Repository {
 
     account.setAccountId = docRef.id;
     await docRef.set(account.toJson());
+    return docRef.id;
   }
 
   @override
@@ -159,7 +166,7 @@ class FirebaseRepository implements Repository {
   //---transactions---
 
   @override
-  Future<void> createTransaction(
+  Future<String> createTransaction(
       Transaction transaction, Account account, Category category) async {
     final firestore.DocumentReference docRef = collectionUsersReference
         .doc(_user.userId)
@@ -172,6 +179,7 @@ class FirebaseRepository implements Repository {
     await updateAccountBalanceByAmount(
         account.accountId, transaction.amount, transaction.income);
     await docRef.set(transaction.toJson());
+    return docRef.id;
   }
 
   @override
@@ -223,13 +231,14 @@ class FirebaseRepository implements Repository {
   //---categories---
 
   @override
-  Future createCategory(Category category) async {
+  Future<String> createCategory(Category category) async {
     final firestore.DocumentReference docRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionCategories)
         .doc();
     category.setCategoryId = docRef.id;
     await docRef.set(category.toJson());
+    return docRef.id;
   }
 
   @override

@@ -1,9 +1,13 @@
 import 'package:cash_flow/models/models.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as fire;
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:cash_flow/repositories/firebase_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fire_auth;
 
 class Controller {
-  final repository = FirebaseRepository();
+  final repository = FirebaseRepository(
+    firebaseAuthInstance: fire_auth.FirebaseAuth.instance,
+    firestoreInstance: firestore.FirebaseFirestore.instance,
+  );
 
   User get user => repository.user;
 
