@@ -4,15 +4,42 @@ import 'package:cash_flow/models/models.dart';
 import 'package:cash_flow/views/transaction/form.dart';
 import 'package:cash_flow/views/transaction/detail.dart';
 
-class TransactionsScreen extends StatelessWidget {
+class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({Key? key}) : super(key: key);
 
   @override
+  _TransactionsScreenState createState() => _TransactionsScreenState();
+}
+
+
+enum isIncome {
+  all,
+  income,
+  outcome
+}
+
+class _TransactionsScreenState extends State<TransactionsScreen> {
+  String dropdownValue = 'All';
+
+  @override
   Widget build(BuildContext context) {
+    bool? income = (dropdownValue == 'All') ? null : dropdownValue=='Income';
     return Column(
       children: [
-        const Expanded(
-          child: TransactionsList(),
+        DropdownButton<String>(
+          value: dropdownValue,
+          onChanged: (String? newValue) {
+            setState(() {
+              dropdownValue = newValue!;
+            });
+          },
+          items: <String>["All", "Income", "Outcome"]
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(value: value, child: Text(value));
+          }).toList(),
+        ),
+        Expanded(
+          child: TransactionsList(income: income),
         ),
         Center(
           child: addTransactionButton(context),
@@ -38,14 +65,18 @@ class TransactionsScreen extends StatelessWidget {
 
 class TransactionsList extends StatelessWidget {
   final Account? account;
+  final bool? income;
 
-  const TransactionsList({Key? key, this.account}) : super(key: key);
+  const TransactionsList({Key? key, this.account, this.income})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of(context);
     return StreamBuilder(
-      stream: controller.getTransactionsStream(account: account),
+      stream: controller.getTransactionsStream(
+          account: account,
+          income: income),
       builder:
           (BuildContext context, AsyncSnapshot<List<Transaction>> snapshot) {
         if (!snapshot.hasData) {

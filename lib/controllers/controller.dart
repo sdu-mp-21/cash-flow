@@ -56,8 +56,8 @@ class Controller {
     await repository.updateTransaction(old, updated);
   }
 
-  Stream<List<Transaction>> getTransactionsStream({Account? account}) {
-    return repository.getTransactionsStream(account: account);
+  Stream<List<Transaction>> getTransactionsStream({Account? account, bool? income}) {
+    return repository.getTransactionsStream(account: account, income: income);
   }
 
   Future deleteTransaction(Transaction transaction) async {

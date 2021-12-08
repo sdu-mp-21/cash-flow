@@ -26,7 +26,7 @@ class FirebaseRepository implements Repository {
   User get user => _user;
 
   loadUser(String email, String uid) {
-    _user = User(email);
+    _user = User(email, "");
     _user.setID = uid;
   }
 
@@ -196,23 +196,26 @@ class FirebaseRepository implements Repository {
   }
 
   @override
-  Stream<List<Transaction>> getTransactionsStream({Account? account}) async* {
-    final colRef = collectionUsersReference
+  Stream<List<Transaction>> getTransactionsStream(
+      {Account? account, bool? income}) async* {
+    var colRef = collectionUsersReference
         .doc(_user.userId)
         .collection(collectionTransactions)
         .orderBy("creation_time", descending: true);
+
+    if (income != null) {
+      colRef = colRef.where("income", isEqualTo: income);
+    }
+
+    if (account != null) {
+      colRef = colRef.where("account_id", isEqualTo: account.accountId);
+    }
+
     final stream = colRef.snapshots();
     await for (final snapshot in stream) {
       final rawTransactions = snapshot.docs;
       var transactions =
           rawTransactions.map((e) => Transaction.fromJson(e.data())).toList();
-
-      if (account != null) {
-        transactions = transactions
-            .where((e) => e.accountId == account.accountId)
-            .toList();
-      }
-
       yield transactions;
     }
   }
