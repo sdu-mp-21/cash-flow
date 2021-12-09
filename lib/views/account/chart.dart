@@ -34,7 +34,7 @@ class _TransactionsChartState extends State<TransactionsChart> {
             }).toList(),
           ),
           StreamBuilder(
-            stream: streamCharValue(context, isIncome),
+            stream: streamChartValue(context, isIncome),
             builder: (BuildContext context,
                 AsyncSnapshot<List<ChartValue>> snapshot) {
               if (!snapshot.hasData) return const Text('');
@@ -60,12 +60,9 @@ class _TransactionsChartState extends State<TransactionsChart> {
   }
 
   List<ChartValue> getChartValue(List<Transaction> transactions,
-      Map<String, String> transactionToCategory, bool isIncome) {
+      Map<String, String> transactionToCategory) {
     final Map<String, int> chartV = {};
     for (var transaction in transactions) {
-      if (transaction.income != isIncome) {
-        continue;
-      }
       String category;
       if (transactionToCategory.containsKey(transaction.transactionId)) {
         category = transactionToCategory[transaction.transactionId]!;
@@ -85,14 +82,15 @@ class _TransactionsChartState extends State<TransactionsChart> {
     return res;
   }
 
-  Stream<List<ChartValue>> streamCharValue(
+  Stream<List<ChartValue>> streamChartValue(
       BuildContext context, bool isIncome) async* {
     final controller = Provider.of(context);
-    await for (final transactions in controller.getTransactionsStream()) {
+    await for (final transactions
+        in controller.getTransactionsStream(income: isIncome)) {
       await for (final categories in controller.getCategoriesStream()) {
         Map<String, String> transactionToCategory =
             createTransactionToCategory(transactions, categories);
-        yield getChartValue(transactions, transactionToCategory, isIncome);
+        yield getChartValue(transactions, transactionToCategory);
       }
     }
   }
