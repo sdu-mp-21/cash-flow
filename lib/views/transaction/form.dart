@@ -171,6 +171,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 selectedAccount = Account.empty;
                 return DropdownButton<Account>(
                   value: selectedAccount,
+                  onChanged: null,
                   items: [
                     DropdownMenuItem<Account>(
                       value: selectedAccount,
@@ -232,6 +233,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 selectedCategory = Category.empty;
                 return DropdownButton<Category>(
                   value: selectedCategory,
+                  onChanged: null,
                   items: [
                     DropdownMenuItem<Category>(
                       value: selectedCategory,
