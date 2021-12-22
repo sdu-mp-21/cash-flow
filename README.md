@@ -23,6 +23,7 @@
 ![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/uml.png)
 
 # Screenshots
+<p align="left">
 <img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/auth.jpg" alt="✂-1" style="width:30%;">
 <img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transactions_list.jpg" alt="✂-1" style="width:30%;">
 <img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/create_transaction.jpg" alt="✂-1" style="width:30%;">
@@ -31,5 +32,6 @@
 <img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/account_detail.jpg" alt="✂-1" style="width:30%;">
 <img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/update_transaction.jpg" alt="✂-1" style="width:30%;">
 <img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/accounts_list.jpg" alt="✂-1" style="width:30%;">
+</p>
 
 
