@@ -1,9 +1,8 @@
 # Final project
-It's our project for CSS 216 made using Flutter
+  It's our project for CSS 216 made using Flutter
 
-# About the project 
-The app we are creating is for controlling cash-flow. You could use it to manage your financial plan. Plan and monitor the budget.
-There is three main models: user, account, transaction and category. Each user can have multiple accounts to separate the 'wallets' and mark transactions by categories to analyse the financial flow.
+# Goal
+  The app we are creating is for controlling cash-flow. You could use it to manage your financial plan. Plan and monitor the budget.
 
 # Mentor
 - Bissenbay Dauletbayev - b.dauletbayev@sdu.edu.kz
@@ -18,7 +17,11 @@ There is three main models: user, account, transaction and category. Each user c
 # Presentation
   Link to <a href="https://docs.google.com/presentation/d/17rwBUGktYhAc0tG8737W7WzGoX-i8ycGn4DWklw2RBk/edit?usp=sharing">presentation</a>
 
+# Structure of App
+  There is three main models: user, account, transaction and category. Each user can have multiple accounts to separate the 'wallets' and mark transactions by categories to analyse the financial flow.
+
 ![alt text](https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/uml.png)
+
 # Screenshots
 <img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/auth.jpg" alt="✂-1" style="width:30%;">
 <img src="https://github.com/sdu-mp-21/cash-flow/blob/main/screenshots/transactions_list.jpg" alt="✂-1" style="width:30%;">
